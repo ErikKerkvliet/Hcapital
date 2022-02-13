@@ -1,0 +1,44 @@
+<div id="item_item">
+    <div id="item_title">{{title}}</div>
+    <div id="anchor">
+        <div class="item_image href" name="{{id}}" href="?v=2&id={{id}}" id="{{id}}"><img src="{{cover}}" onerror='setImage(this, "s")'></div>
+    </div>
+    <div class="div-table">
+        <div class="div-table-row">
+            <div class="div_table_col_1">Released:</div>
+            <div class="released-td">{{released}}</div>
+        </div>
+        <div class="div-table-row">
+            <div class="div_table_col_1">Developer:</div>
+            <div class="div_table_col_2">
+                {{developers}}
+            </div>
+        </div>
+        {if website}
+        <div class="div-table-row">
+            <div class="div_table_col_1">Homepage:</div>
+            <div class="div_table_col_2"><a href="{{website}}" target="_blank">{{website}}</a>
+            </div>
+        </div>
+        {/if}
+        {if information}
+        <div class="div-table-row">
+            <div class="div_table_col_1">{{site}}:</div>
+            <div class="div_table_col_2"><a href="{{information}}" target="_blank">{{information}}</a>
+            </div>
+        </div>
+        {/if}
+        {if size}
+        <div class="div-table-row">
+            <div class="div_table_col_1">Size:</div>
+            <div class="div_table_col_2">{{size}}
+            </div>
+        </div>
+        {/if}
+    </div>
+    <div class="href" href="?v=2&id={{id}}" name="{{id}}" id="anchor-{{id}}">
+        <div class="item_more_btn">More-
+            <div id="arrow">&gt;</div>
+        </div>
+    </div>
+</div>

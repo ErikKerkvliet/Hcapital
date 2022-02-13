@@ -1,0 +1,48 @@
+<div id="post-data">
+    <div id="copy-button" class="admin-button">
+        copy text
+    </div>
+    <textarea id="post-text">
+        {if title}[CENTER][SIZE=5][B]{{title}}[/B][/SIZE]{/if}
+        {if romanji}[SIZE=4]{{romanji}}[/SIZE]{/if}
+        {if cover}
+
+            [IMG]{{cover}}[/IMG]
+        {/if}{if images}
+            [TABLE='width: 500, align: center']
+                {for images}
+                    {{tr}}[TD][URL={{url}}][IMG]{{image}}[/IMG][/URL][/TD]{{/tr}}
+                {/for}
+            [/TABLE]
+        {/if}
+        [TABLE='width: 600, align: center']
+        [TR]
+        [TD='align: left'][INDENT=3][B]Release:[/B][/INDENT]
+        [/TD]
+        [TD='align: left']{{released}}[/TD]
+        [/TR]
+        [TR]
+        [TD='align: left'][INDENT=3][B]Developer:[/B][/INDENT]
+        [/TD]
+        [TD='align: left']{{developers}}[/TD]
+        [/TR]
+        [TR]
+        [TD='align: left'][INDENT=3][B]Information:[/B][/INDENT]
+        [/TD]
+        [TD='align: left'][URL]{{information}}[/URL][/TD]
+        [/TR]
+        [TR]
+        [TD='align: left'][INDENT=3][B]File size:[/B][/INDENT]
+        [/TD]
+        [TD='align: left']{{size}}[/TD]
+        [/TR]
+        [/TABLE]
+        {for links}
+            {{comment}}[SIZE=1]{{host}}:[/SIZE]
+
+            {{link}}
+        {/for}
+
+        [/CENTER]
+    </textarea>
+</div>

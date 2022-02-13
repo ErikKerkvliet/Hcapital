@@ -1,2 +1,0 @@
-# Hcapital
-Hcapital

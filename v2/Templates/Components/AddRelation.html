@@ -1,0 +1,23 @@
+<div class="component-relation new-relation">
+    <div class="description" id="relation-description-{{nr}}">
+        Relation:
+    </div>
+    <div class="data">
+        <select class="relations" name="relation-{{nr}}" id="relation-{{nr}}">
+            <option value="0">-- Select relation --</option>
+            {for entries}
+                <option value="{{value}}">
+                    {{title}}
+                </option>
+            {/for}
+        </select>
+        <select class="relation-type relations" name="relation-type-{{nr}}">
+            {for relationTypes}
+                <option value='{{value}}' {{selected}}>{{content}}</option>
+            {/for}
+        </select>
+        <div class="remove-relation remove-component-button"  id="remove-relation-{{nr}}">
+            X
+        </div>
+    </div>
+</div>

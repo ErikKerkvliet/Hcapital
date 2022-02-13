@@ -1,0 +1,125 @@
+<div id="full_char_div">
+    <div id="char_table">
+        <a href="?v=2&cid={{id}}">
+            <div class="char_cell" id="char_img">
+                <img class="info_char" src="{{tumbnail}}" onerror='setImage(this, "c")'>
+            </div>
+        </a>
+        {{admin}}
+            <div class="admin-button char-edit" char-id="{{id}}">Edit</div>
+        {{/admin}}
+        <div class="char_cell" id="char_details">
+            <div id="char_name">
+                <a class="char_page_link" href="?v=2&cid={{id}}">
+                    <div class="char_info_name">
+                        <b>
+                            &nbsp;{{romanji}}
+                        </b>
+                    </div>
+                    <div class="char_info_name">
+                        &nbsp;&nbsp;{{name}}
+                    </div>
+                    <div id="gender">
+                        &nbsp;&nbsp;
+                        <b>
+                            {{gender}}
+                        </b>
+                    </div>
+                </a>
+            </div>
+            <table id="char_info">
+                <tbody>
+                <tr>
+                    <td>
+                    </td>
+                </tr>
+{if age}
+                <tr class="row{{rowAge}}">
+                    <td class="measurement-col1">
+                        &nbsp;Age:
+                    </td>
+                    <td class="char-detail-data">
+                        {{age}}
+                    </td>
+                </tr>
+{/if}
+{if height}
+                <tr class="row{{rowHeight}}">
+                    <td class="measurement-col1">
+                        &nbsp;Height:
+                    </td>
+                    <td class="char-detail-data">
+                        {{height}} cm
+                    </td>
+                </tr>
+{/if}
+{if weight}
+                <tr class="row{{rowWeight}}">
+                    <td class="measurement-col1">
+                        &nbsp;Weight:
+                    </td>
+                    <td class="char-detail-data">
+                        {{weight}} cm
+                    </td>
+                </tr>
+{/if}
+{if bust}
+                <tr class="row{{rowBust}}">
+                    <td class="measurement-col1">
+                        &nbsp;Bust:
+                    </td>
+                    <td class="char-detail-data">
+                        {{bust}}
+                    </td>
+                </tr>
+{/if}
+{if cup}
+                <tr class="row{{rowCup}}">
+                    <td class="measurement-col1">
+                        &nbsp;Cup:
+                    </td>
+                    <td class="char-detail-data">
+                        {{cup}}
+                    </td>
+                </tr>
+{/if}
+{if waist}
+                <tr class="row{{rowWaist}}">
+                    <td class="measurement-col1">
+                        &nbsp;Waist:
+                    </td>
+                    <td class="char-detail-data">
+                        {{waist}} cm
+                    </td>
+                </tr>
+{/if}
+{if hips}
+                <tr class="row{{rowHips}}">
+                    <td class="measurement-col1">
+                        &nbsp;Hips:
+                    </td>
+                    <td class="char-detail-data">
+                        {{hips}} cm
+                    </td>
+                </tr>
+{/if}
+                </tbody>
+            </table>
+{for images}
+            <div>
+                <div class="div_hide" id="char_{{id}}">
+                    <div class="div_img" id="character-hoover-background">
+                        <img id="char_img" src="{{image}}"/>
+                        <div class="pop-up-img-close">
+                            X
+                        </div>
+                    </div>
+                    <div class="char_imgs">
+                        <img src="{{image}}"/>
+                    </div>
+                </div>
+            </div>
+{/for}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,39 @@
+<div class="main-list">
+    {{searcher}}
+    <input type="hidden" id="data" data-search="{{search}}" data-char="{{char}}" data-type="{{listType}}"
+           data-by="{{by}}" data-order="{{order}}" data-loaded="0"/>
+    <div class="list-line"></div>
+
+    {if searchType}
+        <div class="list-header">
+            {{type}}
+        </div>
+    {/if}
+    {if previous}
+    <div class="previous navigation-button {{navigation-top}}">
+        PREV
+    </div>
+    {/if}
+    {if next}
+    <div class="next navigation-button {{navigation-top}}">
+        NEXT
+    </div>
+    {/if}
+    {if developer}
+        {{orderBar}}
+    {/if}
+
+    <div class="list" id="list">
+    {{list}}
+        {if previous}
+        <div class="previous navigation-button navigation-bottom">
+            PREV
+        </div>
+        {/if}
+        {if next}
+        <div class="next navigation-button navigation-bottom">
+            NEXT
+        </div>
+        {/if}
+    </div>
+</div>

@@ -1,0 +1,37 @@
+<div id="navigator" type="{{type}}">
+    <div class="navigator-column" id="navigator-game">
+        <div class="navigator-button arrow-up change-page" entry-type="game">
+            &nbsp;∧&nbsp;
+        </div>
+        {for buttons-left}
+            <div class="navigator-button number-button" button-game-id="nr-{{nr}}">
+                {{nr}}
+            </div>
+        {/for}
+        <div class="navigator-button arrow-down change-page" entry-type="game">
+            &nbsp;∨&nbsp;
+        </div>
+    </div>
+
+    <div class="navigator-column">
+        <div class="navigator-button arrow-top" id="arrow-top">
+            ▲
+        </div>
+    </div>
+
+    <div class="navigator-column" id="navigator-ova">
+        <div class="navigator-button arrow-up change-page" entry-type="ova">
+            &nbsp;∧&nbsp;
+        </div>
+
+        {for buttons-right}
+            <div class="navigator-button number-button" button-ova-id="nr-{{nr}}">
+                    {{nr}}
+            </div>
+        {/for}
+
+        <div class="navigator-button arrow-down change-page" entry-type="ova">
+            &nbsp;∨&nbsp;
+        </div>
+    </div>
+</div>

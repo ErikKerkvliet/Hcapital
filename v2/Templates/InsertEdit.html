@@ -1,0 +1,257 @@
+<div class="edit">
+    {if getPost}
+        <form id='form' name='form' enctype='multipart/form-data' action='?v=2&getPost={{id}}' accept-charset='UTF-8' method='POST'>
+    {/if}
+    {if insertEdit}
+        <form id='form' name='form' enctype='multipart/form-data' action='?action={{action}}' accept-charset='UTF-8' method='POST'>
+    {/if}
+        <div>
+            <input id="entry-id" type="hidden" name="entry-id" entry-id="{{id}}">
+            <div class="row">
+                <div class="description">
+                    Type:
+                </div>
+                <div class="data">
+                    <select id='type' name='type'>
+                        {for types}
+                            <option value='{{value}}' {{selected}}>{{content}}</option>
+                        {/for}
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="description">
+                    Time type:
+                </div>
+                <div class="data">
+                    <select id='time_type' name='time_type'>
+                        {for time_types}
+                            <option value='{{value}}' {{selected}}>{{content}}</option>
+                        {/for}
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Title:
+                </div>
+                <div class="data">
+                    <input type='text' id='title' name='title' value="{{title}}" size="185">
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Romanji:
+                </div>
+                <div class="data">
+                    <input type='text' id='romanji' name='romanji' value="{{romanji}}" size="185">
+                </div>
+            </div>
+            <div>
+                <div class="description link-header">
+                    Developers:
+                </div>
+            </div>
+            {for developers}
+                <div class="component-developer existing-developer">
+                    <div class="description" id="developer-description-{{nr}}">
+                        Developer {{nr}}:
+                    </div>
+                    <div class="data">
+                        <input type='text' class="developers" value="{{name}}"  size="40" disabled>
+                        <div class="remove-developer remove-component-button" developer-id="{{id}}">
+                            X
+                        </div>
+                    </div>
+                </div>
+            {/for}
+            <div>
+                <div id="more_developers"></div>
+                <div class="data">
+                    <div id="add-developer" class="add-button">
+                        Add developer
+                    </div>
+                </div>
+            </div>
+            {if local}
+                <div>
+                    <div class="description">
+                        Cover:
+                    </div>
+                    <div class="data">
+                        <input type='file' id='cover' name='cover'>
+                    </div>
+                </div>
+            {/if}
+            <div>
+                <div class="description">
+                    Released:
+                </div>
+                <div class="data">
+                    <input type='text' id='released' name='released' value="{{released}}" placeholder="yyyy-mm-dd" size="7">
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Size:
+                </div>
+                <div class="data">
+                    <input type='text' id='size' name='size' value="{{size}}" size="7">
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Website:
+                </div>
+                <div class="data">
+                    <input type='text' id='website' name='website' value="{{website}}" size="155">
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Information (Getchu):
+                </div>
+                <div class="data">
+                    <input type='text' id='information' name='information' value="{{information}}" size="155">
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Password:
+                </div>
+                <div class="data">
+                    <input type='text' id='password' name='password' value="{{password}}" size="40">
+                </div>
+            </div>
+            <div>
+                <div class="description link-header">
+                    Relation(s):
+                </div>
+                <div id="relation-info">
+                    <div>The <b>sequel</b> of this entry is ?</div>
+                    <div>The <b>prequel</b> of this entry is ?</div>
+                    <div>This entry <b>includes</b> ?</div>
+                    <div>The <b>pack</b> of this entry is ?</div>
+                    <div>A <b>side story</b> of this entry is ?</div>
+                    <div>The <b>parent story</b> of this entry ?</div>
+                </div>
+                {for relations}
+                    <div>
+                        <div class="description" id="relation-description-{{nr}}">
+                            Relation {{nr}}:
+                        </div>
+                        <div class="data">
+                            <input type='text' class="relations" id='relation-{{nr}}' name='relation-{{nr}}' value="{{title}}" disabled size="100">
+                            <div class="remove-relation remove-component-button"  id="remove-relation-{{nr}}" relation-id="{{id}}">
+                                X
+                            </div>
+                        </div>
+                    </div>
+                {/for}
+                <div id="more-relations"></div>
+                <div class="data">
+                    <div id="add-relation" class="add-button">
+                        Add relation
+                    </div>
+
+                </div>
+            </div>
+            <div>
+                <div class="description link-header">
+                    Links:
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Rapidgator:
+                </div>
+                <div class="data">
+                    <textarea rows='18' class='links-links link-area' name='links-0-links' cols='100'>
+                    </textarea>
+                </div>
+                <input type="hidden" class="rapidgator-links" name="hidden-0-links" value="{{rapidgator}}"/>
+            </div>
+            <div>
+                <div class="description">
+                    Mexashare:
+                </div>
+                <div class="data">
+                    <textarea rows='18' class='links-links link-area' name='links-1-links' cols='100'>
+                    </textarea>
+                </div>
+                <input type="hidden"  class="mexashare-links" name="hidden-1-links" value="{{mexashare}}"/>
+            </div>
+            <div>
+                {for otherLinks}
+                    <div>
+                        <div class="description">
+                            Extra links {{nr}}:
+                        </div>
+                        <div class="description link-header-s">
+                            Comment:
+                        </div>
+                        <div class="data">
+                            <input class="other-links" type='text' name='links-{{nr}}-comment' value="{{comment}}" size="131">
+                            <div class="remove-links remove-component-button"  id="remove-link-{{nr}}">
+                                X
+                            </div>
+                        </div>
+                        <div class="description link-header-s">
+                            Rapidgator:
+                        </div>
+                        <div class="data">
+                            <textarea class='links-links link-area' rows='10' name='links-{{nrUp}}-links' cols='100'>
+                            </textarea>
+                            <input type="hidden"  class="rapidgator-links" name="hidden-{{nrUp}}-links" value="{{rapidgatorLinks}}"/>
+                        </div>
+                        <div class="description link-header-s">
+                            Mexashare:
+                        </div>
+                        <div class="data">
+                            <textarea class="links-links link-area" rows='10' name='links-{{nrUpUp}}-links' cols='100'>
+                                {{mexashareLinks}}
+                            </textarea>
+                            <input type="hidden" class="mexashare-links" name="hidden-{{nrUpUp}}-links" value="{{mexashareLinks}}"/>
+                        </div>
+                    </div>
+                {/for}
+                <div id="more-links"></div>
+                <div class="data">
+                    <div id="add-other" class="add-button">
+                        Add other links
+                    </div>
+                </div>
+            </div>
+            {if local}
+                <div>
+                    <div class="description">
+                        Images:
+                    </div>
+                    <div class="data">
+                        <input type='file' id='images' name='images[]' multiple>
+                    </div>
+                </div>
+            {/if}
+            <div>
+                <div class="submit">
+                    <input id='submit' type='submit' value='Submit'>
+                </div>
+            </div>
+            {if getPost}
+                <div class="data">
+                    <textarea class='links-links link-area' rows='10' name='images' cols='100'>
+                        {{images}}
+                    </textarea>
+                </div>
+            {/if}
+            <div id="images">
+                {for images}
+                    <div class="description">
+                        <input type='text' id='image-{{nr}}' name='image[]' size="40" value="{{image}}">
+                    </div>
+                {/for}
+                <div class="description"></div>
+            </div>
+        </div>
+    </form>
+</div>

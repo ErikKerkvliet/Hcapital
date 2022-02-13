@@ -1,0 +1,78 @@
+{{admin}}
+<div class="admin-button" id="threads">
+    <div>Threads</div>
+</div>
+
+{if local}
+    <div class="admin-button" id="insert">
+        <div>Insert</div>
+    </div>
+{/if}
+{if online}
+    <div class="admin-button" id="import-entry">
+        <div>Import</div>
+    </div>
+{/if}
+{{/admin}}
+<div class="home">
+    <div class="header-style last-added-entries">
+        Last added
+    </div>
+    <div class="last-added">
+        <div class="header-style">
+            Games
+        </div>
+        <div id="last-added-games">
+            <div class="last-added-navigation button-left" entry-type="game">
+                <div class="side-pointer left-side">
+                    ◀
+                </div>
+            </div>
+            <div id="last-games"></div>
+            <div class="last-added-navigation button-right" entry-type="game">
+                <div class="side-pointer right-side">
+                    ◀
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="last-added">
+        <div class="header-style">
+            OVA's
+        </div>
+        <div id="last-added-ovas">
+            <div class="last-added-navigation button-left" entry-type="ova">
+                <div class="side-pointer left-side">
+                    ◀
+                </div>
+            </div>
+            <div id="last-ovas"></div>
+            <div class="last-added-navigation button-right" entry-type="ova">
+                <div class="side-pointer right-side">
+                    ◀
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-style latest-entries">
+        Latest
+    </div>
+
+    <div class="entries-block header-style">
+        <div class="title">
+            Games
+        </div>
+        <div id="latest-games">
+        </div>
+    </div>
+    {{navigator}}
+    <div class="entries-block header-style">
+        <div class="title">
+            OVA's
+        </div>
+        <div id="latest-ovas">
+        </div>
+    </div>
+</div>

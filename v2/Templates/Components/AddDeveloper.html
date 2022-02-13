@@ -1,0 +1,18 @@
+<div class="component-developer new-developer">
+    <div id="description" class="description">
+        Developer:
+    </div>
+    <div class="data">
+        <input class="developers" type='text' name='developer-{{nr}}' size="40">
+        <select id='developer_select_{{nr}}'  class="developer_select" name="developer-select-{{nr}}">
+            {for developerSelect}
+                <option value="{{id}}">
+                    {{name}}
+                </option>
+            {/for}
+        </select>
+        <div class="remove-developer remove-component-button">
+            X
+        </div>
+    </div>
+</div>

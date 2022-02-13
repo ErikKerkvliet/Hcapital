@@ -1,0 +1,31 @@
+<a href="?v=2&cid={{id}}">
+    <div class='list-item'>
+        <div class='list-row'>
+            <div class='list-main-image bg-change'>
+                <div id='tumbnail'>
+                    <img class='tumbnail-img' entry-id="{{id}}" src='{{tumbnail}}' onerror='setImage(this, "s")'/>
+                </div>
+
+                <div class="hoover-img-holder">
+                    <span class="hoover-img" entry-id="{{id}}">
+                        <img class="entry-img" src="{{tumbnail}}"  onerror='setImage(this, "s")'>
+                    </span>
+                </div>
+
+            </div>
+            <div class="list-released bg-change">
+                {{gender}}
+            </div>
+            <div class="list-series">
+                <div class='list-title bg-change'>
+                    {{name}}
+                </div>
+                <div class='list-episodes'>
+                    <div class='list-romanji-title'>
+                        {{romanji}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</a>

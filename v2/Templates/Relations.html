@@ -1,0 +1,29 @@
+<div id="entry-relations">
+    {if series}
+        <div id="same-series">
+            All episodes:
+        </div>
+    {/if}
+    {for relations}
+        <div class="relation-type">
+            {if notSeries}
+                <div id="relation">
+                    {{type}}
+                </div>
+            {/if}
+            <a href="?v=2&id={{id}}">
+                <div class="tumbnail">
+                    <img class="tumbnail-img" entry-id="{{id}}" src="{{cover}}">
+                </div>
+            </a>
+            <div class="hoover-img-holder">
+                <span class="hoover-img" entry-id="{{id}}">
+                    <img class="entry-img" src="{{cover}}">
+                    <div class="entry-title">
+                        {{title}}&nbsp;&nbsp;&nbsp;&nbsp; :  &nbsp;&nbsp;&nbsp;&nbsp;{{released}}
+                    </div>
+                </span>
+            </div>
+        </div>
+    {/for}
+</div>

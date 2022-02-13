@@ -1,0 +1,164 @@
+.edit {
+	display: inline-block;
+	float: left;
+	padding: 0 17px;
+	margin-left: 30px;
+	margin-top: 17px;
+}
+
+.description {
+	font-size:13px;
+	margin-top: 8px;
+	font-weight: bold;
+	text-align: left;
+}
+
+.data {
+	text-align: left;
+	margin-top: 5px;
+	width: 965px;
+}
+
+.add-button {
+	border:1px solid #09191f;
+	background: #9dacb7;
+	box-shadow: 1px 1px 1px #000;
+	border-radius: 2px;
+	padding: 2px 5px;
+	cursor: pointer;
+	margin-bottom: 1px;
+	margin-right: 1px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	width: fit-content;
+	display: inline;
+}
+
+.add-button:hover {
+	background: #637888;
+}
+
+.add-button:active {
+	margin: 0 0 1px 1px;
+	box-shadow: 0 0 0 #000;
+}
+
+#add-other{
+	float: right;
+	margin-right: 143px;
+	width: 92px;
+}
+
+#add-relation{
+	width: 77px;
+	float: left;
+	margin-right: 100%;
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+
+.submit {
+	display: inline-table;
+	text-align: right;
+	width: 826px;
+	margin-bottom: 50px;
+}
+
+#submit-character {
+	display: inline-table;
+	text-align: right;
+	/*margin-bottom: 50px;*/
+}
+
+.link-header {
+	font-size:20px;
+	margin-top: 20px;
+	margin-bottom: 10px;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+.link-header-s {
+	font-size:12px;
+	/*margin-top: -2px;*/
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#developers {
+	height: fit-content;
+}
+
+.developers-div {
+	width: auto;
+	float: left;
+	display: inline-block;
+}
+
+.developer_select {
+	margin-left: 20px;
+}
+
+.double-left {
+	float: left;
+}
+
+.double-right {
+	margin-left:200px;
+}
+
+#character-submit {
+	margin-bottom: 20px;
+}
+
+.remove-developer {
+	margin-left: 10px;
+	display: inline-block;
+	position: absolute;
+	border: 1px solid #09191f;
+	padding: 1px;
+	margin-top: -1px;
+	width: 20px;
+	padding-left: 5px;
+	font-weight: bold;
+	background: #e42c0c;
+	border-radius: 2px;
+	box-shadow: 1px 1px 1px #333;
+	cursor: pointer;
+	color: floralwhite;
+}
+
+.remove-component-button:active {
+	box-shadow: 0 0 0 #333;
+}
+
+.remove-relation, .remove-links {
+	margin-left: 10px;
+	display: inline-block;
+	position: absolute;
+	border: 1px solid #09191f;
+	padding: 1px;
+	margin-top: -1px;
+	width: 20px;
+	padding-left: 5px;
+	font-weight: bold;
+	background: #e42c0c;
+	border-radius: 2px;
+	box-shadow: 1px 1px 1px #333;
+	cursor: pointer;
+	color: floralwhite;
+}
+
+.remove-relation {
+	margin-top: 5px;
+}
+
+#relation-info {
+	text-align: left;
+}
+
+.relation-type {
+	margin-top: 5px;
+}

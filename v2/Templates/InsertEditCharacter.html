@@ -1,0 +1,141 @@
+<div class="edit">
+    <form id='form' enctype='multipart/form-data' action='?action={{action}}' accept-charset='UTF-8' method='POST'>
+        <div>
+            <input id="entry-id" type="hidden" name="entry-id" value="{{entryId}}">
+                <div>
+                    <div class="description">
+                        Name:
+                    </div>
+                    <div class="data">
+                        <input type='text' id='name' name='name' value="{{name}}" size="100">
+                    </div>
+                </div>
+            <div>
+                <div class="description">
+                    Romanji:
+                </div>
+                <div class="data">
+                    <input type='text' id='romanji' name='romanji' value="{{romanji}}" size="100">
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    image:
+                </div>
+                <div class="data">
+                    <input type='file' id='image' name='thumbnail'>
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Age:
+                </div>
+                <div class="data">
+                    <input type='text' id='age' name='age' value="{{age}}" size="3">
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Gender:
+                </div>
+                <div class="data">
+                    <select id="gender-select" name="gender">
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                        <option value="both">Both</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    <div class="double-left">
+                        Height:
+                    </div>
+                    <div class="double-right">
+                        Name: romanji/kanji
+                    </div>
+                </div>
+                <div class="data">
+                    <div class="double-left">
+                        <input type='text' id='height' name='height' value="{{height}}" size="5">
+                    </div>
+                    <div class="double-right">
+                        <input type='text' id='names' name='names' value="" size="100">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    <div class="double-left">
+                        Weight:
+                    </div>
+                    <div class="double-right">
+                        Measurements:
+                    </div>
+                </div>
+                <div class="data">
+                    <div class="double-left">
+                        <input type='text' id='weight' name='weight' value="{{weight}}" size="5">
+                    </div>
+                    <div class="double-right">
+                        <input type='text' id='measurements' name='measurements' value="" size="100">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Bust:
+                </div>
+                <div class="data">
+                    <input type='text' id='bust' name='bust' value="{{bust}}" size="5">
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Cup:
+                </div>
+                <div class="data">
+                    <input type='text' id='cup' name='cup' value="{{cup}}" size="3">
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Hips:
+                </div>
+                <div class="data">
+                    <input type='text' id='hips' name='hips' value="{{hips}}" size="5">
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Waist:
+                </div>
+                <div class="data">
+                    <input type='text' id='waist' name='waist' value="{{waist}}" size="5">
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Images:
+                </div>
+                <div class="data">
+                    <input type='file' id='images' name='images[]' multiple>
+                </div>
+            </div>
+            <div>
+                <div class="submit-character">
+                    <input id='character-submit' type='submit' value='Submit'>
+                </div>
+            </div>
+            {if images}
+                <div id="current-images">
+                    <div class="description">
+                        <input type='text' id='image-{{nr}}' name='image[]' size="40" value="{{image}}">
+                    </div>
+                    <div class="description"></div>
+                </div>
+            {/if}
+        </div>
+    </form>
+</div>

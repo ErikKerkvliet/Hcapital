@@ -1,0 +1,17 @@
+<div class="last-added-box">
+    {for entries}
+    <a href="?v=2&id={{id}}" id="0" class="href">
+        <div class="tumbnail last-added-tumbnail">
+            <img class="tumbnail-img" entry-id="{{id}}" src="{{cover}}">
+        </div>
+    </a>
+        <div class="hoover-img-holder">
+            <span class="hoover-img" entry-id="{{id}}">
+                <img class="entry-img" src="{{cover}}">
+                <div class="entry-title" id="entry-title">
+                    {{title}}&nbsp;&nbsp;&nbsp;&nbsp; :  &nbsp;&nbsp;&nbsp;&nbsp;{{released}}
+                </div>
+            </span>
+        </div>
+    {/for}
+</div>

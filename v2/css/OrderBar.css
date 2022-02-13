@@ -1,0 +1,69 @@
+.order-bar {
+	height: 20px;
+	background: #405062;
+	border-top: 1px solid #17292f;
+	border-bottom: 2px solid #17292f;
+	padding: 0 17px;
+	font-size: 13px;
+	font-weight: bold;
+	color: #d3dce4;
+	margin-top: 26px;
+}
+
+.order-by-released {
+	float: left;
+	margin-left: 50px;
+}
+
+.order-by-title {
+	float: left;
+	margin-left: 370px;
+}
+
+.order-by-romanji {
+	float: left;
+	margin-left: 50px;
+}
+
+.order-by-gender {
+	float: left;
+	margin-left: 150px;
+}
+
+.order-by-name {
+	float: left;
+	margin-left: 250px;
+}
+
+.order-by-romanji-name {
+	float: left;
+	margin-left: 150px;
+}
+
+.order-button {
+	color: #000;
+	float: left;
+	width: 30px;
+	height: 19px;
+	border: 1px solid #17292f;
+	cursor: pointer;
+	border-radius: 1px;
+	box-shadow: 0px 1px 0px #000;
+	background: #6C7F8C;
+	margin-left: 10px;
+	margin-top: -2px;
+	user-select: none;
+}
+
+.order-button:hover {
+	background: #788c9a;
+}
+
+.order-button:active {
+	box-shadow: 0px 0px 0px #000;
+	margin-top: -1px;
+}
+
+.order-button-desc {
+	margin-left: 5px;
+}

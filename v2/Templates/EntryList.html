@@ -1,0 +1,51 @@
+<a org-id="{{id}}" href="?v=2&id={{id}}">
+    <div class='list-item'>
+        <div class='list-row'>
+            <div class='list-main-image bg-change'>
+                <div id='tumbnail'>
+                    <img class='tumbnail-img' entry-id="{{id}}" src='{{cover}}' onerror='setImage(this, "s")'/>
+                </div>
+                {if game}
+                    <div class="hoover-img-holder">
+                        <span class="hoover-img" entry-id="{{id}}">
+                            <img class="entry-img" src="{{cover}}">
+                            <div class="entry-title">
+                                {{title}}&nbsp;&nbsp;&nbsp;&nbsp; :  &nbsp;&nbsp;&nbsp;&nbsp;{{released}}
+                            </div>
+                        </span>
+                    </div>
+                {/if}
+            </div>
+            <div class="list-released bg-change">
+                {{released}}
+            </div>
+            <div class="list-series">
+                <div class='list-title bg-change list-type-{{type}}'>
+                    {{title}}
+                </div>
+                <div class="inner-row">
+                    {if series}
+                        <div class="list-episodes">
+                            {for episodes}
+                                <div class="tumbnail">
+                                    <img class="tumbnail-img small-tumbnail-img" entry-id="{{id}}" src="{{cover}}">
+                                </div>
+                                <div class="hoover-img-holder">
+                                    <span class="hoover-img" entry-id="{{id}}">
+                                        <img class="entry-img" src="{{cover}}">
+                                        <div class="entry-title">
+                                            {{title}}&nbsp;&nbsp;&nbsp;&nbsp; :  &nbsp;&nbsp;&nbsp;&nbsp;{{released}}
+                                        </div>
+                                    </span>
+                                </div>
+                            {/for}
+                        </div>
+                    {/if}
+                    <div class='list-romanji-title'>
+                        {{romanji}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</a>

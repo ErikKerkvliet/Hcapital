@@ -1,0 +1,155 @@
+{{admin}}
+    <div id="downloads">
+        <div id="downloads-text">Downloads: </div>
+        <div id="downloads-amount">{{downloads}}</div>
+    </div>
+
+    {if online}
+    <div>
+        {for sharing_urls}
+        <div>
+            <form id="sharing-url-form-{{nr}}">
+                <input type="hidden" class="sharing-type" value="{{type}}"/>
+                <input type="hidden" class="sharing-entry-id" value="{{entry-id}}"/>
+                <input type="hidden" class="sharing-author" value="{{author}}"/>
+                <textarea form="sharing-url-form-{{nr}}" name="sharing-url-{{nr}}" class="sharing-url" cols="145" rows="4">
+                    {{sharing_url_{{nr}}}}
+                </textarea>
+                <div id="more-sharing-urls"></div>
+                <div thread-id={{id}} class="admin-button save-sharing-url">Save</div>
+                <div class="admin-button open-sharing-url">Open</div>
+                <div thread-id={{id}} class="admin-button add-sharing-url">Add</div>
+                <div thread-id={{id}} class="admin-button delete-sharing-url">Delete</div>
+            </form>
+        </div>
+        {/for}
+    </div>
+    {/if}
+
+    <div class="admin-div-table">
+        <div class="admin-button admin-left-button move-to" id="move-to-inv">
+            <div>Move To Inv</div>
+        </div>
+        <div class="admin-button admin-left-button move-to" id="move-to-new">
+            <div>Move To New</div>
+        </div>
+        <div class="admin-button admin-left-button move-to" id="move-to-old">
+            <div>Move To Old</div>
+        </div>
+        <div class="admin-button admin-left-button move-to" id="move-to-upc">
+            <div>Move To Upc</div>
+        </div>
+        {if online}
+            <div class="admin-button admin-left-button" id="add-char">
+                <div>Add Character</div>
+            </div>
+        {/if}
+    </div>
+    <div class="admin-div-table-right">
+        {if online}
+            <div class="admin-button admin-right-button" id="export-entry-all">
+                <div>Export All</div>
+            </div>
+            <div class="admin-button admin-right-button" id="export-entry">
+                <div>Export</div>
+            </div>
+        {/if}
+        <div class="admin-button admin-right-button" id="edit">
+            <div>Edit</div>
+        </div>
+        <div class="admin-button admin-right-button" id="delete">
+            <div>Delete</div>
+        </div>
+    </div>
+{{/admin}}
+
+<div class="header-style" id="info-title"  data-id="{{id}}" data-type="{{type}}">{{title}}</div>
+
+{if romanji}<div class='header-style' id='info-romanji'>{{romanji}}</div>{/if}
+
+<div id='cover'>
+    <img id='cover_img' src='{{cover}}' onerror='setImage(this, "m")'/>
+</div>
+<br>
+<div class='info-table' id='info-table'>
+    <div class='info-row'>
+        <div class='info-col1'>
+            Released:
+        </div>
+        <div class='info-col2 released-td'>
+            {{released}}
+        </div>
+    </div>
+    <div class='info-row'>
+        <div class='info-col1'>
+            {{developerType}}:
+        </div>
+        <div class='info-col2'>
+            {for developers}
+            {!&nbsp&&nbsp!}
+            <a href='{{url}}'>
+                {{name}}
+            </a>
+            {/for}
+        </div>
+    </div>
+
+
+{if website}
+    <div class='info-row'>
+        <div class='info-col1'>
+            Homepage:
+        </div>
+        <div class='info-col2'>
+            <a href='{{website}}' target='_blank'>
+                {{website}}
+            </a>
+        </div>
+    </div>
+{/if}
+
+{if information}
+    <div class='info-row'>
+        <div class='info-col1'>
+            {{siteType}}
+        </div>
+        <div class='info-col2'>
+            <a href='{{information}}' target='_blank'>
+                {{information}}
+            </a>
+        </div>
+    </div>
+{/if}
+
+{if size}
+    <div class='info-row'>
+        <div class='info-col1'>
+            Size:
+        </div>
+        <div class='info-col2 size-td'>
+            {{size}}
+        </div>
+    </div>
+{/if}
+
+{if password}
+    <div class='info-row' style='display:table-row'>
+        <div class='info-col1' style='font-weight:bold;float:left;width:75px;text-align:left;'>
+            Password:
+        </div>
+        <div class='info-col2' style='float:left;'>
+            {{password}}
+        </div>
+    </div>
+{/if}
+
+</div>
+
+{{images}}
+<br>
+{{characters}}
+<br>
+{{relations}}
+<br>
+{{links}}
+

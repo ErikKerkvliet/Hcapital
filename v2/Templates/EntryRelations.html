@@ -1,0 +1,28 @@
+<div id='relation_div'>
+
+{if series}
+    <div><b>All episodes:</b></div>
+{/if}
+{for relations}
+    <div id='relation'>
+        {if not_series}
+        <b>{{type}}</b>
+        <br>
+        {/if}
+        <a class='entry_link' href='?show=entry&id={{id}}'>
+            <img class='show_img' src='{{cover}}' height='77px' width='77px' style='margin-top:5px; border: 1px #258 solid;'/>
+        </a>
+</div>
+<div id='container'>
+    <div id='hoover-img-holder'>
+        <span>
+            <img class='entry-img' alt='' src='{{cover}}'/>
+            <div id='relation_title'>
+                {{title}}&nbsp;&nbsp;&nbsp;&nbsp; :  &nbsp;&nbsp;&nbsp;&nbsp;{{released}}
+            </div>
+        </span>
+        </div>
+    </div>
+</div>
+{/for}
+<br>

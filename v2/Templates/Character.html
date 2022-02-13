@@ -1,0 +1,123 @@
+<input type="hidden" id="data" data-type="{{listType}}" data-character={{id}}
+       data-by="{{order}}" data-order="{{by}}" data-page="0">
+<div class="character">
+    <div class="char-name header-style">
+        {{name}}
+    </div>
+    <div class="char-romanji header-style">
+        {{romanji}}
+    </div>
+    <div class="char-info">
+        <div class="char-image">
+            <img src="{{tumbnail}}" onerror='setImage(this, "c")'>
+        </div>
+        <div class="char-measurements">
+            <div class="char-measurements-row row-{{rowGender}}">
+                <div class="char-measurements-col-1">
+                    &nbsp;Gender:
+                </div>
+                <div class="char-measurements-col-2">
+                    {{gender}}
+                </div>
+            </div>
+            {if age}
+                <div class="char-measurements-row row-{{rowAge}}">
+                    <div class="char-measurements-col-1">
+                        &nbsp;Age:
+                    </div>
+                    <div class="char-measurements-col-2">
+                        {{age}} years
+                    </div>
+                </div>
+            {/if}
+            {if height}
+                <div class="char-measurements-row row-{{rowHeight}}">
+                    <div class="char-measurements-col-1">
+                        &nbsp;Height:
+                    </div>
+                    <div class="char-measurements-col-2">
+                        {{height}} cm
+                    </div>
+                </div>
+            {/if}
+            {if weight}
+                <div class="char-measurements-row row-{{rowWeight}}">
+                    <div class="char-measurements-col-1">
+                        &nbsp;Weight:
+                    </div>
+                    <div class="char-measurements-col-2">
+                            {{weight}} kg
+                    </div>
+                </div>
+            {/if}
+            {if bust}
+                <div class="char-measurements-row row-{{rowBust}}">
+                    <div class="char-measurements-col-1">
+                        &nbsp;Bust:
+                    </div>
+                    <div class="char-measurements-col-2">
+                            {{bust}}
+                    </div>
+                </div>
+            {/if}
+            {if cup}
+                <div class="char-measurements-row row-{{rowCup}}">
+                    <div class="char-measurements-col-1">
+                        &nbsp;Cup:
+                    </div>
+                    <div class="char-measurements-col-2">
+                            {{cup}}
+                    </div>
+                </div>
+            {/if}
+            {if waist}
+                <div class="char-measurements-row row-{{rowWaist}}">
+                    <div class="char-measurements-col-1">
+                        &nbsp;Waist:
+                    </div>
+                    <div class="char-measurements-col-2">
+                        {{waist}} cm
+                    </div>
+                </div>
+            {/if}
+            {if hips}
+                <div class="char-measurements-row row-{{rowHips}}">
+                    <div class="char-measurements-col-1">
+                        &nbsp;Hips:
+                    </div>
+                    <div class="char-measurements-col-2">
+                        {{hips}} cm
+                    </div>
+                </div>
+            {/if}
+            {for images}
+                <div>
+                    <div class="div_hide" id="char_{{id}}">
+                        <div class="div_img" id="character-hoover-background"  style="display: none;">
+                            <img id="char_img" src="{{image}}"/>
+                            <div class="pop-up-img-close">
+                                X
+                            </div>
+                        </div>
+                        <div class="char_imgs">
+                            <img src="{{image}}"/>
+                        </div>
+                    </div>
+                </div>
+            {/for}
+        </div>
+    </div>
+
+
+    <div class="list-line" id="line"></div>
+
+    <div class="list-type header-style">
+        Games
+    </div>
+    <div class="orderBar">
+        {{orderBar}}
+    </div>
+    <div class="game-list">
+        {{list}}
+    </div>
+</div>

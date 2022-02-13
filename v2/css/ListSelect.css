@@ -1,0 +1,32 @@
+.list-select {
+	padding: 0 17px;
+}
+
+.list-select-buttons {
+	display:inline-block;
+}
+
+.list-select-button {
+	font-size: 25px;
+	border: 2px solid #17292f;
+	background: #596d84;
+	float: left;
+	padding:10px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	width: 155px;
+	box-shadow: 1px 1px 1px #000;
+	user-select: none;
+	margin: 150px 1px 1px 20px;
+}
+
+.list-select-button:hover {
+	background: #607690;
+}
+
+.list-select-button:active {
+	margin: 151px 0  0 21px;
+	background: #53667b;
+	box-shadow: 0 0 0 #000;
+}

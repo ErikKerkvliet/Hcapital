@@ -1,0 +1,16 @@
+{for links}
+    {if comment}
+        <br>
+        <div class="link-comment">
+            <b>{{comment}}</b>
+        </div>
+    {/if}
+
+    <div class="link-host">
+        <b>{{host}}</b>
+    </div>
+
+    <div class="link-button" id="link_{times}">
+        {{buttonText}}
+    </div>
+{/for}

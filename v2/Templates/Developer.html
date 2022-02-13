@@ -1,0 +1,38 @@
+<input type="hidden" id="data" data-type="{{listType}}" data-developer={{id}}
+       data-by="{{order}}" data-order="{{by}}" data-page="0">
+<div class="developer">
+{{admin}}
+    <div class="admin-button admin-right-button" id="remove-developer">
+        <div>Remove</div>
+    </div>
+{{/admin}}
+    <div class="header-style kanji">
+        {{kanji}}
+    </div>
+    <div class="header-style romanji {{hasKanji}}">
+        {{romanji}}
+    </div>
+    {if homepage}
+    <a href="{{homepage}}">
+        <div class="homepage">
+                Homepage
+        </div>
+    </a>
+    {/if}
+    {if relations}
+        <div class="relation-text">
+            Relations:
+        </div>
+        <div class="relations" id="relations">
+            {for relations}
+                <a href="?v=2&did={{url}}">{{developer}}</a>{{comma}}
+            {/for}
+        </div>
+    {/if}
+    <div class="orderBar {{hasRelation}}">
+        {{orderBar}}
+    </div>
+    <div class="game-list" id="list">
+        {{list}}
+    </div>
+</div>

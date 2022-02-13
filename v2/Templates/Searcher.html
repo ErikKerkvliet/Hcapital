@@ -1,0 +1,22 @@
+<div id='search-div'>
+    <div class='search-tabs'>
+        {for tabs}
+            <div class='search-tab {{class}}' data-type='{{type}}'>
+                {{text}}
+            </div>
+        {/for}
+    </div>
+
+    <form id='search-form' accept-charset='UTF-8' method='POST' action=''>
+        <input type='text' name='input' id='search-input' class='text' placeholder="search">
+        <input type='submit' class='search-submit' value='Search'>
+    </form>
+
+    <div class='sort-char' id='all' data-char='all'>ALL</div>
+        {for searchCharacters}
+            <div class='sort-char' data-char="{{char}}">
+                {{char}}
+            </div>
+        {/for}
+    <div class='sort-char' data-char='35'>#</div>
+</div>

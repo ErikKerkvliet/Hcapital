@@ -1,0 +1,21 @@
+<div id="main">
+    <div id="type-selector">
+        {for types}
+            <input id="{{type}}" type="checkbox" value="{{value}}" {{checked}}>
+                <label for="{{type}}">{{type}}</label>
+            </input>
+        {/for}
+    </div>
+    <div id="navigator">
+        <div id="navigator-back">◀</div>
+        <div id="navigator-refresh"><h1>&#x21bb;</h1></div>
+        <!--<div id="navigator-next">◀</div>-->
+    </div>
+    {for entries}
+        <div class="random-entry" id="{times}">
+            <div class="random_entry" id="{{id}}">
+                <img src="/entry_images/entries/{{id}}/cover/_cover_m.jpg" height="190" width="150"/>
+            </div>
+        </div>
+    {/for}
+</div>

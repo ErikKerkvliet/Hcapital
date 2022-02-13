@@ -1,0 +1,56 @@
+<div class='img_block' id='img_block_" . $rows . "' style='width:100%;text-align:center;'>
+    <div class='imgs' id='single_image_rows'>
+        <table>
+            <tr>
+                <td>
+                    <div class='div_hide' id='table_td'>
+                        <div class='div_img' id='div_img' style='display:none;'>
+                            <img id='img' src='{{image}}'/>
+
+                           <div class='arrow-box' id='arrow-previous'>
+                               <div>≪</div>
+                               <div class='arrow-button' id='button-left'/>
+                           </div>
+
+                           <div class='arrow-box' id='arrow-next'>
+                                <div>≫</div>
+                                <div class='arrow-button' id='button-right'/>
+                           </div>
+
+                            <div class="pop-up-img-close">X</div>
+                        </div>
+
+                        <div class='static_img'>
+                            <img class='info_images' src='{{image}}'/>
+                        </div>
+                    </div>
+                </td>
+
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="div_hide" id="table_td">
+    <div class="div_img" id="div_img" style="display:none;">
+        <img id="img" src="{{image}}"/>
+        <div class="arrow-box" id="arrow-previous">
+            <div>
+                ≪
+            </div>
+            <div class="arrow-button" id="button-previous"/>
+        </div>
+        <div class="arrow-box" id="arrow-next">
+            <div>
+                ≫
+            </div>
+            <div class="arrow-button" id="button-next"/>
+        </div>
+        <div class='pop-up-img-close'>
+            X
+        </div>
+    </div>
+    <div class="hoover-image">
+        <img class="info_images" src="{{image}}"/>
+    </div>
+</div>
