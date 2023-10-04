@@ -32,7 +32,7 @@
 
 		/**
 		 * Home constructor.
-		 * @param $character
+		 * @param $page
 		 */
 		public function __construct($page = 0)
 		{

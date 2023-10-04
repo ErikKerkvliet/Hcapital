@@ -68,7 +68,7 @@
 			if ($entry->getType() == 'ova') {
 				/**  Entry @a @b */
 				usort($entryRelations, function ($a, $b) {
-					return $a->getEntry()->getReleased() <=> $b->getEntry()->getReleased();
+					return $a->getEntry()->getTitle() <=> $b->getEntry()->getTitle();
 				});
 			}
 

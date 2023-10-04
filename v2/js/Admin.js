@@ -114,6 +114,15 @@ function adminInitialise(reInitialize = false) {
 		post('?v=2', object)
 	});
 
+
+	$('#download-info').click(function () {
+		let object = {
+			action: 'di',
+		};
+
+		window.location.href = '?v=2&action=di';
+	});
+
 	$('#delete').click(function () {
 		let id = window.location.href.split('=').pop();
 		let object = {
@@ -244,6 +253,21 @@ function adminInitialise(reInitialize = false) {
 	});
 
 	$('.remove-developer').click(function () {
+		if ($(this).attr('developer-id')) {
+			$.ajax({
+				url: 'index.php',
+				type: 'POST',
+				data: {
+					v: 2,
+					action: 'removeEntryDeveloper',
+					entryId: $('#entry-id').attr('entry-id'),
+					developerId: $(this).attr('developer-id'),
+				},
+				dataType: "json",
+			})
+				.done(function (response) {
+				});
+		}
 		$(this).parent().parent().remove();
 
 		adminInitialise();

@@ -1,0 +1,62 @@
+#downloads-page {
+	max-width: 1240px;
+	overflow: hidden;
+	display: inline-table;
+}
+
+#downloads-table {
+	margin-top: 10px;
+	border: 2px solid #6c7f8c;
+	padding: 1px 0;
+}
+
+.downloads-header {
+	padding-left:5px;
+}
+
+.td_1 {
+	text-align: left;
+	padding-left: 5px;
+	width: 50px;
+}
+
+.td_3 {
+	text-align: left;
+	padding-left: 5px;
+	width: 50px;
+}
+
+.td_3 {
+	text-align: left;
+	padding-left: 5px;
+	width: 100px;
+}
+
+.td_4 {
+	text-align: left;
+	padding-left: 5px;
+}
+
+.td_5 {
+	text-align: left;
+	width: 100px;
+	padding-left: 5px;
+}
+
+.td_6 {
+	padding-left: 5px;
+}
+
+.td_7 {
+	width:100px;
+	text-align:center;
+	padding-left: 5px;
+}
+
+.banned_tr {
+	background: #ff4141;
+}
+
+.manual_td {
+	border-top: 2px solid #6c7f8c;
+}

@@ -141,3 +141,7 @@
 	position: absolute;
 	right: 18px;
 }
+
+#download-info {
+	width: 75px;
+}

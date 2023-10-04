@@ -16,6 +16,11 @@
 		CONST TABLE = 'banned';
 
 		/**
+		 * @var string
+		 */
+		CONST BANNED = 'banned';
+
+		/**
 		 * @var int
 		 */
 		protected $id = null;
@@ -33,7 +38,7 @@
 		/**
 		 * @var string
 		 */
-		private $location = '';
+		private $location = null;
 
 		/**
 		 * @return int|null
@@ -84,18 +89,18 @@
 		}
 
 		/**
-		 * @return string
+		 * @return null|string
 		 */
-		public function getLocation(): string
+		public function getLocation(): ?string
 		{
 			return $this->location;
 		}
 
 		/**
-		 * @param string $location
+		 * @param null|string $location
 		 * @return Banned
 		 */
-		public function setLocation(string $location): Banned
+		public function setLocation(?string $location): Banned
 		{
 			$this->location = $location;
 

@@ -68,6 +68,7 @@
 				$entries[] = app('em')->find(Entry::class, $this->entry);
 			}
 
+			$entries = array_reverse($entries);
 			$variables = [];
 			$entriesString = [];
 

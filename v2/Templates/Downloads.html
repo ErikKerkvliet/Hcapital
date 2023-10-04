@@ -1,0 +1,50 @@
+<div id="downloads-page">
+<table id="downloads-table" cellspacing="0" cellpadding="0">
+    <tr id="downloads-header">
+        <th class="downloads-header">Entry</th>
+        <th class="downloads-header">Link</th>
+        <th class="downloads-header">Url</th>
+        <th class="downloads-header">Ip</th>
+        <th class="downloads-header">Time</th>
+    </tr>
+    {for downloads}
+    <tr class="{{tr}}" data-tr={{data_tr}}>
+        <td class="td_1">
+            <a href="?v=2&id={{entryId}}">{{entryId}}</a>
+        </td>
+        <td class="td_2">
+            {{linkId}}
+        </td>
+        <td class="td_3">
+            <a href="{{link}}">{{link}}</a>
+        </td>
+        <td class="td_4">
+            <div>{{ip}}</div>
+        </td>
+        <td class="td_6">
+            <div>{{time}}</div>
+        </td>
+        <td class="td_7">
+            <a>
+                <div class="admin-button ban-ip" data-ban="{{ban}}" data-ip="{{ip}}">
+                    {{ban}} ip
+                </div>
+            </a>
+        </td>
+    </tr>
+    {/for}
+    <tr>
+        <td colspan="3"  class="manual_td"></td>
+        <td class="manual_td" colspan="2">
+            <input name="manual_ip" id="manual_ip">
+        </td>
+        <td class="td_7 manual_td">
+            <a>
+                <div id="manual-ban-ip" class="admin-button" data-ban="{{ban}}" data-ip="{{ip}}">
+                    Ban ip
+                </div>
+            </a>
+        </td>
+    </tr>
+</table>
+</div>

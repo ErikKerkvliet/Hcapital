@@ -68,6 +68,8 @@
 				$content = new ListMain();
 			} else if ($list) {
 				$content = new ListMain();
+			} else if (request('action') == 'di') {
+				$content = new Downloads();
 			} else if (request('getPost')) {
 				if (AdminCheck::checkForAdmin()) {
 					$content = new CreatePostData(request('getPost'));

@@ -43,6 +43,7 @@
 		private $imagePath;
 		private $outputDir;
 		private $cover;
+		private $coverHidden;
 		private $images = [];
 		private $entryId = 0;
 
@@ -65,6 +66,7 @@
 			$this->rapidgatorLinks = requestForSql('rapidgator-links');
 			$this->mexashareLinks = requestForSql('mexashare-links');
 			$this->cover = request('cover');
+			$this->coverHidden = request('cover_hidden');
 			$this->images = request('images');
 			$this->imagePath = '/home/erik/Desktop/img';
 			$this->outputDir = getcwd() . '/entry_images/entries';
@@ -220,6 +222,7 @@
 		{
 			$developer = new Developer();
 			$developer->setName($name);
+			$developer->setType($this->type);
 
 			app('em')->persist($developer);
 
@@ -397,11 +400,18 @@
 					$this->images = array_merge($this->images, ['cg' => $tmpImages]);
 				}
 
-				if ($this->cover['name']) {
-					$cover = [[
-						'name' => $this->cover['name'],
-						'tmp' => $this->cover['tmp_name'],
-					]];
+				if ($this->cover['name'] || $this->coverHidden) {
+					if ($this->coverHidden) {
+						$cover = [[
+							'name' => '_cover_.jpg',
+							'tmp' => '/home/erik/Desktop/img/_cover_.jpg',
+						]];
+					} else {
+						$cover = [[
+							'name' => $this->cover['name'],
+							'tmp' => $this->cover['tmp_name'],
+						]];
+					}
 					$this->images = array_merge(['cover' => $cover], $this->images);
 				}
 

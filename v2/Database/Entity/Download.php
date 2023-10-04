@@ -36,6 +36,11 @@
 		protected $link = null;
 
 		/**
+		 * @var string
+		 */
+		private $comment = null;
+
+		/**
 		 * @var mixed
 		 */
 		private $time;
@@ -110,6 +115,24 @@
 		}
 
 		/**
+		 * @return string
+		 */
+		public function getComment()
+		{
+			return $this->comment;
+		}
+
+		/**
+		 * @param string $comment
+		 */
+		public function setComment($comment)
+		{
+			$this->comment = $comment;
+
+			return $this;
+		}
+
+		/**
 		 * @return mixed
 		 */
 		public function getTime()
@@ -127,6 +150,5 @@
 
 			return $this;
 		}
-
 	}
 ?>

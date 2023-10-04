@@ -10,13 +10,16 @@
 
 	use v2\Classes\AdminCheck;
 	use v2\Classes\CharacterActions;
+	use v2\Classes\Downloads;
 	use v2\Classes\EntryActions;
 	use v2\Classes\LastAdded;
 	use v2\Classes\Latest;
 	use v2\Classes\ListMain;
 	use v2\Classes\Main;
 	use v2\Classes\RandomEntries;
+	use v2\Database\Entity\Banned;
 	use v2\Database\Entity\Developer;
+	use v2\Database\Entity\Download;
 	use v2\Database\Entity\Entry;
 	use v2\Database\Entity\EntryDeveloper;
 	use v2\Database\Entity\EntryRelation;
@@ -118,6 +121,7 @@
 	require_once('Classes/InsertEditCharacter.php');
 	require_once('Classes/Export.php');
 	require_once('Classes/Import.php');
+	require_once('Classes/Downloads.php');
 	require_once('Classes/ImageHandler.php');
 	require_once('Classes/EntryActions.php');
 	require_once('Classes/CharacterActions.php');
@@ -134,7 +138,7 @@
 	{
 		CONST TEST = false;
 
-		CONST CSS_JS_VERSION = 2.31;
+		CONST CSS_JS_VERSION = 2.32;
 
 		CONST TEMPLATE_FOLDER = 'v2/Templates/';
 		CONST COMPONENT_FOLDER = 'v2/Templates/Components/';
@@ -289,6 +293,36 @@ dd($data);
 
 				app('em')->delete($entryDeveloper);
 			}
+			if (request('action') == 'removeEntryDeveloper' && $admin
+				&& ($developerId = request('developerId')) && ($entryId = request('entryId'))
+			) {
+				$entryDeveloperRepository = app('em')->getRepository(EntryDeveloper::class);
+				$entryDeveloper = $entryDeveloperRepository->findOneBy(['entry' => $entryId, 'developer' => $developerId]);
+
+				app('em')->delete($entryDeveloper);
+			}
+			if (request('action') === 'ban' && ($ip = request('ip'))) {
+				$ban = new Banned();
+				$ban->setIp($ip);
+
+				app('em')->flush($ban);
+				echo json_encode([
+					'success' => true,
+				]);
+				die();
+			}
+			if (request('action') === 'unban' && ($ip = request('ip'))) {
+				$bannedRepository = app('em')->getRepository(Banned::class);
+				$banned = $bannedRepository->findBy(['ip' => $ip]);
+
+				foreach($banned as $ban) {
+					app('em')->delete($ban);
+				}
+				echo json_encode([
+					'success' => true,
+				]);
+				die();
+			}
 			if (request('action') == 'random') {
 				$random = new RandomEntries();
 				if (request('refresh') === 'true') {
@@ -328,7 +362,20 @@ dd($data);
 					app('em')->update($entry);
 					app('em')->flush();
 				}
-				$url = AdminCheck::isBanned($entry) ? Link::BANNED_URL : $link->getLink();
+
+				/** @var Download $download */
+				$download = new Download();
+				$download->setEntry($entry->getId());
+				$download->setLink($link->getId());
+				$download->setIp(AdminCheck::get_ip_address());
+
+				if (AdminCheck::isBanned($entry)) {
+					$url = Link::BANNED_URL;
+					$download->setComment(Banned::BANNED);
+				} else {
+					$url = $link->getLink();
+				}
+				app('em')->flush($download);
 
 				echo json_encode([
 					'link' => $url,

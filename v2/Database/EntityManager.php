@@ -144,7 +144,8 @@
 
 			$query = "INSERT INTO " . $entity::TABLE;
 			$query .= " (" . implode(", ", $columns) . ") VALUES (";
-			$endKey = end(array_keys($values));
+			$keys = array_keys($values);
+			$endKey = end($keys);
 
 			foreach ($values as $key => $value) {
 				$query .= is_numeric($value) ? $value :

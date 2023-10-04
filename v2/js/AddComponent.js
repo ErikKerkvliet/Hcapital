@@ -60,6 +60,7 @@ $(document).ready(function () {
 
 					let newHtml = html + response.content;
 					$('#more-relations').html(newHtml);
+					$('#relation-' + length).focus().select();
 				} else {
 					alert('loading component failed');
 				}

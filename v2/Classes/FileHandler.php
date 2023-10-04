@@ -20,7 +20,8 @@
 
 		public function getEntryImages($entryId)
 		{
-			$folderPath = '/var/www/html/entry_images/entries/' . $entryId . '/cg/';
+			$src = AdminCheck::checkForLocal() ? 'Hcapital' : 'html';
+			$folderPath = '/var/www/' . $src . '/entry_images/entries/' . $entryId . '/cg/';
 
 			if (file_exists($folderPath)) {
 				$files = scandir($folderPath);

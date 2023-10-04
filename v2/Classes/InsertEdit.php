@@ -84,6 +84,7 @@
 				$this->placeHolders = [
 					'id' => $this->entry->getId(),
 					'action' => 'edit&id=' . $this->entry->getId(),
+					'cover' => '',
 					'title' => $this->entry->getTitle(),
 					'romanji' => $this->entry->getRomanji(),
 					'released' => $this->entry->getReleased(),
@@ -98,6 +99,7 @@
 				$this->placeHolders = [
 					'id' => 0,
 					'action' => 'insert',
+					'cover' => '_cover_.jpg',
 					'title' => '',
 					'romanji' => '',
 					'released' => '',
@@ -107,7 +109,6 @@
 					'password' => '',
 					'rapidgator' => '',
 					'mexashare' => '',
-
 				];
 			}
 			unset($this->links['Rapidgator']);
@@ -136,8 +137,8 @@
 
 		private function images()
 		{
-			$imageFolderPath = '/var/www/html/entry_images/entries/' . $this->entry->getId() . '/cg/';
-
+			$src = AdminCheck::checkForLocal() ? 'Hcapital' : 'html';
+			$imageFolderPath = '/var/www/' . $src . '/entry_images/entries/' . $this->entry->getId() . '/cg/';
 			$files = scandir($imageFolderPath);
 
 			foreach ($files as $key => $image) {

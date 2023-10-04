@@ -57,8 +57,10 @@
 
 			if (self::checkLogin($ip) ||
 				$ip == '77.167.87.187' ||
+				$ip == '80.60.131.14' ||
+				$ip == '127.0.0.1' ||
 				$ip == '::1' ||
-				(strpos($ip, '2a01:7c8:aabc:2b5') !== false) ||
+				(strpos($ip, '2a02:a442:9a74') !== false) ||
                 file_exists('./check.txt')) {
 				return true;
 			} else {
@@ -77,6 +79,10 @@
 
 		public static function isBanned($entry = null)
 		{
+			if ($_SESSION['banned']) {
+				return true;
+			}
+
 			if (self::checkForAdmin()) {
 				return false;
 			}
@@ -85,6 +91,9 @@
 
 			/** @var BannedRepository $bannedRepository */
 			$bannedRepository = app('em')->getRepository(Banned::class);
+			if ($bannedRepository->findBy(['ip' => $ip])) {
+				return true;
+			}
 
 			if ($entry) {
 				$ctx = stream_context_create(['http' =>
@@ -110,8 +119,6 @@
 				}
 
 				$banned = $bannedRepository->findByIpOrEntryAndLocation($entry, $ip, $location);
-			} else {
-				$banned = $bannedRepository->findBy(['ip' => $ip]);
 			}
 
 			if (count($banned) > 0) {

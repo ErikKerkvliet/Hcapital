@@ -64,6 +64,7 @@ $(document).ready(function () {
 	$('.link-area').bind("paste", function(e){
 		e.preventDefault();
 		let pastedData = e.originalEvent.clipboardData.getData('text');
+		pastedData = pastedData.replace(/\[\/?URL\]/g, '');
 
 		let links = pastedData.split('\n');
 
