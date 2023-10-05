@@ -78,6 +78,26 @@ function adminInitialise(reInitialize = false) {
 		post('?v=2', object);
 	});
 
+	$('#export-links').click(function () {
+		let id = window.location.href.split('=').pop();
+		let object = {
+			EntryAction: 'exportLinks',
+			entryId: id,
+		};
+
+		post('?v=2', object);
+	});
+
+	$('#export-links-all').click(function () {
+		let id = window.location.href.split('=').pop();
+		let object = {
+			EntryAction: 'exportLinksAll',
+			entryId: id,
+		};
+
+		post('?v=2', object);
+	});
+
 	$('#import-entry').click(function () {
 		let object = {
 			EntryAction: 'import',

@@ -109,6 +109,11 @@
 		{
 			$importText = request('importText');
 
+			if (substr($importText, 0, 5) === 'entry') {
+				$this->updateLinks($importText);
+				header('Location: /');
+				die();
+			}
 			$importEntries = explode('|^|', $importText);
 
 			foreach ($importEntries as $importEntry) {
@@ -750,5 +755,35 @@
 				chmod($directory . '/cover', 0777);
 
 			}
+		}
+
+		public function updateLinks($data)
+		{
+			$linksData = explode('|^|', $data);
+			$properties = [];
+
+			$linkRepository = app('em')->getRepository(Link::class);
+			foreach($linksData as $data) {
+				$propertiesData = explode('|?|', $data);
+				$entryId = explode('|!|', $propertiesData[0])[1];
+				foreach ($propertiesData as $propertyData) {
+					$prop = explode('|!|', $propertyData);
+					$properties[$entryId][$prop[0]] = $prop[1];
+				}
+
+				$links = $linkRepository->findBy(['entry' => $entryId]);
+				foreach ($links as $link) {
+					app('em')->delete($link);
+				}
+				foreach ($properties as $property) {
+					$link = new Link();
+					foreach ($property as $key => $prop) {
+						$setFunction = 'set' . ucfirst($key);
+						$link->{$setFunction}($prop);
+					}
+				}
+				app('em')->persist($link);
+			}
+			app('em')->flush();
 		}
 	}

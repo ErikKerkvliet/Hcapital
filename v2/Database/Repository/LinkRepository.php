@@ -74,4 +74,14 @@
 				->where('l.link', 'REGEXP', '"' . $text . '"')
 				->getResult();
 		}
+
+		public function findRapidgatorLinksByEntry($entry)
+		{
+			return $this->select()
+				->from(Link::TABLE, 'l')
+				->where('l.entry_id', '=', $entry->getId())
+				->andWhere('l.link', 'REGEXP', '"rapidgator.net"', '(')
+				->orWhere('l.link', 'REGEXP', '"rg.to"', '', ')')
+				->getResult();
+		}
 	}

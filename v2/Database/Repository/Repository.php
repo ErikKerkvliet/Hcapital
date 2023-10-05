@@ -53,6 +53,26 @@
 
 		/**
 		 * @param $entityClass
+		 * @param $id
+		 * @return mixed
+		 */
+		public function find($entityClass, $entry)
+		{
+			$id = is_numeric($entry) ? $entry : $entry->getId();
+
+			$this->entity = $entityClass;
+
+			$this->includeEntity();
+
+			$this->query = "SELECT * FROM " . $this->entity::TABLE . " WHERE id = " . $id;
+
+			$result = $this->runQuery($this->entity);
+
+			return $result ? $result[0] : [];
+		}
+
+		/**
+		 * @param $entityClass
 		 * @param array $conditions
 		 * @param array $operators
 		 * @param int $limit
@@ -134,5 +154,20 @@
 			}
 			return $this->getResult();
 		}
+
+		/**
+		 * @param $entityClass
+		 */
+		private function includeEntity()
+		{
+			$exploded = explode('\\', $this->entity);
+			$entity = end($exploded);
+
+			$fileName = $GLOBALS['source'] == 'ajax' ? 'Database/Entity/' . $entity . '.php' :
+				'v2/Database/Entity/' . $entity . '.php';
+
+			require_once($fileName);
+		}
+
 	}
 ?>

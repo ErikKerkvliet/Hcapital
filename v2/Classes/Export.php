@@ -30,13 +30,15 @@
 		 */
 		private $entry = null;
 
+		private $multiple;
+
 		private $type = '';
 
-		public function __construct($entry, $type = 'single')
+		public function __construct($entry, $type, $multiple = false)
 		{
-			$this->type = $type;
-
 			$this->entry = $entry;
+			$this->type = $type;
+			$this->multiple = $multiple;
 
 			$file = fopen(\v2\Manager::TEMPLATE_FOLDER . 'Export.html', 'r');
 			$this->content = fread($file, 100000);
@@ -59,44 +61,51 @@
 		private function getExportEntry()
 		{
 			$entries = [];
-			if ($this->type == 'multiple') {
-				/** @var EntryRepository $entryRepository */
-				$entryRepository = app('em')->getRepository(Entry::class);
+			/** @var EntryRepository $entryRepository */
+			$entryRepository = app('em')->getRepository(Entry::class);
 
-				$entries = $entryRepository->findExportEntries($this->entry);
+			if ($this->multiple) {
+				if ($this->type === 'entry') {
+					$entries = $entryRepository->findExportEntries($this->entry);
+					$entries = array_reverse($entries);
+				}
+				if ($this->type === 'link') {
+					$entries = $entryRepository->findByLastEdited($this->entry->getLastEdit());
+				}
 			} else {
-				$entries[] = app('em')->find(Entry::class, $this->entry);
+				$entries[] = $this->entry;
 			}
-
-			$entries = array_reverse($entries);
 			$variables = [];
 			$entriesString = [];
 
 			/** @var Entry $entry */
 			foreach ($entries as $entry) {
 				$this->entry = $entry;
+				if ($this->type === 'link') {
+					$entriesString[] = $this->getRapidgatorLinks() ?: '';
+				} else {
+					$variables[] = 'id|!|' . saveForSql($entry->getId());
+					$variables[] = 'title|!|' . saveForSql($entry->getTitle());
+					$variables[] = 'romanji|!|' . saveForSql($entry->getRomanji());
+					$variables[] = 'released|!|' . saveForSql($entry->getReleased());
+					$variables[] = 'size|!|' . saveForSql($entry->getSize());
+					$variables[] = 'website|!|' . saveForSql($entry->getWebsite());
+					$variables[] = 'information|!|' . saveForSql($entry->getInformation());
+					$variables[] = 'password|!|' . saveForSql($entry->getPassword());
+					$variables[] = 'type|!|' . saveForSql($entry->getType());
+					$variables[] = 'timeType|!|' . saveForSql($entry->getTimeType());
 
-				$variables[] = 'id|!|' . saveForSql($entry->getId());
-				$variables[] = 'title|!|' . saveForSql($entry->getTitle());
-				$variables[] = 'romanji|!|' . saveForSql($entry->getRomanji());
-				$variables[] = 'released|!|' . saveForSql($entry->getReleased());
-				$variables[] = 'size|!|' . saveForSql($entry->getSize());
-				$variables[] = 'website|!|' . saveForSql($entry->getWebsite());
-				$variables[] = 'information|!|' . saveForSql($entry->getInformation());
-				$variables[] = 'password|!|' . saveForSql($entry->getPassword());
-				$variables[] = 'type|!|' . saveForSql($entry->getType());
-				$variables[] = 'timeType|!|' . saveForSql($entry->getTimeType());
+					$entryString = implode('|?|', $variables) . '|-|';
 
-				$entryString = implode('|?|', $variables) . '|-|';
+					$entryString .= $this->getExportDevelopers() ?: '';
+					$entryString .= $this->getExportCharacters() ?: '';
+					$entryString .= $this->getExportLinks() ?: '';
+					$entryString .= $this->getExportRelations() ?: '';
 
-				$entryString .= $this->getExportDevelopers() ?: '';
-				$entryString .= $this->getExportCharacters() ?: '';
-				$entryString .= $this->getExportLinks() ?: '';
-				$entryString .= $this->getExportRelations() ?: '';
+					$entriesString[] = $entryString;
 
-				$entriesString[] = $entryString;
-
-				$variables = [];
+					$variables = [];
+				}
 			}
 
 			return implode('|^|', $entriesString);
@@ -204,5 +213,25 @@
 				$variables[] = $key . '|!|' . $entity->{$method}(true);
 			}
 			return implode('|?|', $variables);
+		}
+
+		private function getRapidgatorLinks()
+		{
+			$linkRepository = app('em')->getRepository(Link::class);
+
+			$links = $linkRepository->findRapidgatorLinksByEntry($this->entry);
+
+			$linkData = [];
+			/** @var Link $link */
+			foreach ($links as $link) {
+				$data = [];
+				$data[] = 'entry|!|' . $link->getEntry(true);
+				$data[] = 'link|!|' . $link->getLink();
+				$data[] = 'part|!|' . $link->getPart();
+				$data[] = 'comment|!|' . $link->getComment();
+
+				$linkData[] = implode('|?|', $data);
+			}
+			return implode('|?|', $linkData);
 		}
 	}

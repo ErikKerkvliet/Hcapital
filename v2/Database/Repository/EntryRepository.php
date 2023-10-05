@@ -454,4 +454,12 @@ class EntryRepository extends Repository
 			->andWhere('e.type', '=', '"' . $type . '"')
 			->getResult();
 	}
+
+	public function findByLastEdited($lastEdited)
+	{
+		return $this->select('e.id')
+			->from(Entry::TABLE, 'e')
+			->where('e.last_edited', '>=', "'" . $lastEdited . "'")
+			->getResult();
+	}
 }

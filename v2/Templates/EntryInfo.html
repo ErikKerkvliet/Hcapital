@@ -47,12 +47,22 @@
     </div>
     <div class="admin-div-table-right">
         {if online}
-            <div class="admin-button admin-right-button" id="export-entry-all">
-                <div>Export All</div>
-            </div>
-            <div class="admin-button admin-right-button" id="export-entry">
+        <div class="admin-button-group">
+            <div class="admin-button admin-right-button export-button" id="export-entry">
                 <div>Export</div>
             </div>
+            <div class="admin-button admin-right-button" id="export-entry-all">
+                <div>All</div>
+            </div>
+        </div>
+        <div class="admin-button-group">
+            <div class="admin-button admin-right-button export-button" id="export-links">
+                <div>Link</div>
+            </div>
+            <div class="admin-button admin-right-button" id="export-links-all">
+                <div>All</div>
+            </div>
+        </div>
         {/if}
         <div class="admin-button admin-right-button" id="edit">
             <div>Edit</div>

@@ -105,12 +105,16 @@
 					$content = new InsertEditCharacter(null, request('entryId'));
 				} else if ($action == 'export') {
 					$entry = app('em')->find(Entry::class, request('entryId'));
-
-					$content = new Export($entry);
+					$content = new Export($entry, 'entry');
 				} else if ($action == 'exportAll') {
 					$entry = app('em')->find(Entry::class, request('entryId'));
-
-					$content = new Export($entry, 'multiple');
+					$content = new Export($entry, 'entry', true);
+				} else if ($action === 'exportLinks') {
+					$entry = app('em')->find(Entry::class, request('entryId'));
+					$content = new Export($entry, 'link');
+				} else if ($action === 'exportLinksAll') {
+					$entry = app('em')->find(Entry::class, request('entryId'));
+					$content = new Export($entry, 'link', true);
 				} else if ($action == 'import') {
 					$content = new Import();
 				} else if ($action == 'importEntry') {
