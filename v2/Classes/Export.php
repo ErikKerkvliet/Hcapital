@@ -64,14 +64,12 @@
 			/** @var EntryRepository $entryRepository */
 			$entryRepository = app('em')->getRepository(Entry::class);
 
-			if ($this->multiple) {
-				if ($this->type === 'entry') {
+			if ($this->type === 'link') {
+				return $this->getRapidgatorLinks();
+			}
+			if ($this->multiple && $this->type === 'entry') {
 					$entries = $entryRepository->findExportEntries($this->entry);
 					$entries = array_reverse($entries);
-				}
-				if ($this->type === 'link') {
-					$entries = $entryRepository->findByLastEdited($this->entry->getLastEdit());
-				}
 			} else {
 				$entries[] = $this->entry;
 			}
@@ -81,31 +79,29 @@
 			/** @var Entry $entry */
 			foreach ($entries as $entry) {
 				$this->entry = $entry;
-				if ($this->type === 'link') {
-					$entriesString[] = $this->getRapidgatorLinks() ?: '';
-				} else {
-					$variables[] = 'id|!|' . saveForSql($entry->getId());
-					$variables[] = 'title|!|' . saveForSql($entry->getTitle());
-					$variables[] = 'romanji|!|' . saveForSql($entry->getRomanji());
-					$variables[] = 'released|!|' . saveForSql($entry->getReleased());
-					$variables[] = 'size|!|' . saveForSql($entry->getSize());
-					$variables[] = 'website|!|' . saveForSql($entry->getWebsite());
-					$variables[] = 'information|!|' . saveForSql($entry->getInformation());
-					$variables[] = 'password|!|' . saveForSql($entry->getPassword());
-					$variables[] = 'type|!|' . saveForSql($entry->getType());
-					$variables[] = 'timeType|!|' . saveForSql($entry->getTimeType());
 
-					$entryString = implode('|?|', $variables) . '|-|';
+				$variables[] = 'id|!|' . saveForSql($entry->getId());
+				$variables[] = 'title|!|' . saveForSql($entry->getTitle());
+				$variables[] = 'romanji|!|' . saveForSql($entry->getRomanji());
+				$variables[] = 'released|!|' . saveForSql($entry->getReleased());
+				$variables[] = 'size|!|' . saveForSql($entry->getSize());
+				$variables[] = 'website|!|' . saveForSql($entry->getWebsite());
+				$variables[] = 'information|!|' . saveForSql($entry->getInformation());
+				$variables[] = 'password|!|' . saveForSql($entry->getPassword());
+				$variables[] = 'type|!|' . saveForSql($entry->getType());
+				$variables[] = 'timeType|!|' . saveForSql($entry->getTimeType());
 
-					$entryString .= $this->getExportDevelopers() ?: '';
-					$entryString .= $this->getExportCharacters() ?: '';
-					$entryString .= $this->getExportLinks() ?: '';
-					$entryString .= $this->getExportRelations() ?: '';
+				$entryString = implode('|?|', $variables) . '|-|';
 
-					$entriesString[] = $entryString;
+				$entryString .= $this->getExportDevelopers() ?: '';
+				$entryString .= $this->getExportCharacters() ?: '';
+				$entryString .= $this->getExportLinks() ?: '';
+				$entryString .= $this->getExportRelations() ?: '';
 
-					$variables = [];
-				}
+				$entriesString[] = $entryString;
+
+				$variables = [];
+
 			}
 
 			return implode('|^|', $entriesString);
@@ -219,7 +215,7 @@
 		{
 			$linkRepository = app('em')->getRepository(Link::class);
 
-			$links = $linkRepository->findRapidgatorLinksByEntry($this->entry);
+			$links = $linkRepository->findRapidgatorLinksByEntry($this->entry, $this->multiple);
 
 			$linkData = [];
 			/** @var Link $link */
@@ -232,6 +228,6 @@
 
 				$linkData[] = implode('|?|', $data);
 			}
-			return implode('|?|', $linkData);
+			return implode('|^|', $linkData);
 		}
 	}

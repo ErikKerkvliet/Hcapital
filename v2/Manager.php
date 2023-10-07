@@ -138,7 +138,7 @@
 	{
 		CONST TEST = false;
 
-		CONST CSS_JS_VERSION = 2.33;
+		CONST CSS_JS_VERSION = 2.35;
 
 		CONST TEMPLATE_FOLDER = 'v2/Templates/';
 		CONST COMPONENT_FOLDER = 'v2/Templates/Components/';
@@ -350,13 +350,38 @@ dd($data);
 					app('em')->delete($link);
 				}
 			}
+			if (request('action') === 'clearDownloads') {
+				$findBy = [];
+				$url = '/?v=2&action=di';
+				if (($date = request('date'))) {
+					$findBy['DATE_FORMAT(time, "%Y-%m-%d")'] = $date;
+				}
+
+				if (($entry = request('entry'))) {
+					$findBy['entry'] = (int) $entry;
+					$url .= '&entry=' . $entry;
+				}
+
+				if (! $findBy && request('all') !== 'true') {
+					header('LOCATION: ' . $url);
+					die();
+				}
+
+				$downloadRepository = app('em')->getRepository(Download::class);
+				$downloads = $downloadRepository->findBy($findBy);
+
+				app('em')->delete($downloads);
+
+				header('LOCATION: ' . $url);
+				die();
+			}
 			if (request('a') == 'link') {
 				$link = app('em')->find(Link::class, request('lid'));
 
 				/** @var Entry $entry */
 				$entry = $link->getEntry();
 
-				if (! AdminCheck::checkForAdmin()) {
+				if (! AdminCheck::checkForAdmin() || AdminCheck::checkForLocal()) {
 					$entry->setDownloads($entry->getDownloads() + 1);
 
 					app('em')->update($entry);

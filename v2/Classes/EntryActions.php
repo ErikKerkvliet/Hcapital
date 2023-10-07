@@ -775,15 +775,15 @@
 				foreach ($links as $link) {
 					app('em')->delete($link);
 				}
+
+				$link = new Link();
 				foreach ($properties as $property) {
-					$link = new Link();
 					foreach ($property as $key => $prop) {
 						$setFunction = 'set' . ucfirst($key);
 						$link->{$setFunction}($prop);
 					}
 				}
-				app('em')->persist($link);
+				app('em')->flush($link);
 			}
-			app('em')->flush();
 		}
 	}

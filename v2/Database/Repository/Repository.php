@@ -87,7 +87,8 @@
 				$key = $this->em->reverseMapFunctionName($originalKey);
 				$condition = is_object($condition) ? $condition->getId() : $condition;
 
-				$this->query .= $comma . $key . "='" . $condition . "'";
+				$condition = is_string($condition) ? "'". $condition ."'" : $condition;
+				$this->query .= $comma . $key . "=" . $condition;
 			}
 
 			$comma = '';

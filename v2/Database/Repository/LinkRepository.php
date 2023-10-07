@@ -75,12 +75,24 @@
 				->getResult();
 		}
 
-		public function findRapidgatorLinksByEntry($entry)
+		public function findRapidgatorLinksByEntry($entry, $multiple = false)
 		{
-			return $this->select()
+			$entryId = $entry->getId();
+
+			$minLink = $this->select('MIN(l.id) AS id')
 				->from(Link::TABLE, 'l')
-				->where('l.entry_id', '=', $entry->getId())
-				->andWhere('l.link', 'REGEXP', '"rapidgator.net"', '(')
+				->where('l.entry_id', '=', $entryId)
+				->getResult()[0];
+
+			$qb = $this->select()
+				->from(Link::TABLE, 'l');
+			if ($multiple) {
+				$qb->where('l.id', '>=', $minLink->getId());
+			} else {
+				$qb->where('l.entry_id', '=', $entryId);
+			}
+
+			return $qb->andWhere('l.link', 'REGEXP', '"rapidgator.net"', '(')
 				->orWhere('l.link', 'REGEXP', '"rg.to"', '', ')')
 				->getResult();
 		}

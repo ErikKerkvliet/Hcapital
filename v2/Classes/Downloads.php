@@ -10,9 +10,9 @@
 	class Downloads extends TextHandler
 	{
 		/**
-		 * @var int
+		 * @var null|int
 		 */
-		private $page = 0;
+		private $entry = null;
 
 		/**
 		 * @var array
@@ -26,9 +26,9 @@
 
 		/**
 		 * Home constructor.
-		 * @param $page
+		 * @param null|int $entry
 		 */
-		public function __construct($page = 0)
+		public function __construct(?int $entry = null)
 		{
 			$file = fopen(Manager::TEMPLATE_FOLDER . 'Downloads.html', 'r');
 			$this->content = fread($file, 10000);
@@ -43,7 +43,7 @@
 				'Downloads',
 			];
 
-			$this->page = $page;
+			$this->entry = $entry;
 		}
 
 		public function buildContent()
@@ -59,7 +59,7 @@
 			$this->getDownloads();
 
 			$this->fors = [
-				'downloads'       => $this->downloads,
+				'downloads' => $this->downloads,
 			];
 			$this->fillIfs();
 			$this->fillFors();
@@ -72,8 +72,14 @@
 			$downloadRepository = app('em')->getRepository(Download::class);
 			$row = 0;
 
+			if ($this->entry) {
+				$downloads = $downloadRepository->findBy(['entry' => $this->entry]);
+			} else {
+				$downloads = $downloadRepository->findAll();
+			}
+
 			/** @var Download $download */
-			foreach($downloadRepository->findAll() as $download) {
+			foreach($downloads as $download) {
 				$dateTime = $download->getTime();
 				$ip = $download->getIp();
 				$isBanned = in_array($download->getIp(), $this->banned);
@@ -83,7 +89,7 @@
 					'data_tr' => 'row-color-' . ($row % 2),
 					'entryId'=> $download->getEntry(true),
 					'linkId' => $download->getLink(true),
-					'link' => $download->getLink()->getLink(),
+					'link' => $download->getLink() ? $download->getLink()->getLink() : '',
 					'comment' => $download->getComment(),
 					'ip' => $ip,
 					'ban' => $isBanned ? 'Unban' : 'Ban',

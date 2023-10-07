@@ -3,7 +3,7 @@
     <tr id="downloads-header">
         <th class="downloads-header">Entry</th>
         <th class="downloads-header">Link</th>
-        <th class="downloads-header">Url</th>
+        <th class="downloads-header" id="download-column-url">Url</th>
         <th class="downloads-header">Ip</th>
         <th class="downloads-header">Time</th>
     </tr>
@@ -34,7 +34,21 @@
     </tr>
     {/for}
     <tr>
-        <td colspan="3"  class="manual_td"></td>
+        <td colspan="2"  class="manual_td"></td>
+        <td class="manual_td">
+            <div id="date-input">
+                <input type="date" id="download-date"/>
+                &nbsp; All <input type="checkbox" id="delete-all">
+            </div>
+
+            <div>
+                <a>
+                    <div id="clear-downloads" class="admin-button">
+                        Clear
+                    </div>
+                </a>
+            </div>
+        </td>
         <td class="manual_td" colspan="2">
             <input name="manual_ip" id="manual_ip">
         </td>

@@ -136,11 +136,30 @@ function adminInitialise(reInitialize = false) {
 
 
 	$('#download-info').click(function () {
-		let object = {
-			action: 'di',
-		};
-
 		window.location.href = '?v=2&action=di';
+	});
+
+	$('#clear-downloads').click(function () {
+		var date = $('#download-date').val();
+		var hasEntry = window.location.href.includes('entry');
+		var deleteAll = document.getElementById('delete-all').checked;
+
+		if (! date && ! deleteAll && ! hasEntry) {
+			alert('No date or entry entered');
+			return;
+		}
+		var url = '/?v=2&action=clearDownloads';
+		if (date) {
+			url += '&date=' + date;
+		}
+		if (deleteAll) {
+			url += '&all=true';
+		}
+		if (hasEntry) {
+			var entryId = window.location.href.split('=').pop();
+			url += '&entry=' + entryId
+		}
+		window.location.href = url;
 	});
 
 	$('#delete').click(function () {

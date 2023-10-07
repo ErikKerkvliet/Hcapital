@@ -184,9 +184,44 @@
 		 */
 		public function delete($entity)
 		{
-			$id = is_int($entity) ? $entity : $entity->getId();
+			$id = null;
+			$ids = [];
+			$table = null;
+			if (is_array($entity)) {
+				$onlyNumbers = true;
+				foreach ($entity as $key) {
+					if (! is_numeric($key)) {
+						$onlyNumbers = false;
+					}
+				}
 
-		    $query = 'DELETE FROM ' . $entity::TABLE . ' WHERE id = ' . $id;
+				if ($onlyNumbers) {
+					return;
+				}
+				$table = $entity[0]::TABLE;
+				foreach ($entity as $item) {
+					$ids[] = $item->getId();
+				}
+			} elseif (is_numeric($entity)) {
+				$id = $entity;
+			} else {
+				$id = $entity->getId();
+			}
+
+			if ($id) {
+				$where = 'id = ' . $id;
+			} elseif ($ids) {
+				$where = 'id in (' . implode(', ', $ids) . ')';
+			} else {
+				return;
+			}
+
+			if (! $table) {
+				$table = $entity::TABLE;
+			}
+
+		    $query = 'DELETE FROM ' . $table . ' WHERE ' . $where;
+
 			$this->queries = [];
 		    $this->queries[] = $query;
 

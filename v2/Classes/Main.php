@@ -69,7 +69,8 @@
 			} else if ($list) {
 				$content = new ListMain();
 			} else if (request('action') == 'di') {
-				$content = new Downloads();
+				$entry = request('entry') ?: null;
+				$content = new Downloads($entry);
 			} else if (request('getPost')) {
 				if (AdminCheck::checkForAdmin()) {
 					$content = new CreatePostData(request('getPost'));
