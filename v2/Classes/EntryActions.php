@@ -760,30 +760,50 @@
 		public function updateLinks($data)
 		{
 			$linksData = explode('|^|', $data);
-			$properties = [];
 
 			$linkRepository = app('em')->getRepository(Link::class);
 			foreach($linksData as $data) {
 				$propertiesData = explode('|?|', $data);
 				$entryId = explode('|!|', $propertiesData[0])[1];
+
+				$links = [];
+				$linkData = [];
 				foreach ($propertiesData as $propertyData) {
 					$prop = explode('|!|', $propertyData);
-					$properties[$entryId][$prop[0]] = $prop[1];
-				}
 
-				$links = $linkRepository->findBy(['entry' => $entryId]);
-				foreach ($links as $link) {
-					app('em')->delete($link);
-				}
+					$linkData[$prop[0]] = $prop[1];
 
-				$link = new Link();
-				foreach ($properties as $property) {
-					foreach ($property as $key => $prop) {
-						$setFunction = 'set' . ucfirst($key);
-						$link->{$setFunction}($prop);
+					if ($prop[0] === 'comment') {
+						$links[] = $linkData;
 					}
 				}
-				app('em')->flush($link);
+				$hosts = $this->getHosts($data);
+
+				foreach ($hosts as $host) {
+					$linkRepository->deleteByHost((int) $entryId, $host);
+				}
+
+				foreach ($links as $linkData) {
+					$link = new Link();
+					foreach ($linkData as $key => $value) {
+						$setFunction = 'set' . ucfirst($key);
+						$link->{$setFunction}($value);
+					}
+					app('em')->flush($link);
+				}
 			}
+		}
+
+		private function getHosts($data)
+		{
+			$hosts = [];
+			if (strpos($data, '//rapidgator') !== false) {
+				$hosts[] = 'rapidgator';
+			}
+			if (strpos($data, '//mexa') !== false) {
+				$hosts[] = '//mexa';
+			}
+
+			return $hosts;
 		}
 	}

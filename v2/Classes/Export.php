@@ -65,7 +65,7 @@
 			$entryRepository = app('em')->getRepository(Entry::class);
 
 			if ($this->type === 'link') {
-				return $this->getRapidgatorLinks();
+				return $this->getLinks();
 			}
 			if ($this->multiple && $this->type === 'entry') {
 					$entries = $entryRepository->findExportEntries($this->entry);
@@ -211,11 +211,36 @@
 			return implode('|?|', $variables);
 		}
 
+		private function getLinks()
+		{
+			return $this->getRapidgatorLinks() . '|?|' . $this->getMexaShareLinks();
+		}
+
 		private function getRapidgatorLinks()
 		{
 			$linkRepository = app('em')->getRepository(Link::class);
 
 			$links = $linkRepository->findRapidgatorLinksByEntry($this->entry, $this->multiple);
+
+			$linkData = [];
+			/** @var Link $link */
+			foreach ($links as $link) {
+				$data = [];
+				$data[] = 'entry|!|' . $link->getEntry(true);
+				$data[] = 'link|!|' . $link->getLink();
+				$data[] = 'part|!|' . $link->getPart();
+				$data[] = 'comment|!|' . $link->getComment();
+
+				$linkData[] = implode('|?|', $data);
+			}
+			return implode('|^|', $linkData);
+		}
+
+		private function getMexaShareLinks()
+		{
+			$linkRepository = app('em')->getRepository(Link::class);
+
+			$links = $linkRepository->findMexaShareLinksByEntry($this->entry, $this->multiple);
 
 			$linkData = [];
 			/** @var Link $link */

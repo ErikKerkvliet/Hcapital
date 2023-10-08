@@ -96,4 +96,33 @@
 				->orWhere('l.link', 'REGEXP', '"rg.to"', '', ')')
 				->getResult();
 		}
+
+		public function findMexaShareLinksByEntry($entry, $multiple = false)
+		{
+			$entryId = $entry->getId();
+
+			$minLink = $this->select('MIN(l.id) AS id')
+				->from(Link::TABLE, 'l')
+				->where('l.entry_id', '=', $entryId)
+				->getResult()[0];
+
+			$qb = $this->select()
+				->from(Link::TABLE, 'l');
+			if ($multiple) {
+				$qb->where('l.id', '>=', $minLink->getId());
+			} else {
+				$qb->where('l.entry_id', '=', $entryId);
+			}
+
+			return $qb->andWhere('l.link', 'REGEXP', '"//mexa"')
+				->getResult();
+		}
+
+		public function deleteByHost(int $entryId, string $host)
+		{
+			$query = 'DELETE FROM entry_links WHERE entry_id = ' . $entryId;
+			$query .= ' AND link REGEXP "' . $host . '";';
+
+			$this->runQuery(null, null, $query);
+		}
 	}
