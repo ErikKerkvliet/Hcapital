@@ -143,13 +143,13 @@
 					]);
 					die();
 				} else if ($action == 'updateSharingUrl') {
-					$thread = app('em')->find(Thread::class, (int) request('threadId'));
+					$thread = app('em')->find(Thread::class, (int)request('threadId'));
 					if (! $thread) {
 						$new = true;
 						$thread = new Thread();
 					}
 
-					$thread->setEntry((int) request('entryId'));
+					$thread->setEntry((int)request('entryId'));
 					$thread->setType(request('type'));
 					$thread->setConfirmed(true);
 					$thread->setAuthor(request('author'));
@@ -163,6 +163,13 @@
 						app('em')->flush();
 					}
 					echo json_encode([
+						'success' => true,
+					]);
+					die();
+				} else if ($action === 'updateThread' && ($entryId = request('entryId'))) {
+					$command = 'python /home/erik/PycharmProjects/CreateThread/source/Main.py update ' . $entryId;
+					echo json_encode([
+						'command' => $command,
 						'success' => true,
 					]);
 					die();

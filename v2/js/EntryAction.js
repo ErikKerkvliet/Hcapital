@@ -103,6 +103,7 @@ $(document).ready(function () {
 		let pastedData = e.originalEvent.clipboardData.getData('text');
 
 		$(this).val(pastedData.replace(/-/g, '/'));
+		$(this).val(pastedData.replace(/\./g, '/'));
 	});
 });
 

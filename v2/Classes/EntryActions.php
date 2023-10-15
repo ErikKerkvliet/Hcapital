@@ -762,6 +762,7 @@
 			$linksData = explode('|^|', $data);
 
 			$linkRepository = app('em')->getRepository(Link::class);
+			$entryIds = [];
 			foreach($linksData as $data) {
 				$propertiesData = explode('|?|', $data);
 				$entryId = explode('|!|', $propertiesData[0])[1];
@@ -777,10 +778,12 @@
 						$links[] = $linkData;
 					}
 				}
-				$hosts = $this->getHosts($data);
-
-				foreach ($hosts as $host) {
-					$linkRepository->deleteByHost((int) $entryId, $host);
+				if (! in_array($entryId, $entryIds)) {
+					$entryIds[] = $entryId;
+					$hosts = $this->getHosts($linksData);
+					foreach ($hosts as $host) {
+						$linkRepository->deleteByHost((int) $entryId, $host);
+					}
 				}
 
 				foreach ($links as $linkData) {

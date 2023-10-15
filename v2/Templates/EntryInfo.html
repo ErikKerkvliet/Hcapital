@@ -10,7 +10,7 @@
     <div>
         {for sharing_urls}
         <div>
-            <form id="sharing-url-form-{{nr}}">
+            <form id="sharing-url-form-{{nr}}" class="sharing-form">
                 <input type="hidden" class="sharing-type" value="{{type}}"/>
                 <input type="hidden" class="sharing-entry-id" value="{{entry-id}}"/>
                 <input type="hidden" class="sharing-author" value="{{author}}"/>
@@ -21,6 +21,7 @@
                 <div thread-id={{id}} class="admin-button save-sharing-url">Save</div>
                 <div class="admin-button open-sharing-url">Open</div>
                 <div thread-id={{id}} class="admin-button add-sharing-url">Add</div>
+                <div thread-id={{id}} class="admin-button" id="update-thread-{{nr}}">Update</div>
                 <div thread-id={{id}} class="admin-button delete-sharing-url">Delete</div>
             </form>
         </div>

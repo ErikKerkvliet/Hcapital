@@ -199,6 +199,22 @@ $(document).ready(function()
 		window.open(url, '_blank');
 	});
 
+	$('#update-thread-0').click(function() {
+		updateThread($(this), 0);
+	});
+
+	$('#update-thread-1').click(function() {
+		updateThread($(this), 1);
+	});
+
+	$('#update-thread-2').click(function() {
+		updateThread($(this), 2);
+	});
+
+	$('#update-thread-3').click(function() {
+		updateThread($(this), 3);
+	});
+
 	$('.delete-sharing-url').click(function() {
 		var $button = $(this);
 		$.ajax({
@@ -251,6 +267,26 @@ function goToUrl(id, mouseClickType)
 				window.open(response.link, '_blank');
 			}
 		}
+	});
+}
+
+function updateThread(parent, threadId)
+{
+	var copyTextareaBtn = document.getElementById('update-thread-' + threadId);
+	var entryId = $('#info-title').attr('data-id');
+
+	copyTextareaBtn.addEventListener('click', function (event) {
+		const el = document.createElement('textarea');
+		el.value = 'python /home/erik/PycharmProjects/CreateThread/source/Main.py update ' + entryId;
+		el.setAttribute('readonly', '');
+		el.style.position = 'absolute';
+		el.style.left = '-9999px';
+		document.body.appendChild(el);
+		el.select();
+		document.execCommand('copy');
+		document.body.removeChild(el);
+
+		parent.css('background', '#38a751')
 	});
 }
 

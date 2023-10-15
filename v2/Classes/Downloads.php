@@ -73,9 +73,9 @@
 			$row = 0;
 
 			if ($this->entry) {
-				$downloads = $downloadRepository->findBy(['entry' => $this->entry]);
+				$downloads = $downloadRepository->findBy(['entry' => $this->entry], ['time' => 'DESC']);
 			} else {
-				$downloads = $downloadRepository->findAll();
+				$downloads = $downloadRepository->findAll(['time', 'DESC']);
 			}
 
 			/** @var Download $download */
