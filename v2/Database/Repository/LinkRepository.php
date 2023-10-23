@@ -114,7 +114,8 @@
 				$qb->where('l.entry_id', '=', $entryId);
 			}
 
-			return $qb->andWhere('l.link', 'REGEXP', '"//mexa"')
+			return $qb->andWhere('l.link', 'REGEXP', '"//mexa"', '(')
+				->orWhere('l.link', 'REGEXP', '"www.mexa"', '', ')')
 				->getResult();
 		}
 

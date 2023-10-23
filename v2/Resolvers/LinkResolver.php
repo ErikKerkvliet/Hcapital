@@ -51,6 +51,8 @@
 
 			$this->setMultipleZeroLinks();
 
+			$this->orderLinksCorrectly($this->links);
+
 			return $this->links;
 		}
 
@@ -101,5 +103,19 @@
 					$link->setPart($nr);
 				}
 			}
+		}
+
+		private function orderLinksCorrectly($linkSet)
+		{
+			foreach ($linkSet as $key => $links) {
+				if ($key !== 'mexashare' && $key !== 'rapidgator') {
+					$this->links[$key] = $this->orderLinksCorrectly($links);
+				}
+			}
+			$keySet = array_keys($linkSet);
+			if ($keySet[0] !== 'rapidgator') {
+				return array_reverse($linkSet);
+			}
+			return $linkSet;
 		}
 	}

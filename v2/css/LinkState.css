@@ -46,6 +46,8 @@ label {
 
 #entries {
 	margin-top: 20px;
+	width: 240px;
+	margin-left: calc(50% - 160px);
 }
 
 #from {
@@ -56,6 +58,16 @@ label {
 	width:50px;
 }
 
-#validate {
+#validate-links {
 	margin-left: 10px;
+	margin-top: -4px;
+	position: absolute;
+}
+
+#spinner {
+	height: 26px;
+	width: 26px;
+	position: absolute;
+	margin-left: 85px;
+	margin-top: -5px;
 }

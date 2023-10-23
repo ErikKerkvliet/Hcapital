@@ -394,19 +394,32 @@ dd($data);
 					$linkRepository = app('em')->getRepository(Link::class);
 					$links = $linkRepository->findById(explode(',', $linkIds));
 					foreach($links as $link) {
-						$link = $link->getLink();
-						$fileIds[] = explode('/', explode('file', $link)[1])[1];
+						$url = $link->getLink();
+						if (strpos($url, 'rapidgator') !== false
+							|| strpos($url, 'rg.to') !== false )
+						{
+							$fileIds[$link->getId()] = explode('/', explode('file', $url)[1])[1];
+						} else {
+							$fileIds[$link->getId()] = null;
+						}
 					}
 				} else {
 					$fileIds = explode(',', $fileIds);
 				}
-
 				$client = new RapidgatorClient($user, $password);
 
 				$states = [];
-				foreach ($fileIds as $id) {
-					$response = $client->getFileDetails($id);
-					$states[] = $id . '-' . ($response->status === 200 ? 'success' : 'fail');
+				foreach ($fileIds as $key => $id) {
+					if (! $id) {
+						$status = 'null';
+					} else {
+						try {
+							$status = $client->getFileDetails($id)->status === 200 ? 'success' : 'fail';
+						} catch (ClientException $e) {
+							$status = 'null';
+						}
+					}
+					$states[] = $key . '-' . $status;
 				}
 
 				echo json_encode($states);

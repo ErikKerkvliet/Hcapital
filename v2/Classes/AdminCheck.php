@@ -79,7 +79,7 @@
 
 		public static function isBanned($entry = null)
 		{
-			if ($_SESSION['banned']) {
+			if (isset($_SESSION['banned']) && $_SESSION['banned']) {
 				return true;
 			}
 

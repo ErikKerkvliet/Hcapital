@@ -1,13 +1,14 @@
 <div id="link-state-page">
     <div id="entries">
-        <form target="">
+        <form id="link-status-form" target="">
             <label>From entry:</label>
             <input type="hidden" name="v" value="2"/>
             <input type="hidden" name="action" value="lv"/>
             <input type="text" name="from" id="from"/>
             <label>To entry:</label>
-           <input type="text" name="to" id="to"/>
-            <input type="submit" value="Validate" id="validate">
+            <input type="text" name="to" id="to"/>
+            <div class="admin-button" id="validate-links">Validate</div>
+            <span><img src="../../images/spinner.gif" id="spinner" style="display:none;"/></span>
         </form>
     </div>
     <table id="downloads-table" cellspacing="0" cellpadding="0">

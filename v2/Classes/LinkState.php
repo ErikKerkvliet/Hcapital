@@ -39,7 +39,7 @@
 			];
 
 			$this->jsFiles = [
-
+				'LinkState'
 			];
 		}
 

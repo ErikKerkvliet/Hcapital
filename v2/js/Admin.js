@@ -237,21 +237,17 @@ function adminInitialise(reInitialize = false) {
 	}
 
 	$('#export-button').click(function () {
-		var copyTextareaBtn = document.getElementById('export-button');
+		const el = document.createElement('textarea');
+		el.value = $('#export-text').html().trim();
+		el.setAttribute('readonly', '');
+		el.style.position = 'absolute';
+		el.style.left = '-9999px';
+		document.body.appendChild(el);
+		el.select();
+		document.execCommand('copy');
+		document.body.removeChild(el);
 
-		copyTextareaBtn.addEventListener('click', function (event) {
-			const el = document.createElement('textarea');
-			el.value = $('#export-text').html().trim();
-			el.setAttribute('readonly', '');
-			el.style.position = 'absolute';
-			el.style.left = '-9999px';
-			document.body.appendChild(el);
-			el.select();
-			document.execCommand('copy');
-			document.body.removeChild(el);
-
-			$(this).css('background', '#38a751')
-		});
+		$(this).css('background', '#38a751')
 	});
 
 	$('#remove-developer').click(function () {
@@ -418,18 +414,9 @@ if (window.location.href.includes('&id=')) {
 		if (! checked && window.pageYOffset > 400) {
 			checked = true;
 			var buttons = document.getElementsByClassName('link-button');
-			var half = 0;
-			if (document.documentElement.outerHTML.includes('Mexashare:')) {
-				half = Math.ceil(buttons.length / 2);
-			} else {
-				half = buttons.length
-			}
 
 			var ids = [];
 			Array.from(buttons).forEach((button, index) => {
-				if (index >= half) {
-					return;
-				}
 				ids.push(button.getAttribute('data-link-id'));
 			});
 
@@ -448,10 +435,12 @@ if (window.location.href.includes('&id=')) {
 			.done(function (response) {
 				items = JSON.parse(response);
 				items.forEach((item, index) => {
-					if (item.includes('fail')) {
-						buttons[index].style.backgroundColor = '#b75555';
-					} else {
-						buttons[index].style.backgroundColor = '#598d59';
+					var split = item.split('-');
+					console.log($('div[data-link-id="' + split[0] + '"]'));
+					if (split[1] === 'success') {
+						$('div[data-link-id="' + split[0] + '"]').css('background', '#598d59');
+					} else if (split[1] === 'fail') {
+						$('div[data-link-id="' + split[0] + '"]').css('background', '#b75555');
 					}
 				})
 			});
