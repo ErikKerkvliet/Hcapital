@@ -1,0 +1,61 @@
+
+#link-state-page {
+	max-width: 1240px;
+	overflow: hidden;
+	display: inline-table;
+}
+
+.success {
+	background: #598d59;
+	border-bottom: 1px solid #3e5565;
+}
+
+.fail {
+	background: #b75555;
+	border-bottom: 1px solid #3e5565;
+}
+
+.admin-button {
+	background: #788c9a;
+}
+td {
+	padding: 0 15px;
+	border-bottom: 1px solid #3e5565;
+}
+
+th {
+	padding: 0 25px;
+	font-size: 14px;
+	border-bottom: 1px solid #3e5565;
+	background: #326e9f;
+}
+
+table {
+	text-align: left;
+	margin-top: 20px;
+	border: 1px solid #3e5565;
+}
+
+label {
+	font-weight: bold;
+}
+
+.td_4 {
+	font-weight: bold;
+}
+
+#entries {
+	margin-top: 20px;
+}
+
+#from {
+	width:50px;
+}
+
+#to {
+	width:50px;
+}
+
+#validate {
+	margin-left: 10px;
+}

@@ -31,6 +31,7 @@
 	use v2\Database\Repository\LinkRepository;
 
 	require_once("Includes.php");
+	require_once("RapidgatorClient.php");
 
 	require_once('Database/QueryHandler.php');
 	require_once('Database/QueryBuilder.php');
@@ -117,11 +118,13 @@
 	require_once('Classes/Components/AddRelation.php');
 	require_once('Classes/Components/AddLink.php');
 	require_once('Classes/Components/AddSharingUrl.php');
+	require_once('Classes/Components/IpData.php');
 	require_once('Classes/InsertEdit.php');
 	require_once('Classes/InsertEditCharacter.php');
 	require_once('Classes/Export.php');
 	require_once('Classes/Import.php');
 	require_once('Classes/Downloads.php');
+	require_once('Classes/LinkState.php');
 	require_once('Classes/ImageHandler.php');
 	require_once('Classes/EntryActions.php');
 	require_once('Classes/CharacterActions.php');
@@ -208,6 +211,11 @@ dd($data);
 					$links = new \AddSharingUrl($nr, $entryId, $threadId, $entryType, $author);
 					$links->buildContent();
 					$content = $links->getContent();
+				} else if (request('type') == 'ipData' && ($ipData = request('ipData'))) {
+					$ipData = new \IpData($ipData);
+					$ipData->buildContent();
+					$content = $ipData->getContent();
+
 				} else {
 					echo json_encode([
 						'success' => false,
@@ -375,13 +383,43 @@ dd($data);
 				header('LOCATION: ' . $url);
 				die();
 			}
+			if (request('action') === 'fileInfo'
+				&& ($user = request('user'))
+				&& ($password = request('password'))
+				&& ($fileIds = request('fileIds'))
+					|| ($linkIds = request('linkIds'))
+			) {
+				if ($linkIds) {
+					$fileIds = [];
+					$linkRepository = app('em')->getRepository(Link::class);
+					$links = $linkRepository->findById(explode(',', $linkIds));
+					foreach($links as $link) {
+						$link = $link->getLink();
+						$fileIds[] = explode('/', explode('file', $link)[1])[1];
+					}
+				} else {
+					$fileIds = explode(',', $fileIds);
+				}
+
+				$client = new RapidgatorClient($user, $password);
+
+				$states = [];
+				foreach ($fileIds as $id) {
+					$response = $client->getFileDetails($id);
+					$states[] = $id . '-' . ($response->status === 200 ? 'success' : 'fail');
+				}
+
+				echo json_encode($states);
+				die();
+			}
 			if (request('a') == 'link') {
 				$link = app('em')->find(Link::class, request('lid'));
 
 				/** @var Entry $entry */
 				$entry = $link->getEntry();
 
-				if (! AdminCheck::checkForAdmin() || AdminCheck::checkForLocal()) {
+				$isAddDownload = ! AdminCheck::checkForAdmin() || AdminCheck::checkForLocal();
+				if ($isAddDownload) {
 					$entry->setDownloads($entry->getDownloads() + 1);
 
 					app('em')->update($entry);
@@ -400,7 +438,9 @@ dd($data);
 				} else {
 					$url = $link->getLink();
 				}
-				app('em')->flush($download);
+				if ($isAddDownload) {
+					app('em')->flush($download);
+				}
 
 				echo json_encode([
 					'link' => $url,

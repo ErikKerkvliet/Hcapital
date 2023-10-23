@@ -71,6 +71,15 @@
 			} else if (request('action') == 'di') {
 				$entry = request('entry') ?: null;
 				$content = new Downloads($entry);
+			} else if (request('action') == 'lv') {
+				if (AdminCheck::checkForAdmin()) {
+					$from = (int) request('from');
+					$to = (int) request('to');
+
+					$content = new LinkState($from, $to);
+				} else {
+					$content = new Home();
+				}
 			} else if (request('getPost')) {
 				if (AdminCheck::checkForAdmin()) {
 					$content = new CreatePostData(request('getPost'));

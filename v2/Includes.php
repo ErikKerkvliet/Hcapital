@@ -13,7 +13,8 @@
 
 		$GLOBALS['EntityManager'] = new v2\Database\EntityManager();
 
-		if(time() - $_SESSION['login_time'] >= 1800){
+		$loginTime = isset($_SESSION['login_time']) ? $_SESSION['login_time'] : 0;
+		if(time() - $loginTime >= 1800){
 			session_destroy();
 			$_SESSION['banned'] = \v2\Classes\AdminCheck::isBanned();
 		} else {

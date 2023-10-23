@@ -139,6 +139,10 @@ function adminInitialise(reInitialize = false) {
 		window.location.href = '?v=2&action=di';
 	});
 
+	$('#validate').click(function() {
+		window.location.href = '?v=2&action=lv'
+	});
+
 	$('#clear-downloads').click(function () {
 		var date = $('#download-date').val();
 		var hasEntry = window.location.href.includes('entry');
@@ -206,6 +210,10 @@ function adminInitialise(reInitialize = false) {
 				}
 			}
 		});
+	});
+
+	$('#wrapper').scroll(function(e) {
+
 	});
 
 	function post(path, params, method = 'post') {
@@ -403,3 +411,50 @@ function logKey(e) {
 }
 
 document.addEventListener('keypress', logKey);
+
+if (window.location.href.includes('&id=')) {
+	var checked = false;
+	document.addEventListener('mousewheel', () => {
+		if (! checked && window.pageYOffset > 400) {
+			checked = true;
+			var buttons = document.getElementsByClassName('link-button');
+			var half = 0;
+			if (document.documentElement.outerHTML.includes('Mexashare:')) {
+				half = Math.ceil(buttons.length / 2);
+			} else {
+				half = buttons.length
+			}
+
+			var ids = [];
+			Array.from(buttons).forEach((button, index) => {
+				if (index >= half) {
+					return;
+				}
+				ids.push(button.getAttribute('data-link-id'));
+			});
+
+			$.ajax({
+				url: 'index.php',
+				type: 'POST',
+				data: {
+					v: 2,
+					action: 'fileInfo',
+					user: 'public.rapidgator@gmail.com',
+					password: '1I^uDckm$d92PEaE*1Z',
+					linkIds: ids.join(','),
+					dataType: "json",
+				}
+			})
+			.done(function (response) {
+				items = JSON.parse(response);
+				items.forEach((item, index) => {
+					if (item.includes('fail')) {
+						buttons[index].style.backgroundColor = '#b75555';
+					} else {
+						buttons[index].style.backgroundColor = '#598d59';
+					}
+				})
+			});
+		}
+	}, {passive: true});
+}

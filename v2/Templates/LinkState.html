@@ -1,0 +1,41 @@
+<div id="link-state-page">
+    <div id="entries">
+        <form target="">
+            <label>From entry:</label>
+            <input type="hidden" name="v" value="2"/>
+            <input type="hidden" name="action" value="lv"/>
+            <input type="text" name="from" id="from"/>
+            <label>To entry:</label>
+           <input type="text" name="to" id="to"/>
+            <input type="submit" value="Validate" id="validate">
+        </form>
+    </div>
+    <table id="downloads-table" cellspacing="0" cellpadding="0">
+        <tr id="downloads-header">
+            <th class="downloads-header">Id</th>
+            <th class="downloads-header">Link</th>
+            <th class="downloads-header">Entry</th>
+            <th class="downloads-header">State</th>
+        </tr>
+        {for links}
+        <tr class="{{tr}} {{status}}">
+            <td class="td_1">
+                {{link}}
+            </td>
+            <td class="td_2">
+                <a href="{{url}}">{{url}}</a>
+            </td>
+            <td class="td_3">
+                <a href="/?v=2&id={{entry}}" target="_blank">
+                    <div class="admin-button" id="entry">
+                        {{entry}}
+                    </div>
+                </a>
+            </td>
+            <td class="td_4">
+                {{status}}
+            </td>
+        </tr>
+        {/for}
+    </table>
+</div>

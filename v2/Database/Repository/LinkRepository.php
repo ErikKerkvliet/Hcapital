@@ -125,4 +125,17 @@
 
 			$this->runQuery(null, null, $query);
 		}
+
+		public function findBetweenEntry($start, $end)
+		{
+			$start = is_int($start) ? $start : $start->getId();
+			$end = is_int($end) ? $end : $end->getId();
+
+			return $this->select()
+				->from(Link::TABLE, 'l')
+				->where('l.entry_id', '>=', $start)
+				->andWhere('l.entry_id', '<=', $end)
+				->orderBy('l.entry_id', 'ASC')
+				->getResult();
+		}
 	}

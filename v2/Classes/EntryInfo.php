@@ -278,17 +278,17 @@
 
 			$threads = [];
 
-			/** @var Thread $entity */
-			foreach ($entities as $nr => $entity) {
-				$url = $entity->getUrl();
+			/** @var Thread $thread */
+			foreach ($entities as $nr => $thread) {
+				$url = $thread->getUrl();
 
 				$key = 'sharing_url_' . $nr;
 				$threads[] = [
-					'id'        => $entity->getId(),
+					'id'        => $thread->getId(),
 					'entry-id'  => $this->entry->getId(),
 					'type'      => $this->entry->getType(),
 					'nr'        => $nr,
-					'author'    => 'yuuichi_sagara',
+					'author'    => $thread->getAuthor(),
 					$key        => $url,
 				];
 			}

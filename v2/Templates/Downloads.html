@@ -1,64 +1,68 @@
 <div id="downloads-page">
-<table id="downloads-table" cellspacing="0" cellpadding="0">
-    <tr id="downloads-header">
-        <th class="downloads-header">Entry</th>
-        <th class="downloads-header">Link</th>
-        <th class="downloads-header" id="download-column-url">Url</th>
-        <th class="downloads-header">Ip</th>
-        <th class="downloads-header">Time</th>
-    </tr>
-    {for downloads}
-    <tr class="{{tr}}" data-tr={{data_tr}}>
-        <td class="td_1">
-            <a href="?v=2&id={{entryId}}">{{entryId}}</a>
-        </td>
-        <td class="td_2">
-            {{linkId}}
-        </td>
-        <td class="td_3">
-            <a href="{{link}}">{{link}}</a>
-        </td>
-        <td class="td_4">
-            <a href="https://ipapi.co/{{ip}}/json" target="_blank">{{ip}}</a>
-        </td>
-        <td class="td_6">
-            <div>{{time}}</div>
-        </td>
-        <td class="td_7">
-            <a>
-                <div class="admin-button ban-ip" data-ban="{{ban}}" data-ip="{{ip}}">
-                    {{ban}} ip
-                </div>
-            </a>
-        </td>
-    </tr>
-    {/for}
-    <tr>
-        <td colspan="2"  class="manual_td"></td>
-        <td class="manual_td">
-            <div id="date-input">
-                <input type="date" id="download-date"/>
-                &nbsp; All <input type="checkbox" id="delete-all">
-            </div>
-
-            <div>
+    <table id="downloads-table" cellspacing="0" cellpadding="0">
+        <tr id="downloads-header">
+            <th class="downloads-header">Entry</th>
+            <th class="downloads-header">Link</th>
+            <th class="downloads-header" id="download-column-url">Url</th>
+            <th class="downloads-header">Ip</th>
+            <th class="downloads-header">Time</th>
+        </tr>
+        {for downloads}
+        <tr class="{{tr}}" data-tr={{data_tr}}>
+            <td class="td_1">
+                <a href="?v=2&id={{entryId}}">{{entryId}}</a>
+            </td>
+            <td class="td_2">
+                {{linkId}}
+            </td>
+            <td class="td_3">
+                <a href="{{link}}">{{link}}</a>
+            </td>
+            <td class="td_4" data-ip="{{ip}}">
+                {{ip}}
+            </td>
+            <td class="td_6">
+                <div>{{time}}</div>
+            </td>
+            <td class="td_7">
                 <a>
-                    <div id="clear-downloads" class="admin-button">
-                        Clear
+                    <div class="admin-button ban-ip" data-ban="{{ban}}" data-ip="{{ip}}">
+                        {{ban}} ip
                     </div>
                 </a>
-            </div>
-        </td>
-        <td class="manual_td" colspan="2">
-            <input name="manual_ip" id="manual_ip">
-        </td>
-        <td class="td_7 manual_td">
-            <a>
-                <div id="manual-ban-ip" class="admin-button" data-ban="{{ban}}" data-ip="{{ip}}">
-                    Ban ip
+            </td>
+        </tr>
+        {/for}
+        <tr>
+            <td colspan="2"  class="manual_td"></td>
+            <td class="manual_td">
+                <div id="date-input">
+                    <input type="date" id="download-date"/>
+                    &nbsp; All <input type="checkbox" id="delete-all">
                 </div>
-            </a>
-        </td>
-    </tr>
-</table>
+
+                <div>
+                    <a>
+                        <div id="clear-downloads" class="admin-button">
+                            Clear
+                        </div>
+                    </a>
+                </div>
+            </td>
+            <td class="manual_td" colspan="2">
+                <input name="manual_ip" id="manual_ip">
+            </td>
+            <td class="td_7 manual_td">
+                <a>
+                    <div id="manual-ban-ip" class="admin-button" data-ban="{{ban}}" data-ip="{{ip}}">
+                        Ban ip
+                    </div>
+                </a>
+            </td>
+        </tr>
+    </table>
+
+    <div id="ip-model" style="display: none;">
+
+    </div>
 </div>
