@@ -1,0 +1,20 @@
+#filter-table {
+	display: inline-block;
+}
+
+#export-text {
+	display: inline-block;
+}
+
+#get-export {
+	Width:80px;
+}
+
+#spinner {
+	height: 26px;
+	width: 26px;
+	position: absolute;
+	margin-left: 85px;
+	margin-top: -5px;
+}
+

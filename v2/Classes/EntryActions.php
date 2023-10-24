@@ -20,6 +20,7 @@
 	use v2\Database\Repository\EntryDeveloperRepository;
 	use v2\Database\Repository\EntryRelationRepository;
 	use v2\Database\Repository\EntryRepository;
+	use v2\Database\Repository\LinkRepository;
 	use v2\Manager;
 
 	class EntryActions
@@ -761,6 +762,7 @@
 		{
 			$linksData = explode('|^|', $data);
 
+			/** @var LinkRepository $linkRepository */
 			$linkRepository = app('em')->getRepository(Link::class);
 			$entryIds = [];
 			foreach($linksData as $data) {
@@ -782,7 +784,12 @@
 					$entryIds[] = $entryId;
 					$hosts = $this->getHosts($linksData);
 					foreach ($hosts as $host) {
-						$linkRepository->deleteByHost((int) $entryId, $host);
+						if ($host == 'mexashare') {
+							$linkRepository->deleteByHost((int) $entryId, '//mexa');
+							$linkRepository->deleteByHost((int) $entryId, 'www.mexa');
+						} else {
+							$linkRepository->deleteByHost((int) $entryId, $host);
+						}
 					}
 				}
 

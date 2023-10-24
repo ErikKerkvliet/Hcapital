@@ -12,6 +12,7 @@
 	use v2\Classes\CharacterActions;
 	use v2\Classes\Downloads;
 	use v2\Classes\EntryActions;
+	use v2\Classes\ExportAdvanced;
 	use v2\Classes\LastAdded;
 	use v2\Classes\Latest;
 	use v2\Classes\ListMain;
@@ -122,6 +123,7 @@
 	require_once('Classes/InsertEdit.php');
 	require_once('Classes/InsertEditCharacter.php');
 	require_once('Classes/Export.php');
+	require_once('Classes/ExportAdvanced.php');
 	require_once('Classes/Import.php');
 	require_once('Classes/Downloads.php');
 	require_once('Classes/LinkState.php');
@@ -425,6 +427,21 @@ dd($data);
 				echo json_encode($states);
 				die();
 			}
+			if (request('action') === 'getExportCode') {
+				$entryIds = explode(',', request('entryIds'));
+				$type = request('type');
+				$all = request('all') === 'true';
+				$from = (int) request('from');
+				$to = (int) request('to');
+
+				$advancedExport = new ExportAdvanced($entryIds, $type, $all, $from, $to);
+				echo json_encode([
+					'success' => true,
+					'exportCode' => $advancedExport->getExportCode(),
+				]);
+				die();
+			}
+
 			if (request('a') == 'link') {
 				$link = app('em')->find(Link::class, request('lid'));
 

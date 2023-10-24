@@ -58,44 +58,14 @@ function adminInitialise(reInitialize = false) {
 		post('?v=2&_id=' + id, object)
 	});
 
-	$('#export-entry').click(function () {
+	$('#export').click(function () {
 		let id = window.location.href.split('=').pop();
 		let object = {
-			EntryAction: 'export',
-			entryId: id,
+			action: 'exportAdvanced',
+			entryIds: id,
 		};
 
 		post('?v=2', object)
-	});
-
-	$('#export-entry-all').click(function () {
-		let id = window.location.href.split('=').pop();
-		let object = {
-			EntryAction: 'exportAll',
-			entryId: id,
-		};
-
-		post('?v=2', object);
-	});
-
-	$('#export-links').click(function () {
-		let id = window.location.href.split('=').pop();
-		let object = {
-			EntryAction: 'exportLinks',
-			entryId: id,
-		};
-
-		post('?v=2', object);
-	});
-
-	$('#export-links-all').click(function () {
-		let id = window.location.href.split('=').pop();
-		let object = {
-			EntryAction: 'exportLinksAll',
-			entryId: id,
-		};
-
-		post('?v=2', object);
 	});
 
 	$('#import-entry').click(function () {

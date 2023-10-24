@@ -8,7 +8,6 @@
 
 	namespace v2\Classes;
 
-
 	use v2\Database\Entity\Entity;
 	use v2\Database\Entity\EntryCharacter;
 	use v2\Database\Entity\Entry;
@@ -25,18 +24,17 @@
 
 	class Export extends TextHandler
 	{
-		/**
-		 * @var null|Entry
-		 */
+		private $entries = [];
+
 		private $entry = null;
 
 		private $multiple;
 
 		private $type = '';
 
-		public function __construct($entry, $type, $multiple = false)
+		public function __construct($entries, $type, $multiple = false)
 		{
-			$this->entry = $entry;
+			$this->entries = $entries;
 			$this->type = $type;
 			$this->multiple = $multiple;
 
@@ -58,20 +56,21 @@
 
 		}
 
-		private function getExportEntry()
+		public function getExportEntry()
 		{
 			$entries = [];
 			/** @var EntryRepository $entryRepository */
 			$entryRepository = app('em')->getRepository(Entry::class);
 
 			if ($this->type === 'link') {
+				$this->entry = $entryRepository->find(Entry::class, $this->entries[0]);
 				return $this->getLinks();
 			}
-			if ($this->multiple && $this->type === 'entry') {
-					$entries = $entryRepository->findExportEntries($this->entry);
+			if (($this->multiple || count($this->entries) > 1) && $this->type === 'entry') {
+					$entries = $entryRepository->findExportEntries($this->entries, $this->multiple);
 					$entries = array_reverse($entries);
 			} else {
-				$entries[] = $this->entry;
+				$entries[] = $entryRepository->find(Entry::class, $this->entries[0]);
 			}
 			$variables = [];
 			$entriesString = [];
@@ -238,6 +237,7 @@
 
 		private function getMexaShareLinks()
 		{
+			/** @var LinkRepository $linkRepository */
 			$linkRepository = app('em')->getRepository(Link::class);
 
 			$links = $linkRepository->findMexaShareLinksByEntry($this->entry, $this->multiple);

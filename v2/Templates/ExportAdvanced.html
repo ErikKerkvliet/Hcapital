@@ -1,0 +1,47 @@
+<div id="export-advanced-page">
+    <div id="entries">
+        <table id="filter-table">
+            <tr>
+                <td>
+                    <label>Entry ids (comma separated):</label>
+                </td>
+                <td>
+                    <input type="text" id="entry-ids" value="{{ids}}">
+                </td>
+                <td>
+                    <div class="admin-button" id="get-export">Get export</div>
+                    <span><img src="../../images/spinner.gif" id="spinner" style="display:none;"/></span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    All above this id
+                    <input type="checkbox" name="all">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <table>
+                        <tr>
+                            <td>
+                                Entry:
+                            </td>
+                            <td>
+                                <input type="radio" name="type" value="entry" checked>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Link:
+                            </td>
+                            <td>
+                                <input type="radio" name="type" value="link">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="export-text"></div>
+</div>

@@ -73,10 +73,17 @@
 				$content = new Downloads($entry);
 			} else if (request('action') == 'lv') {
 				if (AdminCheck::checkForAdmin()) {
-					$from = (int) request('from');
-					$to = (int) request('to');
+					$from = (int)request('from');
+					$to = (int)request('to');
 
 					$content = new LinkState($from, $to);
+				} else {
+					$content = new Home();
+				}
+			} else if (request('action') === 'exportAdvanced') {
+				if (AdminCheck::checkForAdmin()) {
+					$entryIds = explode(',', request('entryIds'));
+					$content = new ExportAdvanced($entryIds);
 				} else {
 					$content = new Home();
 				}

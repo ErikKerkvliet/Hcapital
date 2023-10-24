@@ -22,7 +22,7 @@
 		private $links = [];
 
 		/**
-		 * Home constructor.
+		 * LinkState constructor.
 		 * @param null|int $entry
 		 */
 		public function __construct($from, $to)

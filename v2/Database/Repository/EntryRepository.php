@@ -59,7 +59,7 @@ class EntryRepository extends Repository
 		$type = '',
 		array $orderBy = [],
 		array $limit = [0, 25],
-		string $timeType = ''
+		$timeType = ''
 	)
 	{
 		if ($search == null) {
@@ -375,14 +375,20 @@ class EntryRepository extends Repository
 		return $types;
 	}
 
-	public function findExportEntries($entry)
+	public function findExportEntries($entries, $all = false)
 	{
-		$id = is_int($entry) ? $entry : $entry->getId();
+		$qb = $this->select()
+			->from(Entry::TABLE, 'e');
 
-		return $this->select()
-			->from(Entry::TABLE, 'e')
-			->where('id', '>=', $id)
-			->getResult();
+		if ($all) {
+			$id = $entries[0];
+			$qb->where('e.id', '>=', $id);
+		} else {
+			$ids = implode(',', $entries);
+			$qb->where('e.id', 'IN (', $ids . ')');
+		}
+
+		return $qb->getResult();
 	}
 
 	public function findUpcomingEntries($type, $orderBy, $limit)
