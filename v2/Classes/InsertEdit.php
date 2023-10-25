@@ -137,9 +137,8 @@
 
 		private function images()
 		{
-			$src = AdminCheck::checkForLocal() ? 'Hcapital' : 'html';
-			$imageFolderPath = '/var/www/' . $src . '/entry_images/entries/' . $this->entry->getId() . '/cg/';
-			$files = scandir($imageFolderPath);
+			$imageFolderPath = getcwd() . '/entry_images/entries/' . $this->entry->getId() . '/cg/';
+			$files = scandir($imageFolderPath) ?: [];
 
 			foreach ($files as $key => $image) {
 				if (! is_dir($image)) {

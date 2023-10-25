@@ -37,13 +37,6 @@
 			$this->entries = $entries;
 			$this->type = $type;
 			$this->multiple = $multiple;
-
-			$file = fopen(\v2\Manager::TEMPLATE_FOLDER . 'Export.html', 'r');
-			$this->content = fread($file, 100000);
-
-			$this->cssFiles = [];
-
-			$this->jsFiles = [];
 		}
 
 		public function buildContent()

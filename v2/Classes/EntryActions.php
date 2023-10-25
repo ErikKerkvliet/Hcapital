@@ -787,6 +787,7 @@
 						if ($host == 'mexashare') {
 							$linkRepository->deleteByHost((int) $entryId, '//mexa');
 							$linkRepository->deleteByHost((int) $entryId, 'www.mexa');
+							$linkRepository->deleteByHost((int) $entryId, 'mx-sh');
 						} else {
 							$linkRepository->deleteByHost((int) $entryId, $host);
 						}
@@ -810,8 +811,11 @@
 			if (strpos($data, '//rapidgator') !== false) {
 				$hosts[] = 'rapidgator';
 			}
-			if (strpos($data, '//mexa') !== false) {
-				$hosts[] = '//mexa';
+			if (strpos($data, '//mexa') !== false
+				|| strpos($data, 'www.mexa') !== false
+				|| strpos($data, 'mx-sh') !== false
+			) {
+				$hosts[] = 'mexashare';
 			}
 
 			return $hosts;

@@ -115,7 +115,8 @@
 			}
 
 			return $qb->andWhere('l.link', 'REGEXP', '"//mexa"', '(')
-				->orWhere('l.link', 'REGEXP', '"www.mexa"', '', ')')
+				->orWhere('l.link', 'REGEXP', '"www.mexa"')
+				->orWhere('l.link', 'REGEXP', '"sh.net"', '', ')')
 				->getResult();
 		}
 

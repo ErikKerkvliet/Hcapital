@@ -1,4 +1,5 @@
 $(document).ready(function() {
+	$('#switch_source').attr('url', $('#switch_source').attr('url') + '&EntryAction=import');
 	$('#get-export').click(() => {
 		$('#spinner').css('display', 'unset');
 		$.ajax({
