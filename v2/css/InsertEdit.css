@@ -162,3 +162,23 @@
 .relation-type {
 	margin-top: 5px;
 }
+
+#title {
+	min-width: 1150px;
+	max-width: 1150px;
+}
+
+#romanji {
+	min-width: 1150px;
+	max-width: 1150px;
+}
+
+#website {
+	min-width: 1150px;
+	max-width: 1150px;
+}
+
+#information {
+	min-width: 1150px;
+	max-width: 1150px;
+}

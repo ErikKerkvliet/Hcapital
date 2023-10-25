@@ -113,7 +113,7 @@
 				}
 			}
 			$keySet = array_keys($linkSet);
-			if ($keySet[0] !== 'rapidgator') {
+			if ($linkSet && $keySet[0] !== 'rapidgator') {
 				return array_reverse($linkSet);
 			}
 			return $linkSet;

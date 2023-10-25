@@ -92,8 +92,12 @@
 					'website' => $this->entry->getWebsite(),
 					'information' => $this->entry->getInformation(),
 					'password' => $this->entry->getPassword(),
-					'rapidgator' => implode('splitter', $this->links['Rapidgator']['Rapidgator']),
-					'mexashare' => implode('splitter', $this->links['Mexashare']['Mexashare']),
+					'rapidgator' => isset($this->links['Rapidgator'])
+						? implode('splitter', $this->links['Rapidgator']['Rapidgator'])
+					: '',
+					'mexashare' => isset($this->links['Mexashare'])
+						? implode('splitter', $this->links['Mexashare']['Mexashare'])
+						: '',
 				];
 			} else {
 				$this->placeHolders = [
