@@ -1,11 +1,7 @@
 {{admin}}
-    <div id="downloads">
-        <div id="downloads-text">
-            <a href="/?v=2&action=di&entry={{id}}">Downloads: </a>
-        </div>
-        <div id="downloads-amount">{{downloads}}</div>
+    <div class="admin-button" id="downloads-div">
+        <div id="downloads-amount">Downloads: {{downloads}}</div>
     </div>
-
     {if online}
     <div>
         {for sharing_urls}

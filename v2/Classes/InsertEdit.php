@@ -314,8 +314,12 @@
 					'nrUp'    => ($nr * 2),
 					'nrUpUp'  => ($nr * 2) + 1,
 					'comment'   => $key,
-					'rapidgatorLinks' => implode('splitter', $links['Rapidgator']),
-					'mexashareLinks' => implode('splitter', $links['Mexashare']),
+					'rapidgatorLinks' => isset($links['Rapidgator']) ?
+						implode('splitter', $links['Rapidgator'])
+					: '',
+					'mexashareLinks' => isset($links['Mexashare']) ?
+						implode('splitter', $links['Mexashare'])
+					: '',
 				];
 				$nr++;
 				return $arr;

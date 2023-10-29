@@ -3,6 +3,7 @@ var isMobile;
 
 $(document).ready(function()
 {
+	let entryId = $('#info-title').attr('data-id');
 	let imageCount = $('.image-table').find('td').length;
 	let singleRowCount = $('#single').find('td').length;
 
@@ -159,7 +160,6 @@ $(document).ready(function()
 	});
 
 	$('.char-edit').click(function() {
-		let entryId = $('#info-title').attr('data-id');
 		let charId = $(this).attr('char-id');
 
 		window.location.href = '/?v=2&id=' + entryId + '&_cid=' + charId;
@@ -228,6 +228,10 @@ $(document).ready(function()
 			dataType: "json",
 		});
 		$button.parent().find('.sharing-url').first().val('');
+	});
+
+	$('#downloads-div').click(() => {
+		window.location.href = '/?v=2&action=di&entry=' + entryId;
 	});
 });
 
