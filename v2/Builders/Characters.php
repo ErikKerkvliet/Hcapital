@@ -42,6 +42,8 @@
 
 		private $template = '';
 
+		private $originalTemplate = '';
+
 		protected $entry = null;
 
 		protected $html = '';

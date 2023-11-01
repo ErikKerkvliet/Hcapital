@@ -1,4 +1,4 @@
-<div id="full_char_div">
+<div id="full_char_div" character-box="{{id}}">
     <div id="char_table">
         <a href="?v=2&cid={{id}}">
             <div class="char_cell" id="char_img">
@@ -7,6 +7,7 @@
         </a>
         {{admin}}
             <div class="admin-button char-edit" char-id="{{id}}">Edit</div>
+            <div class="admin-button char-delete" char-id="{{id}}">Delete</div>
         {{/admin}}
         <div class="char_cell" id="char_details">
             <div id="char_name">

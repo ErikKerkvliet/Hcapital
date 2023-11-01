@@ -19,13 +19,16 @@
 	use v2\Classes\Main;
 	use v2\Classes\RandomEntries;
 	use v2\Database\Entity\Banned;
+	use v2\Database\Entity\Character;
 	use v2\Database\Entity\Developer;
 	use v2\Database\Entity\Download;
 	use v2\Database\Entity\Entry;
+	use v2\Database\Entity\EntryCharacter;
 	use v2\Database\Entity\EntryDeveloper;
 	use v2\Database\Entity\EntryRelation;
 	use v2\Database\Entity\Link;
 	use v2\Database\Entity\Thread;
+	use v2\Database\Repository\EntryCharacterRepository;
 	use v2\Database\Repository\EntryDeveloperRepository;
 	use v2\Database\Repository\EntryRelationRepository;
 	use v2\Database\Repository\EntryRepository;
@@ -246,6 +249,25 @@ dd($data);
 				$characterAction = new CharacterActions(false, request('cid'));
 
 				header('Location: ' . $_SESSION['referrer'] . '?v=2&id=' . request('id'));
+			}
+			if (request('action') == 'deleteCharacter' && $admin) {
+				$entryId = request('entry');
+				$characterId = request('character');
+
+				$character = app('em')->find(Character::class, $characterId);
+
+				/** @var EntryCharacterRepository $entryCharacterRepository */
+				$entryCharacterRepository = app('em')->getRepository(EntryCharacter::class);
+				$entryCharacter = $entryCharacterRepository
+					->findOneBy(['entry_id' => $entryId, 'character_id' => $characterId]);
+
+				app('em')->delete($character);
+				app('em')->delete($entryCharacter);
+
+				echo json_encode([
+					'success' => true,
+				]);
+				die();
 			}
 			if (request('action') == 'removeDeveloper') {
 				$developer = app('em')->find(Developer::class, request('developerId'));

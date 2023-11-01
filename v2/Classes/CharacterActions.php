@@ -14,6 +14,8 @@
 
 	class CharacterActions
 	{
+		const CHARACTER = 'character';
+
 		private $imageHandler = null;
 
 		private $entry = null;
@@ -52,6 +54,7 @@
 				$this->character = new Character();
 				$this->entry = app('em')->find(Entry::class, $id);
 			} else {
+				$this->characterId = $id;
 				$this->character = app('em')->find(Character::class, $id);
 			}
 
@@ -186,7 +189,7 @@
 					]];
 				}
 				$this->images = array_merge(['img' => $thumbnail], $this->images);
-				$this->imageHandler->manipulate($this->characterId, $this->images, $this->type);
+				$this->imageHandler->manipulate($this->characterId, $this->images, self::CHARACTER);
 			}
 
 			header('Location: ?v=2&id=' . $this->entry->getId());
@@ -199,13 +202,21 @@
 
 			if (AdminCheck::checkForLocal()) {
 				if ($this->thumbnail['name']) {
-					$thumbnail = [[
-						'name' => $this->thumbnail['name'],
-						'tmp' => $this->thumbnail['tmp_name'],
-					]];
+					if ($this->thumbnail['name']) {
+						$thumbnail = [[
+							'name' => $this->thumbnail['name'],
+							'tmp' => $this->thumbnail['tmp_name'],
+						]];
+
+					} else {
+						$thumbnail = [[
+							'name' => '__img.jpg',
+							'tmp' => '/home/erik/Desktop/img/__img.jpg',
+						]];
+					}
 
 					$this->images = ['img' => $thumbnail];
-					$this->imageHandler->manipulate($this->characterId, $this->images, $this->type);
+					$this->imageHandler->manipulate($this->characterId, $this->images, self::CHARACTER);
 				}
 			}
 		}

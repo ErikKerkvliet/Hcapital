@@ -63,11 +63,15 @@ class EntryRepository extends Repository
 	)
 	{
 		if ($search == null) {
-			return $this->select()
+			$this->select()
 				->from(Entry::TABLE, 'e')
-				->where('type', '=', "'" . $type . "'")
-				->orderBy($orderBy[0], $orderBy[1])
-				->limit($limit[0], $limit[1])
+				->where('type', '=', "'" . $type . "'");
+
+			if ($orderBy) {
+				$this->orderBy($orderBy[0], $orderBy[1]);
+			}
+			
+			return $this->limit($limit[0], $limit[1])
 				->getResult();
 		}
 //			$search = $this->validateForQuery($search);

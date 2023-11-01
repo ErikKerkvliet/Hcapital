@@ -89,6 +89,13 @@
 .char-edit{
 	margin-bottom:1px !important;
 	margin-left:1px !important;
+	width: 60px !important;
+}
+
+.char-delete {
+	margin-bottom:1px !important;
+	margin-left:1px !important;
+	width: 60px !important;
 }
 
 .measurement-col1 {

@@ -165,6 +165,27 @@ $(document).ready(function()
 		window.location.href = '/?v=2&id=' + entryId + '&_cid=' + charId;
 	});
 
+	$('.char-delete').click(function() {
+		let charId = $(this).attr('char-id');
+
+		$.ajax({
+			url: 'index.php',
+			type: 'POST',
+			data: {
+				v: 2,
+				action: 'deleteCharacter',
+				entry: entryId,
+				character: charId,
+			},
+			dataType: "json",
+		})
+		.done(function(response) {
+			if (response.success) {
+				$('div[character-box="' + charId + '"]').remove();
+			}
+		});
+	});
+
 	$('.save-sharing-url').click(function() {
 		var $parent = $(this).parent();
 		$.ajax({
