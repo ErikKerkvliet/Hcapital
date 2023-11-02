@@ -8,6 +8,7 @@ a:hover {
 
 .developer {
 	padding: 0 17px;
+	display: inline-grid;
 }
 
 .kanji {

@@ -104,6 +104,10 @@
 				$character = app('em')->find(Character::class, $cid);
 
 				$content = new InsertEditCharacter($character, request('id'));
+			} else if (($did = request('_did')) && AdminCheck::checkForAdmin()) {
+				$developer = app('em')->find(Developer::class, $did);
+
+				$content = new InsertEditDeveloper($developer);
 			} else if (request('random') === 'true') {
 				$content = new RandomEntries();
 			} else if ($action = request('EntryAction')) {

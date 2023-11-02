@@ -1,0 +1,48 @@
+<div id="developer-actions">
+    <form id='form' enctype='multipart/form-data' action='?action={{action}}' accept-charset='UTF-8' method='POST'>
+        <div>
+            <input id="developer-id" type="hidden" name="developer-id" value="{{id}}">
+            <div>
+                <div class="description">
+                    Name:
+                </div>
+                <div class="data">
+                    <input type='text' id='name' name='name' value="{{name}}" size="50">
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Kanji:
+                </div>
+                <div class="data">
+                    <input type='text' id='kanji' name='kanji' value="{{kanji}}" size="50">
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Homepage:
+                </div>
+                <div class="data">
+                    <input type='text' id='homepage' name='homepage' value="{{homepage}}" size="75">
+                </div>
+            </div>
+            <div>
+                <div class="description">
+                    Type:
+                </div>
+                <div class="data">
+                    <select id="type-select" name="type">
+                        <option value="game">Game</option>
+                        <option value="ova">OVA</option>
+                        <option value="3d">3D</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <div class="submit-developer">
+                    <input id='developer-submit' type='submit' value='Submit'>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

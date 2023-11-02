@@ -2,8 +2,9 @@
        data-by="{{order}}" data-order="{{by}}" data-page="0">
 <div class="developer">
 {{admin}}
-    <div class="admin-button admin-right-button" id="remove-developer">
-        <div>Remove</div>
+    <div style="float:right;" class="admin-buttons">
+        <div class="admin-button admin-right-button" id="delete-developer" dev-id="{{id}}">Delete</div>
+        <div class="admin-button admin-right-button" id="edit-developer" dev-id="{{id}}">Edit</div>
     </div>
 {{/admin}}
     <div class="header-style kanji">

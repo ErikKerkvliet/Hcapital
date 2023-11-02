@@ -10,6 +10,7 @@
 
 	use v2\Classes\AdminCheck;
 	use v2\Classes\CharacterActions;
+	use v2\Classes\DeveloperActions;
 	use v2\Classes\Downloads;
 	use v2\Classes\EntryActions;
 	use v2\Classes\ExportAdvanced;
@@ -125,6 +126,7 @@
 	require_once('Classes/Components/IpData.php');
 	require_once('Classes/InsertEdit.php');
 	require_once('Classes/InsertEditCharacter.php');
+	require_once('Classes/InsertEditDeveloper.php');
 	require_once('Classes/Export.php');
 	require_once('Classes/ExportAdvanced.php');
 	require_once('Classes/Import.php');
@@ -133,6 +135,7 @@
 	require_once('Classes/ImageHandler.php');
 	require_once('Classes/EntryActions.php');
 	require_once('Classes/CharacterActions.php');
+	require_once('Classes/DeveloperActions.php');
 	require_once('Classes/CreatePostData.php');
 	require_once('Classes/Threads.php');
 	require_once('Resolvers/LinkResolver.php');
@@ -242,6 +245,14 @@ dd($data);
 				$entryAction = new EntryActions(false, request('id'));
 				$entryAction->doAction('update');
 			}
+			if (request('action') == 'insertDeveloper' && $admin) {
+				new DeveloperActions(true);
+			}
+			if (request('action') == 'editDeveloper' && $admin) {
+				new DeveloperActions(false, request('developer-id'));
+
+				header('Location: ' . $_SESSION['referrer'] . '?v=2&did=' . request('did'));
+			}
 			if (request('action') == 'insertCharacter' && $admin) {
 				$characterAction = new CharacterActions(true, request('entry-id'));
 			}
@@ -258,11 +269,22 @@ dd($data);
 
 				/** @var EntryCharacterRepository $entryCharacterRepository */
 				$entryCharacterRepository = app('em')->getRepository(EntryCharacter::class);
-				$entryCharacter = $entryCharacterRepository
-					->findOneBy(['entry_id' => $entryId, 'character_id' => $characterId]);
+
+				$findBy = [
+					'character_id' => $characterId,
+				];
+
+				if (($entry = request('entry'))) {
+					$findBy['entry_id'] = $entry;
+				}
+
+				$entryCharacters = $entryCharacterRepository
+					->findBy(['entry_id' => $entryId, 'character_id' => $characterId]);
 
 				app('em')->delete($character);
-				app('em')->delete($entryCharacter);
+				foreach ($entryCharacters as $entryCharacter) {
+					app('em')->delete($entryCharacter);
+				}
 
 				echo json_encode([
 					'success' => true,

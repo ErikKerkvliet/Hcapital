@@ -220,10 +220,16 @@ function adminInitialise(reInitialize = false) {
 		$(this).css('background', '#38a751')
 	});
 
-	$('#remove-developer').click(function () {
+	$('#edit-developer').click(() => {
+		let developerId = $('#data').attr('data-developer');
+		window.location.href = '/?v=2&_did=' + developerId;
+	});
+
+	$('#delete-developer').click(function () {
 		if (!confirm('Are you sure you want to fully delete this developer?')) {
 			return;
 		}
+
 		let developerId = $('#data').attr('data-developer');
 
 		$.ajax({

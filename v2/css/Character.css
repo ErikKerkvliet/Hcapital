@@ -66,3 +66,8 @@
 .row-1 {
 	background: #6c7f8c;
 }
+
+.admin-buttons {
+	float: right;
+	margin-top: -20px;
+}

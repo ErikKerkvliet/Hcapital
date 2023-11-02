@@ -1,6 +1,12 @@
 <input type="hidden" id="data" data-type="{{listType}}" data-character={{id}}
        data-by="{{order}}" data-order="{{by}}" data-page="0">
 <div class="character">
+    {{admin}}
+    <div style="float:right;" class="admin-buttons">
+        <div class="admin-button admin-right-button delete-char" char-id="{{id}}">Delete</div>
+        <div class="admin-button admin-right-button edit-char" char-id="{{id}}">Edit</div>
+    </div>
+    {{/admin}}
     <div class="char-name header-style">
         {{name}}
     </div>

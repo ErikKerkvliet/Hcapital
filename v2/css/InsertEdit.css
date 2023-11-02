@@ -182,3 +182,11 @@
 	min-width: 1150px;
 	max-width: 1150px;
 }
+
+#homepage {
+
+}
+
+#developer-actions {
+	display: inline-flex;
+}
