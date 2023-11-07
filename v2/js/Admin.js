@@ -182,10 +182,6 @@ function adminInitialise(reInitialize = false) {
 		});
 	});
 
-	$('#wrapper').scroll(function(e) {
-
-	});
-
 	function post(path, params, method = 'post') {
 		const form = document.createElement('form');
 		form.method = method;
@@ -319,6 +315,8 @@ function adminInitialise(reInitialize = false) {
 	if (reInitialize === true) {
 		$('.save-sharing-url').click(function () {
 			var $parent = $(this).parent();
+			alert(2)
+
 			$.ajax({
 				url: 'index.php',
 				type: 'POST',

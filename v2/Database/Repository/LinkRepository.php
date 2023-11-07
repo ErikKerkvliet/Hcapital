@@ -56,6 +56,8 @@
 				if (! $row['comment']) {
 					if (strpos($row['link'], 'rapidgator') !== false) {
 						$data[] = 'rapidgator|!|' . $row['link'];
+					} else if (strpos($row['link'], 'katfile') !== false) {
+						$data[] = 'katfile|!|' . $row['link'];
 					} else {
 						$data[] = 'mexashare|!|' . $row['link'];
 					}
@@ -77,46 +79,28 @@
 
 		public function findRapidgatorLinksByEntry($entry, $multiple = false)
 		{
-			$entryId = $entry->getId();
+			$this->findMinMax($entry, $multiple);
 
-			$minLink = $this->select('MIN(l.id) AS id')
-				->from(Link::TABLE, 'l')
-				->where('l.entry_id', '=', $entryId)
-				->getResult()[0];
-
-			$qb = $this->select()
-				->from(Link::TABLE, 'l');
-			if ($multiple) {
-				$qb->where('l.id', '>=', $minLink->getId());
-			} else {
-				$qb->where('l.entry_id', '=', $entryId);
-			}
-
-			return $qb->andWhere('l.link', 'REGEXP', '"rapidgator.net"', '(')
+			return $this->andWhere('l.link', 'REGEXP', '"rapidgator.net"', '(')
 				->orWhere('l.link', 'REGEXP', '"rg.to"', '', ')')
 				->getResult();
 		}
 
-		public function findMexaShareLinksByEntry($entry, $multiple = false)
+		public function findMexashareLinksByEntry($entry, $multiple = false)
 		{
-			$entryId = $entry->getId();
+			$this->findMinMax($entry, $multiple);
 
-			$minLink = $this->select('MIN(l.id) AS id')
-				->from(Link::TABLE, 'l')
-				->where('l.entry_id', '=', $entryId)
-				->getResult()[0];
-
-			$qb = $this->select()
-				->from(Link::TABLE, 'l');
-			if ($multiple) {
-				$qb->where('l.id', '>=', $minLink->getId());
-			} else {
-				$qb->where('l.entry_id', '=', $entryId);
-			}
-
-			return $qb->andWhere('l.link', 'REGEXP', '"//mexa"', '(')
+			return $this->andWhere('l.link', 'REGEXP', '"//mexa"', '(')
 				->orWhere('l.link', 'REGEXP', '"www.mexa"')
 				->orWhere('l.link', 'REGEXP', '"sh.net"', '', ')')
+				->getResult();
+		}
+
+		public function findKatfileLinksByEntry($entry, $multiple = false)
+		{
+			$this->findMinMax($entry, $multiple);
+
+			return $this->andWhere('l.link', 'REGEXP', '"//katfile.com"')
 				->getResult();
 		}
 
@@ -139,5 +123,28 @@
 				->andWhere('l.entry_id', '<=', $end)
 				->orderBy('l.entry_id', 'ASC')
 				->getResult();
+		}
+
+		private function findMinMax($entry, $multiple) {
+			$entryId = $entry->getId();
+
+			$minLink = $this->select('MIN(l.id) AS id')
+				->from(Link::TABLE, 'l')
+				->where('l.entry_id', '=', $entryId)
+				->getResult()[0];
+
+			$maxLink = $this->select('MAX(l.id) AS id')
+				->from(Link::TABLE, 'l')
+				->getResult()[0];
+
+			$this->select()
+				->from(Link::TABLE, 'l');
+
+			if ($multiple) {
+				$this->where('l.id', '>=', $minLink->getId())
+					->andWhere('l.id', '>', ($maxLink->getId() - 30));
+			} else {
+				$this->where('l.entry_id', '=', $entryId);
+			}
 		}
 	}

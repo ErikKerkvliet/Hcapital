@@ -8,6 +8,7 @@
 
 	namespace v2\Classes;
 
+	use HostResolver;
 	use v2\Database\Entity\EntryCharacter;
 	use v2\Database\Entity\DeveloperRelation;
 	use v2\Database\Entity\Entry;
@@ -15,6 +16,7 @@
 	use v2\Database\Entity\Developer;
 	use v2\Database\Entity\Character;
 	use v2\Database\Entity\EntryRelation;
+	use v2\Database\Entity\Host;
 	use v2\Database\Entity\Link;
 	use v2\Database\Repository\DeveloperRelationRepository;
 	use v2\Database\Repository\EntryDeveloperRepository;
@@ -41,6 +43,8 @@
 		private $developers = [];
 		private $rapidgatorLinks = [];
 		private $mexashareLinks = [];
+		private $katfileLinks = [];
+		private $hostResolver;
 		private $imagePath;
 		private $outputDir;
 		private $cover;
@@ -51,6 +55,7 @@
 		public function __construct($insert = false, $id = 0)
 		{
 			$this->imageHandler = new ImageHandler('entry');
+			$this->hostResolver = new HostResolver();
 			$this->insert = $insert;
 
 			$this->id = $id ?: (requestForSql('entry-id') ?: requestForSql('id'));
@@ -66,6 +71,7 @@
 			$this->password = requestForSql('password');
 			$this->rapidgatorLinks = requestForSql('rapidgator-links');
 			$this->mexashareLinks = requestForSql('mexashare-links');
+			$this->katfileLinks = requestForSql('katfile-links');
 			$this->cover = request('cover');
 			$this->coverHidden = request('cover_hidden');
 			$this->images = request('images');
@@ -370,7 +376,7 @@
 					app('em')->flush();
 				}
 				$i++;
-				if ($i % 2 == 0) {
+				if ($i % 3 == 0) {
 					$j++;
 				}
 			}
@@ -782,15 +788,14 @@
 				}
 				if (! in_array($entryId, $entryIds)) {
 					$entryIds[] = $entryId;
-					$hosts = $this->getHosts($linksData);
-					foreach ($hosts as $host) {
-						if ($host == 'mexashare') {
-							$linkRepository->deleteByHost((int) $entryId, '//mexa');
-							$linkRepository->deleteByHost((int) $entryId, 'www.mexa');
-							$linkRepository->deleteByHost((int) $entryId, 'mx-sh');
-						} else {
-							$linkRepository->deleteByHost((int) $entryId, $host);
-						}
+					$host = $this->hostResolver->byUrl($linksData);
+
+					if ($host == Host::HOST_MEXASHARE) {
+						$linkRepository->deleteByHost((int) $entryId, '//mexa');
+						$linkRepository->deleteByHost((int) $entryId, 'www.mexa');
+						$linkRepository->deleteByHost((int) $entryId, 'mx-sh');
+					} else {
+						$linkRepository->deleteByHost((int) $entryId, $host);
 					}
 				}
 
@@ -803,21 +808,5 @@
 					app('em')->flush($link);
 				}
 			}
-		}
-
-		private function getHosts($data)
-		{
-			$hosts = [];
-			if (strpos($data, '//rapidgator') !== false) {
-				$hosts[] = 'rapidgator';
-			}
-			if (strpos($data, '//mexa') !== false
-				|| strpos($data, 'www.mexa') !== false
-				|| strpos($data, 'mx-sh') !== false
-			) {
-				$hosts[] = 'mexashare';
-			}
-
-			return $hosts;
 		}
 	}

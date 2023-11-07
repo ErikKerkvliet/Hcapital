@@ -183,6 +183,16 @@
                 <input type="hidden"  class="mexashare-links" name="hidden-1-links" value="{{mexashare}}"/>
             </div>
             <div>
+                <div class="description">
+                    Katfile:
+                </div>
+                <div class="data">
+                    <textarea rows='18' class='links-links link-area' name='links-2-links' cols='100'>
+                    </textarea>
+                </div>
+                <input type="hidden"  class="katfile-links" name="hidden-2-links" value="{{katfile}}"/>
+            </div>
+            <div>
                 {for otherLinks}
                     <div>
                         <div class="description">
@@ -213,6 +223,15 @@
                                 {{mexashareLinks}}
                             </textarea>
                             <input type="hidden" class="mexashare-links" name="hidden-{{nrUpUp}}-links" value="{{mexashareLinks}}"/>
+                        </div>
+                        <div class="description link-header-s">
+                            Katfile:
+                        </div>
+                        <div class="data">
+                            <textarea class="links-links link-area" rows='10' name='links-{{nrUpUpUp}}-links' cols='100'>
+                                {{katfileLinks}}
+                            </textarea>
+                            <input type="hidden" class="katfile-links" name="hidden-{{nrUpUpUp}}-links" value="{{katfileLinks}}"/>
                         </div>
                     </div>
                 {/for}

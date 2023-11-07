@@ -8,6 +8,7 @@
 
 	namespace v2\Classes;
 
+	use HostResolver;
 	use v2\Database\Entity\Link;
 	use v2\Manager;
 
@@ -21,10 +22,13 @@
 
 		private $comments = [];
 
+		private $hostResolver;
+
 		public function __construct($entry)
 		{
 			$this->entry = $entry;
 
+			$this->hostResolver = new HostResolver();
 			$linkRepository = app('em')->getRepository(Link::class);
 
 			$this->links = $linkRepository->findBy(['entry' => $this->entry]);
@@ -55,7 +59,7 @@
 			foreach ($this->links as $link) {
 				$comment = $link->getComment();
 				$this->headers[] = $lastHeader != $comment ? $comment :
-					(! $comment ? $this->getHost($link) : '');
+					(! $comment ? ucfirst($this->hostResolver->byUrl($link)) : '');
 
 				$this->comments[$comment] += 1;
 
@@ -66,29 +70,6 @@
 		private function getButtonText($link, $nr = 0)
 		{
 			return $nr;
-		}
-
-		private function getHost(Link $entity)
-		{
-			$link = $entity->getLink();
-
-			if (strpos($link, 'rapidgator.net') !== false) {
-				$hosting = 'Rapidgator:';
-			} elseif (strpos($link, 'mexashare.com') !== false) {
-				$hosting = 'Mexashare:';
-			} elseif (strpos($link, 'mx-sh.net') !== false) {
-				$hosting = 'Mexashare:';
-			} elseif (strpos($link, 'mexa.sh') !== false) {
-				$hosting = 'Mexashare:';
-			} elseif (strpos($link, 'bigfile.to') !== false) {
-				$hosting = 'Bigfile:';
-			} elseif (strpos($link, 'katfile.com') !== false) {
-				$hosting = 'Katfile:';
-			} else {
-				$hosting = 'Links:';
-			}
-
-			return $hosting;
 		}
 
 		private function getLinks() {

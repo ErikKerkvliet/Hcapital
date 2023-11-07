@@ -1,6 +1,7 @@
 <?php
 	namespace v2\Builders;
 
+	use HostResolver;
 	use LinkResolver;
 	use v2\Classes\AdminCheck;
 	use v2\Database\Entity\Link;
@@ -13,6 +14,8 @@
 		 */
 		private $links = [];
 
+		private $hostResolver;
+
 		/**
 		 * @param array $links
 		 * @param int $entryId
@@ -20,6 +23,7 @@
 		 */
 		public function createLinks()
 		{
+			$this->hostResolver = new HostResolver();
 			$linkRepository = app('em')->getRepository(Link::class);
 			$this->links = $linkRepository->findBy(['entry' => $this->entry]);
 
@@ -61,7 +65,7 @@
 		{
 			$this->html .= '<div class="link-box">';
 			foreach ($linksByHost as $host => $links) {
-				$host = $this->getHost($links[0]->getLink());
+				$host = $this->hostResolver->byUrl($links[0]->getLink());
 				if ($host) {
 					$this->html .= '<div class="host-header"><b>' . ucfirst($host) . ':</b></div>';
 				}
@@ -119,31 +123,5 @@
 		{
 			return strpos($link, 'http://') !== false ||
 				strpos($link, 'https://') !== false;
-		}
-
-		/**
-		 * @param string $link
-		 * @return string
-		 */
-		private function getHost($link)
-		{
-			if ((strpos($link, 'rapidgator.net') !== false) ||
-				(strpos($link, 'rg.to/') !== false)) {
-				$host = 'Rapidgator';
-			} else if (strpos($link, 'mexashare.com') != false) {
-				$host = 'Mexashare';
-			} else if (strpos($link, 'mx-sh.net') != false) {
-				$host = 'Mexashare';
-			} else if (strpos($link, 'mexa.sh') != false) {
-				$host = 'Mexashare';
-			} else if (strpos($link, 'bigfile.to') != false) {
-				$host = 'Bigfile';
-			} else if (strpos($link, 'katfile.com') != false) {
-				$host = 'Mexashare';
-			} else {
-				$host = '';
-			}
-
-			return $host;
 		}
 	}

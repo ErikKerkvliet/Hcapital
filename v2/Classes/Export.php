@@ -205,35 +205,27 @@
 
 		private function getLinks()
 		{
-			return $this->getRapidgatorLinks() . '|?|' . $this->getMexaShareLinks();
+			$links = [
+				$this->getLinksByHost('rapidgator'),
+				$this->getLinksByHost('mexashare'),
+				$this->getLinksByHost('katfile'),
+			];
+
+			return implode('|?|', $links);
 		}
 
-		private function getRapidgatorLinks()
-		{
-			$linkRepository = app('em')->getRepository(Link::class);
-
-			$links = $linkRepository->findRapidgatorLinksByEntry($this->entry, $this->multiple);
-
-			$linkData = [];
-			/** @var Link $link */
-			foreach ($links as $link) {
-				$data = [];
-				$data[] = 'entry|!|' . $link->getEntry(true);
-				$data[] = 'link|!|' . $link->getLink();
-				$data[] = 'part|!|' . $link->getPart();
-				$data[] = 'comment|!|' . $link->getComment();
-
-				$linkData[] = implode('|?|', $data);
-			}
-			return implode('|^|', $linkData);
-		}
-
-		private function getMexaShareLinks()
+		private function getLinksByHost($host)
 		{
 			/** @var LinkRepository $linkRepository */
 			$linkRepository = app('em')->getRepository(Link::class);
 
-			$links = $linkRepository->findMexaShareLinksByEntry($this->entry, $this->multiple);
+			if ($host == 'rapidgator') {
+				$links = $linkRepository->findRapidgatorLinksByEntry($this->entry, $this->multiple);
+			} else if ($host == 'mexashare') {
+				$links = $linkRepository->findMexashareLinksByEntry($this->entry, $this->multiple);
+			} else if ($host == 'katfile') {
+				$links = $linkRepository->findKatfileLinksByEntry($this->entry, $this->multiple);
+			}
 
 			$linkData = [];
 			/** @var Link $link */

@@ -1,4 +1,4 @@
-<div>
+<div id="sharing-url-{{nr}}">
     <form id="sharing-url-form-{{nr}}">
         <input type="hidden" class="sharing-type" value="{{type}}"/>
         <input type="hidden" class="sharing-entry-id" value="{{entry-id}}"/>
@@ -6,5 +6,9 @@
         <textarea form="sharing-url-form-{{nr}}" name="sharing-url-{{nr}}" class="sharing-url" cols="145" rows="4">
         </textarea>
         <div thread-id={{id}} class="admin-button save-sharing-url">Save</div>
+        <div class="admin-button open-sharing-url">Open</div>
+        <div thread-id={{id}} class="admin-button add-sharing-url">Add</div>
+        <div thread-id={{id}} class="admin-button" id="update-thread-{{nr}}">Update</div>
+        <div thread-id={{id}} class="admin-button delete-sharing-url" nr="{{nr}}">Delete</div>
     </form>
 </div>

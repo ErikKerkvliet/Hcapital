@@ -8,6 +8,7 @@
 
 	namespace v2\Classes;
 
+	use HostResolver;
 	use v2\Database\Entity\Entry;
 	use v2\Database\Entity\Link;
 	use v2\Database\Repository\DeveloperRepository;
@@ -37,12 +38,18 @@
 		private $cover = '';
 
 		/**
+		 * @var HostResolver
+		 */
+		private $hostResolver;
+
+		/**
 		 * GameList constructor.
 		 * @param $items
 		 */
 		public function __construct($entry = 0)
 		{
 			$this->entry = app('em')->find(Entry::class, $entry);
+			$this->hostResolver = new HostResolver();
 
 			$file = fopen(Manager::TEMPLATE_FOLDER . 'CreatePostData.html', 'r');
 			$this->content = fread($file, 100000);
@@ -132,7 +139,7 @@
 					return;
 				}
 
-				$host = $this->getHost($link->getLink());
+				$host = ucfirst($this->hostResolver->byUrl($link->getLink()));
 				$comment = $link->getComment() ?: $host;
 				$link = $link->getLink();
 
@@ -141,37 +148,11 @@
 			}, $links);
 		}
 
-		/**
-		 * @param string $link
-		 * @return string
-		 */
-		private function getHost($link)
-		{
-			if ((strpos($link, 'rapidgator.net') !== false) ||
-				(strpos($link, 'rg.to/') !== false)) {
-				$host = 'Rapidgator';
-			} else if (strpos($link, 'mexashare.com') !== false) {
-				$host = 'Mexashare';
-			} else if (strpos($link, 'mx-sh.net') !== false) {
-				$host = 'Mexashare';
-			} else if (strpos($link, 'mexa.sh') !== false) {
-				$host = 'Mexashare';
-			} else if (strpos($link, 'bigfile.to') !== false) {
-				$host = 'Bigfile';
-			} else if (strpos($link, 'katfile.com') !== false) {
-				$host = 'Katfile';
-			} else {
-				$host = 'Link';
-			}
-
-			return $host;
-		}
-
 		private function getLinks()
 		{
 			$linkArray = [];
 			$lastComment = '';
-			$filter = ['Rapidgator', 'Mexashare'];
+			$filter = ['Rapidgator', 'Mexashare', 'Katfile'];
 			foreach($this->links as $comment => $group) {
 				foreach ($group as $host => $links) {
 					foreach($links as &$link) {

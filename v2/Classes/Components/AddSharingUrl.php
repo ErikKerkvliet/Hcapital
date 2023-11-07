@@ -57,8 +57,7 @@
 		public function buildContent()
 		{
 			$this->placeHolders = [
-				'nr'    => ($this->nr * 2),
-				'nrUp'  => ($this->nr * 2) + 1,
+				'nr'    => ($this->nr),
 				'entry-id' => $this->entryId,
 				'author' => $this->author,
 				'type' => $this->entryType,

@@ -45,6 +45,9 @@
 					(strpos($link->getLink(), 'mexa.') !== false)) {
 					$this->links[$link->getComment()]['mexashare'][] = $link;
 				}
+				if ((strpos($link->getLink(), '//katfile.') !== false)) {
+					$this->links[$link->getComment()]['katfile'][] = $link;
+				}
 			}, $links);
 
 			$this->setLinkParts();
@@ -68,6 +71,10 @@
 
 				if (isset($links['mexashare'])) {
 					$this->setParts($links['mexashare']);
+				}
+
+				if (isset($links['katfile'])) {
+					$this->setParts($links['katfile']);
 				}
 			}, $this->links);
 		}
@@ -108,7 +115,7 @@
 		private function orderLinksCorrectly($linkSet)
 		{
 			foreach ($linkSet as $key => $links) {
-				if ($key !== 'mexashare' && $key !== 'rapidgator') {
+				if ($key !== 'mexashare' && $key !== 'rapidgator' && $key !== 'katfile') {
 					$this->links[$key] = $this->orderLinksCorrectly($links);
 				}
 			}

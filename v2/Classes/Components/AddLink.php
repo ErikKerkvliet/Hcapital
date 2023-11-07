@@ -1,4 +1,7 @@
 <?php
+
+	use v2\Database\Entity\Host;
+
 	/**
 	 * Created by PhpStorm.
 	 * User: erik
@@ -13,6 +16,11 @@
 		 */
 		private $nr;
 
+		/**
+		 * @var array
+		 */
+		private $hosts = [];
+
 		public function __construct($nr)
 		{
 			$this->nr = $nr;
@@ -25,10 +33,28 @@
 		{
 			$this->placeHolders = [
 				'comment-nr'    => $this->nr,
-				'nr'    => ($this->nr * 2),
-				'nrUp'  => ($this->nr * 2) + 1,
+			];
+
+			$this->setHosts();
+
+			$this->fors = [
+				'hosts' => $this->hosts,
 			];
 
 			$this->fillPlaceHolders();
+			$this->fillFors();
+		}
+
+		private function setHosts()
+		{
+			$this->nr *= 3;
+			foreach (Host::HOSTS as $host) {
+				$this->hosts[] = [
+					'label' => ucfirst($host),
+					'host' => $host,
+					'nr' => $this->nr,
+				];
+				$this->nr++;
+			}
 		}
 	}

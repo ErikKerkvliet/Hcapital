@@ -8,11 +8,13 @@
 
 	namespace v2\Classes;
 
+	use HostResolver;
 	use v2\Database\Entity\DeveloperRelation;
 	use v2\Database\Entity\Entry;
 	use v2\Database\Entity\Developer;
 	use v2\Database\Entity\EntryDeveloper;
 	use v2\Database\Entity\EntryRelation;
+	use v2\Database\Entity\Host;
 	use v2\Database\Entity\Link;
 	use v2\Database\Repository\DeveloperRepository;
 	use v2\Database\Repository\EntryDeveloperRepository;
@@ -94,9 +96,12 @@
 					'password' => $this->entry->getPassword(),
 					'rapidgator' => isset($this->links['Rapidgator'])
 						? implode('splitter', $this->links['Rapidgator']['Rapidgator'])
-					: '',
+						: '',
 					'mexashare' => isset($this->links['Mexashare'])
 						? implode('splitter', $this->links['Mexashare']['Mexashare'])
+						: '',
+					'katfile' => isset($this->links['Katfile']) ?
+						implode('splitter', $this->links['Katfile']['Katfile'])
 						: '',
 				];
 			} else {
@@ -113,10 +118,12 @@
 					'password' => '',
 					'rapidgator' => '',
 					'mexashare' => '',
+					'katfile' => '',
 				];
 			}
 			unset($this->links['Rapidgator']);
 			unset($this->links['Mexashare']);
+			unset($this->links['Katfile']);
 
 			$this->ifs = [
 				'insertEdit' => true,
@@ -290,12 +297,14 @@
 			$linkRepository = app('em')->getRepository(Link::class);
 			$links = $linkRepository->findBy(['entry' => $this->entry->getId()]);
 
-			array_map(function ($link) {
+			$hostResolver = new HostResolver();
+			array_map(function ($link) use ($hostResolver) {
 				if ($link->getLink() == '-') {
 					return;
 				}
 
-				$host = substr($link->getComment(), 0, 2) != '<<' ? $this->getHost($link->getLink()) : 'Rapidgator';
+				$host = substr($link->getComment(), 0, 2) != '<<' ?
+					ucfirst($hostResolver->byUrl($link->getLink())) : ucfirst(Host::HOST_RAPIDGATOR);
 
 				$comment = $link->getComment() ?: $host;
 				$link = $link->getLink();
@@ -311,15 +320,19 @@
 			return array_map(function ($key, $links) use (&$nr) {
 				$arr = [
 					'nr'        => $nr,
-					'nrUp'    => ($nr * 2),
-					'nrUpUp'  => ($nr * 2) + 1,
+					'nrUp'    => ($nr * 3),
+					'nrUpUp'  => ($nr * 3) + 1,
+					'nrUpUpUp'  => ($nr * 3) + 2,
 					'comment'   => $key,
 					'rapidgatorLinks' => isset($links['Rapidgator']) ?
 						implode('splitter', $links['Rapidgator'])
-					: '',
+						: '',
 					'mexashareLinks' => isset($links['Mexashare']) ?
 						implode('splitter', $links['Mexashare'])
-					: '',
+						: '',
+					'katfileLinks' => isset($links['Katfile']) ?
+						implode('splitter', $links['Katfile'])
+						: '',
 				];
 				$nr++;
 				return $arr;
@@ -334,31 +347,5 @@
 		private function getSelectedTime($timeType)
 		{
 			return $timeType == $this->timeType ? 'selected' : '';
-		}
-
-		/**
-		 * @param string $link
-		 * @return string
-		 */
-		private function getHost($link)
-		{
-			if ((strpos($link, 'rapidgator.net') !== false) ||
-				(strpos($link, 'rg.to/') !== false)) {
-				$host = 'Rapidgator';
-			} else if (strpos($link, 'mexashare.com') !== false) {
-				$host = 'Mexashare';
-			} else if (strpos($link, 'mx-sh.net') !== false) {
-				$host = 'Mexashare';
-			} else if (strpos($link, 'mexa.sh') !== false) {
-				$host = 'Mexashare';
-			} else if (strpos($link, 'bigfile.to') !== false) {
-				$host = 'Bigfile';
-			} else if (strpos($link, 'katfile.com') !== false) {
-				$host = 'Katfile';
-			} else {
-				$host = 'Link';
-			}
-
-			return $host;
 		}
 	}

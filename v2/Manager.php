@@ -59,6 +59,7 @@
 	require_once('Database/Entity/EntryDeveloper.php');
 	require_once('Database/Entity/Thread.php');
 	require_once('Database/Entity/SharingThread.php');
+	require_once('Database/Entity/Host.php');
 
 	require_once('Database/Repository/Repository.php');
 	require_once('Database/Repository/BannedRepository.php');
@@ -76,6 +77,7 @@
 	require_once('Database/Repository/EntryDeveloperRepository.php');
 	require_once('Database/Repository/ThreadRepository.php');
 	require_once('Database/Repository/SharingThreadRepository.php');
+	require_once('Database/Repository/HostRepository.php');
 
 	require_once('Builders/Images.php');
 	require_once('Builders/Builder.php');
@@ -139,6 +141,7 @@
 	require_once('Classes/CreatePostData.php');
 	require_once('Classes/Threads.php');
 	require_once('Resolvers/LinkResolver.php');
+	require_once('Resolvers/HostResolver.php');
 	require_once('Resolvers/EntryNameResolver.php');
 	require_once('Factories/ThreadFactory.php');
 	require_once('Factories/LinkFactory.php');

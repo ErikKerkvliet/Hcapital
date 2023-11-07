@@ -212,7 +212,6 @@ $(document).ready(function()
 			var id = parseInt($('.sharing-entry-id').first().val()) + 1;
 			window.location.href = '/?v=2&id=' + id;
 		});
-
 	});
 
 	$('.open-sharing-url').click(function() {

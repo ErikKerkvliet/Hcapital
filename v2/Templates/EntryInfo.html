@@ -13,12 +13,12 @@
                 <textarea form="sharing-url-form-{{nr}}" name="sharing-url-{{nr}}" class="sharing-url" cols="145" rows="4">
                     {{sharing_url_{{nr}}}}
                 </textarea>
-                <div id="more-sharing-urls"></div>
                 <div thread-id={{id}} class="admin-button save-sharing-url">Save</div>
                 <div class="admin-button open-sharing-url">Open</div>
                 <div thread-id={{id}} class="admin-button add-sharing-url">Add</div>
                 <div thread-id={{id}} class="admin-button" id="update-thread-{{nr}}">Update</div>
-                <div thread-id={{id}} class="admin-button delete-sharing-url">Delete</div>
+                <div thread-id={{id}} class="admin-button delete-sharing-url" nr="{{nr}}">Delete</div>
+                <div id="more-sharing-urls"></div>
             </form>
         </div>
         {/for}
