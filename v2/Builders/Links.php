@@ -3,9 +3,7 @@
 
 	use HostResolver;
 	use LinkResolver;
-	use v2\Classes\AdminCheck;
 	use v2\Database\Entity\Link;
-	use v2\Database\Entity\Link2;
 
 	class Links extends Builder
 	{

@@ -21,10 +21,21 @@
 		 */
 		private $hosts = [];
 
-		public function __construct($nr)
+		/**
+		 * @var array
+		 */
+		private $links = [];
+
+		/**
+		 * @var string
+		 */
+		private $comment = '';
+
+		public function __construct($nr, $links = [])
 		{
 			$this->nr = $nr;
-
+			$this->links = $links;
+			$this->comment = ($keys = array_keys($this->links)) ? $keys[0] : '';
 			$file = fopen(\v2\Manager::COMPONENT_FOLDER . 'AddLink.html', 'r');
 			$this->content = fread($file, 100000);
 		}
@@ -33,6 +44,7 @@
 		{
 			$this->placeHolders = [
 				'comment-nr'    => $this->nr,
+				'comment' => $this->comment,
 			];
 
 			$this->setHosts();
@@ -47,12 +59,15 @@
 
 		private function setHosts()
 		{
-			$this->nr *= 3;
+			$this->nr *= count(Host::HOSTS);
 			foreach (Host::HOSTS as $host) {
 				$this->hosts[] = [
 					'label' => ucfirst($host),
 					'host' => $host,
 					'nr' => $this->nr,
+					'links' => isset($this->links[$this->comment]) && isset($this->links[$this->comment][$host])
+						? implode('splitter', $this->links[$this->comment][$host])
+						: '',
 				];
 				$this->nr++;
 			}

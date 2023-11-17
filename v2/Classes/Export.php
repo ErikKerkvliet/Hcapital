@@ -14,6 +14,7 @@
 	use \v2\Database\Entity\Developer;
 	use v2\Database\Entity\EntryDeveloper;
 	use v2\Database\Entity\EntryRelation;
+	use v2\Database\Entity\Host;
 	use v2\Database\Entity\Link;
 	use v2\Database\Repository\DeveloperRelationRepository;
 	use v2\Database\Repository\EntryCharacterRepository;
@@ -205,11 +206,10 @@
 
 		private function getLinks()
 		{
-			$links = [
-				$this->getLinksByHost('rapidgator'),
-				$this->getLinksByHost('mexashare'),
-				$this->getLinksByHost('katfile'),
-			];
+			$links = [];
+			foreach (Host::HOSTS as $host) {
+				$links[] = $this->getLinksByHost($host);
+			}
 
 			return implode('|?|', $links);
 		}
@@ -219,12 +219,11 @@
 			/** @var LinkRepository $linkRepository */
 			$linkRepository = app('em')->getRepository(Link::class);
 
-			if ($host == 'rapidgator') {
-				$links = $linkRepository->findRapidgatorLinksByEntry($this->entry, $this->multiple);
-			} else if ($host == 'mexashare') {
-				$links = $linkRepository->findMexashareLinksByEntry($this->entry, $this->multiple);
-			} else if ($host == 'katfile') {
-				$links = $linkRepository->findKatfileLinksByEntry($this->entry, $this->multiple);
+			foreach (Host::HOSTS as $hosting) {
+				if ($host == $hosting) {
+					$function = 'find' . ucfirst($host) . 'LinksByEntry';
+					$links = $linkRepository->{$function}($this->entry, $this->multiple);
+				}
 			}
 
 			$linkData = [];

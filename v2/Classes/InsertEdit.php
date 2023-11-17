@@ -8,6 +8,7 @@
 
 	namespace v2\Classes;
 
+	use AddLink;
 	use HostResolver;
 	use v2\Database\Entity\DeveloperRelation;
 	use v2\Database\Entity\Entry;
@@ -40,6 +41,10 @@
 		private $developers = [];
 
 		private $relations = [];
+
+		private $hosts = [];
+
+		private $extraHosts = [];
 
 		private $links = [];
 
@@ -103,7 +108,12 @@
 					'katfile' => isset($this->links['Katfile']) ?
 						implode('splitter', $this->links['Katfile']['Katfile'])
 						: '',
+					'extraLinks' => $this->getExtraLinks(),
 				];
+				foreach (Host::HOSTS as $host) {
+					$this->placeHolders[$host] = isset($this->links[$host])
+						? implode('splitter', $this->links[$host][$host]) : '';
+				}
 			} else {
 				$this->placeHolders = [
 					'id' => 0,
@@ -119,11 +129,11 @@
 					'rapidgator' => '',
 					'mexashare' => '',
 					'katfile' => '',
+					'extraLinks' => '',
 				];
 			}
-			unset($this->links['Rapidgator']);
-			unset($this->links['Mexashare']);
-			unset($this->links['Katfile']);
+
+			$this->setHosts();
 
 			$this->ifs = [
 				'insertEdit' => true,
@@ -137,8 +147,9 @@
 				'time_types'        => $this->timeTypes,
 				'developers'        => $this->developers,
 				'relations'         => $this->relations,
-				'otherLinks'        => $this->getLinksForView(),
 				'images'            => $this->images,
+				'extraHosts'        => $this->extraHosts,
+				'hosts'             => $this->hosts,
 			];
 
 			$this->fillIfs();
@@ -298,45 +309,54 @@
 			$links = $linkRepository->findBy(['entry' => $this->entry->getId()]);
 
 			$hostResolver = new HostResolver();
-			array_map(function ($link) use ($hostResolver) {
+			foreach ($links as $link) {
 				if ($link->getLink() == '-') {
-					return;
+					continue;
 				}
 
 				$host = substr($link->getComment(), 0, 2) != '<<' ?
-					ucfirst($hostResolver->byUrl($link->getLink())) : ucfirst(Host::HOST_RAPIDGATOR);
+					$hostResolver->byUrl($link->getLink()) : Host::HOST_RAPIDGATOR;
 
-				$comment = $link->getComment() ?: $host;
+				$comment = $link->getComment() ?: '';
 				$link = $link->getLink();
 
 				$this->links[$comment][$host][] = $link;
-
-			}, $links);
+			}
 		}
 
-		private function getLinksForView()
+		private function getExtraLinks()
 		{
+			if (! count($this->links)) {
+				return '';
+			}
+			$tempLinks = $this->links;
+
+			unset($tempLinks['']);
+
+			$html = '';
 			$nr = 1;
-			return array_map(function ($key, $links) use (&$nr) {
-				$arr = [
-					'nr'        => $nr,
-					'nrUp'    => ($nr * 3),
-					'nrUpUp'  => ($nr * 3) + 1,
-					'nrUpUpUp'  => ($nr * 3) + 2,
-					'comment'   => $key,
-					'rapidgatorLinks' => isset($links['Rapidgator']) ?
-						implode('splitter', $links['Rapidgator'])
-						: '',
-					'mexashareLinks' => isset($links['Mexashare']) ?
-						implode('splitter', $links['Mexashare'])
-						: '',
-					'katfileLinks' => isset($links['Katfile']) ?
-						implode('splitter', $links['Katfile'])
-						: '',
+			foreach ($tempLinks as $key => $links) {
+				$component = new AddLink($nr, [$key => $links]);
+				$component->buildContent();
+				$html .= $component->getContent();
+				$nr++;
+			}
+			return $html;
+		}
+
+		private function setHosts()
+		{
+			$nr = 0;
+			foreach (Host::HOSTS as $host) {
+				$this->hosts[] = [
+					'nr' => $nr,
+					'label' => ucfirst($host),
+					'host' => $host,
+					'links' => isset($this->links[''][$host])
+						? implode('splitter', $this->links[''][$host]) : '',
 				];
 				$nr++;
-				return $arr;
-			}, array_keys($this->links), $this->links);
+			}
 		}
 
 		private function getSelectedType($type)

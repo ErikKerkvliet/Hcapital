@@ -1,13 +1,13 @@
 <div>
     '<<' before text for text only and only use the rapidgator textarea
     <div class="description">
-        Extra links:
+        Extra links {{comment-nr}}:
     </div>
     <div class="description link-header-s">
         Comment:
     </div>
     <div class="data">
-        <input class="links-comment" type='text' id='links-{{comment-nr}}-comment' name='links-{{comment-nr}}-comment' size="131">
+        <input class="links-comment" type='text' id='links-{{comment-nr}}-comment' name='links-{{comment-nr}}-comment' size="100" value="{{comment}}">
         <div class="remove-links remove-component-button"  id="remove-link-{{nr}}">
             X
         </div>
@@ -19,7 +19,7 @@
         <div class="data">
             <textarea class="links-links link-area" rows='10' id='links-{{nr}}-links' name='links-{{nr}}-links' cols='100'>
             </textarea>
-            <input type="hidden" name="hidden-{{nr}}-links" value="{{host}}"/>
+            <input type="hidden" name="hidden-{{nr}}-links" value="{{links}}"/>
         </div>
     {/for}
 </div>

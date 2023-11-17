@@ -1,5 +1,7 @@
 <?php
 
+	use v2\Database\Entity\Host;
+
 	/**
 	 * Class LinkResolver
 	 */
@@ -16,6 +18,11 @@
 		private $linkCount = 1;
 
 		/**
+		 * @var HostResolver
+		 */
+		private $hostResolver;
+
+		/**
 		 * Manipulate links before buttons are made
 		 *
 		 * @param array $links
@@ -23,6 +30,7 @@
 		 */
 		public function manipulateLinks(array $links)
 		{
+			$this->hostResolver = new HostResolver();
 			$links = array_filter($links, function($link) {
 				if ($link->getLink() == '-' || $link->getComment() == '-') {
 					return false;
@@ -35,19 +43,8 @@
 					$this->links['text'][] = $link;
 					return;
 				}
-				if ((strpos($link->getLink(), '/rapidgator.') !== false) ||
-					(strpos($link->getLink(), '/rg.') !== false)) {
-					$this->links[$link->getComment()]['rapidgator'][] = $link;
-					return;
-				}
-				if ((strpos($link->getLink(), 'mexashare.') !== false) ||
-					(strpos($link->getLink(), 'mx-sh.') !== false) ||
-					(strpos($link->getLink(), 'mexa.') !== false)) {
-					$this->links[$link->getComment()]['mexashare'][] = $link;
-				}
-				if ((strpos($link->getLink(), '//katfile.') !== false)) {
-					$this->links[$link->getComment()]['katfile'][] = $link;
-				}
+				$host = $this->hostResolver->byUrl($link->getLink());
+				$this->links[$link->getComment()][$host][] = $link;
 			}, $links);
 
 			$this->setLinkParts();
@@ -65,16 +62,10 @@
 		private function setLinkParts()
 		{
 			array_map(function($links) {
-				if (isset($links['rapidgator'])) {
-					$this->setParts($links['rapidgator']);
-				}
-
-				if (isset($links['mexashare'])) {
-					$this->setParts($links['mexashare']);
-				}
-
-				if (isset($links['katfile'])) {
-					$this->setParts($links['katfile']);
+				foreach (Host::HOSTS as $host) {
+					if (isset($links[$host])) {
+						$this->setParts($links[$host]);
+					}
 				}
 			}, $this->links);
 		}
@@ -102,10 +93,12 @@
 		 */
 		private function setMultipleZeroLinks()
 		{
-			if ($this->links && count($this->links['']['rapidgator']) > 1 &&
-				$this->links['']['rapidgator'][0]->getPart() == 0) {
+			if (isset($this->links[''][Host::HOST_RAPIDGATOR])
+				&& count($this->links[''][Host::HOST_RAPIDGATOR]) > 1 &&
+				$this->links[''][Host::HOST_RAPIDGATOR][0]->getPart() == 0
+			) {
 				/** @var \v2\Database\Entity\Link $link */
-				foreach ($this->links['']['rapidgator'] as $key => &$link) {
+				foreach ($this->links[''][Host::HOST_RAPIDGATOR] as $key => &$link) {
 					$nr = $key + 1;
 					$link->setPart($nr);
 				}
@@ -115,12 +108,14 @@
 		private function orderLinksCorrectly($linkSet)
 		{
 			foreach ($linkSet as $key => $links) {
-				if ($key !== 'mexashare' && $key !== 'rapidgator' && $key !== 'katfile') {
-					$this->links[$key] = $this->orderLinksCorrectly($links);
+				foreach (Host::HOSTS as $host) {
+					if (! in_array($key, Host::HOSTS)) {
+						$this->links[$key] = $this->orderLinksCorrectly($links);
+					}
 				}
 			}
 			$keySet = array_keys($linkSet);
-			if ($linkSet && $keySet[0] !== 'rapidgator') {
+			if ($linkSet && $keySet[0] !== Host::HOST_RAPIDGATOR) {
 				return array_reverse($linkSet);
 			}
 			return $linkSet;

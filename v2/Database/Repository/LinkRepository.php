@@ -9,6 +9,7 @@
 	namespace v2\Database\Repository;
 
 	use v2\Database\Entity\Entry;
+	use v2\Database\Entity\Host;
 	use v2\Database\Entity\Link;
 	use v2\Database\Entity\Thread;
 
@@ -54,12 +55,10 @@
 			$data = [];
 			while ($row = mysqli_fetch_assoc($result)) {
 				if (! $row['comment']) {
-					if (strpos($row['link'], 'rapidgator') !== false) {
-						$data[] = 'rapidgator|!|' . $row['link'];
-					} else if (strpos($row['link'], 'katfile') !== false) {
-						$data[] = 'katfile|!|' . $row['link'];
-					} else {
-						$data[] = 'mexashare|!|' . $row['link'];
+					foreach (Host::HOSTS as $host) {
+						if (strpos($row['link'], $host) !== false) {
+							$data[] = $host . '|!|' . $row['link'];
+						}
 					}
 					continue;
 				}
@@ -101,6 +100,30 @@
 			$this->findMinMax($entry, $multiple);
 
 			return $this->andWhere('l.link', 'REGEXP', '"//katfile.com"')
+				->getResult();
+		}
+
+		public function findRosefileLinksByEntry($entry, $multiple = false)
+		{
+			$this->findMinMax($entry, $multiple);
+
+			return $this->andWhere('l.link', 'REGEXP', '"//rosefile.net"')
+				->getResult();
+		}
+
+		public function findDdownloadLinksByEntry($entry, $multiple = false)
+		{
+			$this->findMinMax($entry, $multiple);
+
+			return $this->andWhere('l.link', 'REGEXP', '"//ddownload.com"')
+				->getResult();
+		}
+
+		public function findFikperLinksByEntry($entry, $multiple = false)
+		{
+			$this->findMinMax($entry, $multiple);
+
+			return $this->andWhere('l.link', 'REGEXP', '"//fikper.com"')
 				->getResult();
 		}
 

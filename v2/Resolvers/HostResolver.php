@@ -11,7 +11,7 @@
 
 	class HostResolver
 	{
-		const DEFAULT_TYPE = 'link';
+		const DEFAULT_TYPE = 'download';
 
 		public function byUrl($url, $capitalized = false)
 		{

@@ -64,14 +64,17 @@
 			$this->romanji = request('romanji');
 			$this->type = request('type');
 			$this->timeType = request('time_type');
-			$this->released = requestForSql('released');
+			$this->released = str_replace('-', '/', requestForSql('released'));
 			$this->size = $this->getSize(requestForSql('size'));
 			$this->website = request('website');
 			$this->information = request('information');
 			$this->password = requestForSql('password');
-			$this->rapidgatorLinks = requestForSql('rapidgator-links');
-			$this->mexashareLinks = requestForSql('mexashare-links');
-			$this->katfileLinks = requestForSql('katfile-links');
+
+			foreach (Host::HOSTS as $host) {
+				$variable = $host . 'Links';
+				$this->{$variable} = requestForSql($host . '-links');
+			}
+
 			$this->cover = request('cover');
 			$this->coverHidden = request('cover_hidden');
 			$this->images = request('images');
@@ -352,10 +355,13 @@
 
 			$i = 0;
 			$j = 0;
+			$l = [];
 			while (isset($_POST['links-' . $i . '-links'])) {
 				$linkString = trim(request('links-' . $i . '-links'), '\r\n');
 				$comment = request('links-' . $j . '-comment') ?: '';
+				echo $linkString . '<br>';
 				$links = preg_split('/\r\n|[\r\n]/', $linkString);
+
 
 				$links = array_filter($links);
 				foreach ($links as $string) {
@@ -365,6 +371,9 @@
 					$link = new Link();
 
 					$link->setEntry($this->id);
+					if (substr($string, -3) == '.ra') {
+						$string .= 'r';
+					}
 					$link->setLink($string);
 					$link->setComment($comment);
 
@@ -372,11 +381,11 @@
 					$link->setPart($part);
 
 					app('em')->persist($link);
-
+					$l[] = $link;
 					app('em')->flush();
 				}
 				$i++;
-				if ($i % 3 == 0) {
+				if ($i % count(Host::HOSTS) == 0) {
 					$j++;
 				}
 			}

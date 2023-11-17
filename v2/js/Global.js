@@ -1,5 +1,22 @@
 var isMobile;
 
+const HOST_RAPIDGATOR = 'rapidgator';
+const HOST_MEXASHARE = 'mexashare';
+const HOST_KATFILE = 'katfile';
+const HOST_ROSEFILE = 'rosefile';
+const HOST_DDOWNLOAD = 'ddownload';
+const HOST_FIKPER = 'fikper';
+const HOST_BIGFILE = 'bigfile';
+
+const HOSTS = [
+	HOST_RAPIDGATOR,
+	HOST_MEXASHARE,
+	HOST_KATFILE,
+	HOST_ROSEFILE,
+	HOST_DDOWNLOAD,
+	HOST_FIKPER,
+];
+
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 	isMobile = true;
 }

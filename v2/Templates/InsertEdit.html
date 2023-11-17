@@ -162,79 +162,20 @@
                     Links:
                 </div>
             </div>
-            <div>
-                <div class="description">
-                    Rapidgator:
-                </div>
-                <div class="data">
-                    <textarea rows='18' class='links-links link-area' name='links-0-links' cols='100'>
-                    </textarea>
-                </div>
-                <input type="hidden" class="rapidgator-links" name="hidden-0-links" value="{{rapidgator}}"/>
-            </div>
-            <div>
-                <div class="description">
-                    Mexashare:
-                </div>
-                <div class="data">
-                    <textarea rows='18' class='links-links link-area' name='links-1-links' cols='100'>
-                    </textarea>
-                </div>
-                <input type="hidden"  class="mexashare-links" name="hidden-1-links" value="{{mexashare}}"/>
-            </div>
-            <div>
-                <div class="description">
-                    Katfile:
-                </div>
-                <div class="data">
-                    <textarea rows='18' class='links-links link-area' name='links-2-links' cols='100'>
-                    </textarea>
-                </div>
-                <input type="hidden"  class="katfile-links" name="hidden-2-links" value="{{katfile}}"/>
-            </div>
-            <div>
-                {for otherLinks}
-                    <div>
-                        <div class="description">
-                            Extra links {{nr}}:
-                        </div>
-                        <div class="description link-header-s">
-                            Comment:
-                        </div>
-                        <div class="data">
-                            <input class="other-links" type='text' name='links-{{nr}}-comment' value="{{comment}}" size="131">
-                            <div class="remove-links remove-component-button"  id="remove-link-{{nr}}">
-                                X
-                            </div>
-                        </div>
-                        <div class="description link-header-s">
-                            Rapidgator:
-                        </div>
-                        <div class="data">
-                            <textarea class='links-links link-area' rows='10' name='links-{{nrUp}}-links' cols='100'>
-                            </textarea>
-                            <input type="hidden"  class="rapidgator-links" name="hidden-{{nrUp}}-links" value="{{rapidgatorLinks}}"/>
-                        </div>
-                        <div class="description link-header-s">
-                            Mexashare:
-                        </div>
-                        <div class="data">
-                            <textarea class="links-links link-area" rows='10' name='links-{{nrUpUp}}-links' cols='100'>
-                                {{mexashareLinks}}
-                            </textarea>
-                            <input type="hidden" class="mexashare-links" name="hidden-{{nrUpUp}}-links" value="{{mexashareLinks}}"/>
-                        </div>
-                        <div class="description link-header-s">
-                            Katfile:
-                        </div>
-                        <div class="data">
-                            <textarea class="links-links link-area" rows='10' name='links-{{nrUpUpUp}}-links' cols='100'>
-                                {{katfileLinks}}
-                            </textarea>
-                            <input type="hidden" class="katfile-links" name="hidden-{{nrUpUpUp}}-links" value="{{katfileLinks}}"/>
-                        </div>
+            {for hosts}
+                <div>
+                    <div class="description">
+                        {{label}}:
                     </div>
-                {/for}
+                    <div class="data">
+                        <textarea rows='18' class='links-links link-area' name='links-{{nr}}-links' cols='100'>
+                        </textarea>
+                    </div>
+                    <input type="hidden" class="{{host}}-links" name="hidden-{{nr}}-links" value="{{links}}"/>
+                </div>
+            {/for}
+            <div>
+                {{extraLinks}}
                 <div id="more-links"></div>
                 <div class="data">
                     <div id="add-other" class="add-button">
