@@ -83,6 +83,7 @@
 	require_once('Builders/Builder.php');
 	require_once('Builders/Characters.php');
 	require_once('Builders/Links.php');
+	require_once('Builders/Links2.php');
 	require_once('Database/EntityManager.php');
 
 	require_once('Classes/AdminCheck.php');

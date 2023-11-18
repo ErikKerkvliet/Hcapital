@@ -307,7 +307,7 @@ a:visited {
 
 .link-button, .link-button-download {
 	height: 25px;
-	width:65px;
+	width:75px;
 	float:unset;
 	display: inline-block;
 	text-align: center;
@@ -678,7 +678,7 @@ a:visited {
 }
 
 .link-box {
-	width: 380px;
+	width: 520px;
 	display: inline-block;
 }
 
@@ -700,4 +700,10 @@ a:visited {
 	white-space: nowrap;
 	padding-right: 5px;
 	width: unset;
+}
+
+#downloads-header {
+	margin-bottom: 5px;
+	font-size: 15px;
+	font-weight: bold;
 }

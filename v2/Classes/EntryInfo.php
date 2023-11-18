@@ -11,7 +11,7 @@
 	use EntryNameResolver;
 	use v2\Builders\Characters;
 	use v2\Builders\Images;
-	use v2\Builders\Links;
+	use v2\Builders\Links2;
 	use v2\Database\Entity\Entry;
 	use v2\Database\Entity\EntryDeveloper;
 
@@ -26,6 +26,8 @@
 		protected $entry = null;
 
 		private $title = '';
+
+		private $single = false;
 
 		/**
 		 * EntryInfo constructor.
@@ -105,6 +107,9 @@
 				'relations'         => $relationsHtml,
 				'links'             => $this->getLinks(),
 			];
+
+			$this->ifs['single'] = $this->single;
+
 			$this->fillFors();
 			$this->fillIfs();
 			$this->fillPlaceHolders();
@@ -266,9 +271,14 @@
 			if ($this->entry->getType() == 'app') {
 				//return '';
 			}
-			$links = new Links($this->entry);
+			$links = new Links2($this->entry);
 
-			return $links->createLinks();
+			$linkBox = $links->createLinks();
+
+			$this->single = $links->getSingle();
+
+
+			return $linkBox;
 		}
 
 		private function getSharingUrls(): array
