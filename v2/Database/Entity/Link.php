@@ -13,9 +13,10 @@
 		/**
 		 * @var string
 		 */
-		CONST TABLE = 'entry_links';
+		const TABLE = 'entry_links';
 
-		CONST BANNED_URL = 'https://rapidgator.net/file/69c900ee31cd065086ab9adba656588c/E00105.rar.html';
+		/** @var string  */
+		const BANNED_URL = 'https://rapidgator.net/file/69c900ee31cd065086ab9adba656588c/E00105.rar.html';
 
 		/**
 		 * @var integer

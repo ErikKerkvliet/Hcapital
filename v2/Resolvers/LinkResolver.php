@@ -25,7 +25,7 @@
 		/**
 		 * Manipulate links before buttons are made
 		 *
-		 * @param array $links
+		 * @param $links
 		 * @return array
 		 */
 		public function manipulateLinks(array $links)
@@ -46,7 +46,6 @@
 				$host = $this->hostResolver->byUrl($link->getLink());
 				$this->links[$link->getComment()][$host][] = $link;
 			}, $links);
-
 			$this->setLinkParts();
 
 			$this->setMultipleZeroLinks();

@@ -46,6 +46,7 @@
 				if ($key != '') {
 					$this->buildLinkHeader($key);
 				}
+//				dd($links);
 				$this->buildHostLinks($links);
 			}
 			$this->buildLinkHeader('');

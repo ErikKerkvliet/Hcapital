@@ -219,12 +219,7 @@
 			/** @var LinkRepository $linkRepository */
 			$linkRepository = app('em')->getRepository(Link::class);
 
-			foreach (Host::HOSTS as $hosting) {
-				if ($host == $hosting) {
-					$function = 'find' . ucfirst($host) . 'LinksByEntry';
-					$links = $linkRepository->{$function}($this->entry, $this->multiple);
-				}
-			}
+			$links = $linkRepository->findByEntryAndHost($this->entry, $host, $this->multiple);
 
 			$linkData = [];
 			/** @var Link $link */

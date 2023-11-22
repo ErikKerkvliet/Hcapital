@@ -8,47 +8,47 @@
 	 * Date: 7-11-23
 	 * Time: 22:34
 	 */
-
 	class HostResolver
 	{
+		const REGEXP_PATTERNS = [
+			Host::HOST_RAPIDGATOR => [
+				'rapidgator.net',
+				'rg.to/',
+			],
+			Host::HOST_MEXASHARE => [
+				'mexashare.com',
+				'mx-sh.net',
+				'mx-sh.net',
+				'mexa.sh'
+			],
+			Host::HOST_BIGFILE => [
+				'bigfile.to',
+			],
+			Host::HOST_KATFILE => [
+				'katfile.com',
+			],
+			Host::HOST_ROSEFILE => [
+				'rosefile.net',
+			],
+			Host::HOST_DDOWNLOAD => [
+				'ddownload.com',
+			],
+			Host::HOST_FIKPER => [
+				'fikper.com',
+			],
+		];
+
 		const DEFAULT_TYPE = 'download';
 
 		public function byUrl($url, $capitalized = false)
 		{
-			$host = '';
-			if (strpos($url, 'rapidgator.net') !== false) {
-				$host = Host::HOST_RAPIDGATOR;
+			foreach (self::REGEXP_PATTERNS as $host => $patterns) {
+				foreach ($patterns as $pattern) {
+					if (strpos($url, $pattern) !== false) {
+						return $capitalized ? ucfirst($host) : $host;
+					}
+				}
 			}
-			if (strpos($url, 'rg.to/') !== false) {
-				$host = Host::HOST_RAPIDGATOR;
-			}
-			if (strpos($url, 'mexashare.com') !== false) {
-				$host = Host::HOST_MEXASHARE;
-			}
-			if (strpos($url, 'mx-sh.net') !== false) {
-				$host = Host::HOST_MEXASHARE;
-			}
-			if (strpos($url, 'mexa.sh') !== false) {
-				$host = Host::HOST_MEXASHARE;
-			}
-			if (strpos($url, 'bigfile.to') !== false) {
-				$host = Host::HOST_BIGFILE;
-			}
-			if (strpos($url, 'katfile.com') !== false) {
-				$host = Host::HOST_KATFILE;
-			}
-			if (strpos($url, 'rosefile.net') !== false) {
-				$host = Host::HOST_ROSEFILE;
-			}
-			if (strpos($url, 'ddownload.com') !== false) {
-				$host = Host::HOST_DDOWNLOAD;
-			}
-			if (strpos($url, 'fikper.com') !== false) {
-				$host = Host::HOST_FIKPER;
-			}
-			if (! $host) {
-				$host = self::DEFAULT_TYPE;
-			}
-			return $capitalized ? ucfirst($host) : $host;
+			return $capitalized ? ucfirst(self::DEFAULT_TYPE) : self::DEFAULT_TYPE;
 		}
 	}

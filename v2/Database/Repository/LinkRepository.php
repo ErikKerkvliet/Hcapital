@@ -8,6 +8,7 @@
 
 	namespace v2\Database\Repository;
 
+	use HostResolver;
 	use v2\Database\Entity\Entry;
 	use v2\Database\Entity\Host;
 	use v2\Database\Entity\Link;
@@ -76,55 +77,31 @@
 				->getResult();
 		}
 
-		public function findRapidgatorLinksByEntry($entry, $multiple = false)
+		public function findByEntryAndHost($entry, $host, $multiple = false)
 		{
 			$this->findMinMax($entry, $multiple);
 
-			return $this->andWhere('l.link', 'REGEXP', '"rapidgator.net"', '(')
-				->orWhere('l.link', 'REGEXP', '"rg.to"', '', ')')
-				->getResult();
-		}
-
-		public function findMexashareLinksByEntry($entry, $multiple = false)
-		{
-			$this->findMinMax($entry, $multiple);
-
-			return $this->andWhere('l.link', 'REGEXP', '"//mexa"', '(')
-				->orWhere('l.link', 'REGEXP', '"www.mexa"')
-				->orWhere('l.link', 'REGEXP', '"sh.net"', '', ')')
-				->getResult();
-		}
-
-		public function findKatfileLinksByEntry($entry, $multiple = false)
-		{
-			$this->findMinMax($entry, $multiple);
-
-			return $this->andWhere('l.link', 'REGEXP', '"//katfile.com"')
-				->getResult();
-		}
-
-		public function findRosefileLinksByEntry($entry, $multiple = false)
-		{
-			$this->findMinMax($entry, $multiple);
-
-			return $this->andWhere('l.link', 'REGEXP', '"//rosefile.net"')
-				->getResult();
-		}
-
-		public function findDdownloadLinksByEntry($entry, $multiple = false)
-		{
-			$this->findMinMax($entry, $multiple);
-
-			return $this->andWhere('l.link', 'REGEXP', '"//ddownload.com"')
-				->getResult();
-		}
-
-		public function findFikperLinksByEntry($entry, $multiple = false)
-		{
-			$this->findMinMax($entry, $multiple);
-
-			return $this->andWhere('l.link', 'REGEXP', '"//fikper.com"')
-				->getResult();
+			$conditionCount = count(HostResolver::REGEXP_PATTERNS[$host]);
+			foreach (HostResolver::REGEXP_PATTERNS[$host] as $key => $pattern) {
+				if ($conditionCount > 1) {
+					if (! $key) {
+						$this->andWhere('l.link', 'REGEXP', '"' . $pattern . '"', '(');
+					} else if ($key == $conditionCount - 1) {
+						$this->orWhere(
+							'l.link',
+							'REGEXP',
+							'"' . $pattern . '"',
+							'',
+							')'
+						);
+					} else {
+						$this->orWhere('l.link', 'REGEXP', '"' . $pattern . '"');
+					}
+				} else {
+					$this->andWhere('l.link', 'REGEXP', '"' . $pattern . '"');
+				}
+			}
+			return $this->getResult();
 		}
 
 		public function deleteByHost(int $entryId, string $host)
