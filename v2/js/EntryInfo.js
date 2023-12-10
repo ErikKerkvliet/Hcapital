@@ -219,20 +219,8 @@ $(document).ready(function()
 		window.open(url, '_blank');
 	});
 
-	$('#update-thread-0').click(function() {
-		updateThread($(this), 0);
-	});
-
-	$('#update-thread-1').click(function() {
-		updateThread($(this), 1);
-	});
-
-	$('#update-thread-2').click(function() {
-		updateThread($(this), 2);
-	});
-
-	$('#update-thread-3').click(function() {
-		updateThread($(this), 3);
+	$('.update-thread').click(function() {
+		updateThread($(this), $(this).attr('nr'));
 	});
 
 	$('.delete-sharing-url').click(function() {
@@ -294,24 +282,21 @@ function goToUrl(id, mouseClickType)
 	});
 }
 
-function updateThread(parent, threadId)
+function updateThread(parent, threadId = '')
 {
-	var copyTextareaBtn = document.getElementById('update-thread-' + threadId);
 	var entryId = $('#info-title').attr('data-id');
 
-	copyTextareaBtn.addEventListener('click', function (event) {
-		const el = document.createElement('textarea');
-		el.value = 'python /home/erik/PycharmProjects/CreateThread/source/Main.py update ' + entryId;
-		el.setAttribute('readonly', '');
-		el.style.position = 'absolute';
-		el.style.left = '-9999px';
-		document.body.appendChild(el);
-		el.select();
-		document.execCommand('copy');
-		document.body.removeChild(el);
+	const el = document.createElement('textarea');
+	el.value = 'python /home/erik/PycharmProjects/CreateThread/source/Main.py update ' + entryId + ' ' + threadId;
+	el.setAttribute('readonly', '');
+	el.style.position = 'absolute';
+	el.style.left = '-9999px';
+	document.body.appendChild(el);
+	el.select();
+	document.execCommand('copy');
+	document.body.removeChild(el);
 
-		parent.css('background', '#38a751')
-	});
+	parent.css('background', '#38a751')
 }
 
 $(document).on("mousedown", function (e1) {

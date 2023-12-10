@@ -190,7 +190,7 @@
 		private function fillPlaceHolders()
 		{
 			foreach ($this->placeHolders as $key => $placeHolder) {
-				$this->template = str_replace('{{' . $key . '}}', $placeHolder, $this->template);
+				$this->template = str_replace(['{{' . $key . '}}'], [$placeHolder], $this->template);
 			}
 		}
 

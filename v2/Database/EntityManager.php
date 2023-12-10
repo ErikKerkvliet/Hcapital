@@ -253,11 +253,13 @@
 				$result = $this->runQuery(null, null, $idQuery);
 			}
 
-			while (! is_bool($result) && $row = mysqli_fetch_assoc($result)) {
-				return $row['id'];
-			}
-			if (is_array($result) && $result['id']) {
-				return $result['id'];
+			if (isset($result)) {
+				while (! is_bool($result) && $row = mysqli_fetch_assoc($result)) {
+					return $row['id'];
+				}
+				if (is_array($result) && $result['id']) {
+					return $result['id'];
+				}
 			}
 
 			return [];

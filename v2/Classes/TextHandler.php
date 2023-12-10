@@ -92,16 +92,16 @@
 					if ($times == 0 && strpos($match[1], '{!') !== false) {
 						$pattern = '/\{!(.*?)!\}/s';
 						preg_match($pattern, $loopText, $innerMatch);
-						$loopText = str_replace($innerMatch[0], '', $loopText);
+						$loopText = str_replace([$innerMatch[0]], [''], $loopText);
 					}
 
 					if (strpos($loopText, '{times}') !== false) {
-						$loopText = str_replace('{times}', $times, $loopText);
+						$loopText = str_replace(['{times}'], [$times], $loopText);
 					}
 
 					foreach ($value as $key => $val) {
 						$placeholder = '{{' . $key . '}}';
-						$loopText = str_replace($placeholder, $val, $loopText);
+						$loopText = str_replace([$placeholder], [$val], $loopText);
 					}
 
 					$text .= $loopText;
@@ -123,7 +123,7 @@
 		{
 			foreach ($this->placeHolders as $placeHolder => $value) {
 				$search = '{{' . $placeHolder . '}}';
-				$this->content = str_replace($search, $value, $this->content);
+				$this->content = str_replace([$search], [$value], $this->content);
 			}
 			$this->handleAdminView();
 		}

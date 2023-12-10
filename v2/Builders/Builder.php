@@ -24,6 +24,5 @@
 		{
 			$this->entry = $entry;
 		}
-
-
 	}
+
