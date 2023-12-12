@@ -2,7 +2,7 @@ $(document).ready(() => {
 	let characterId = $('#data').attr('data-character');
 
 	$('.delete-char').click(() => {
-		if (! confirm('Are you sure you want to fully delete this developer?')) {
+		if (! confirm('Are you sure you want to fully delete this character?')) {
 			return;
 		}
 		$.ajax({

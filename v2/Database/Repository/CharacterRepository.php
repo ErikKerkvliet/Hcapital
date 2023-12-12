@@ -27,8 +27,7 @@
 			$search,
 			array $orderBy = ['name', 'desc'],
 			array $limit = [0, 25]
-		)
-		{
+		) {
 			if ($search == null) {
 //				$orderBy[0] = $orderBy[0] != 'gender' ? $orderBy[0] : 'gender';
 

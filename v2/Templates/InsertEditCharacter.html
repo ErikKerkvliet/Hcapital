@@ -85,10 +85,25 @@
             </div>
             <div>
                 <div class="description">
-                    Bust:
+                    <div class="double-left">
+                        Bust:
+                    </div>
+                    <div class="double-right">
+                        Existing:
+                    </div>
                 </div>
                 <div class="data">
-                    <input type='text' id='bust' name='bust' value="{{bust}}" size="5">
+                    <div class="double-left">
+                        <input type='text' id='bust' name='bust' value="{{bust}}" size="5">
+                    </div>
+                    <div class="double-right">
+                        <form id="existing-form" style="margin-left:40px;">
+                            <input type="text" id="search-character" placeholder="Character name" size="30"/>
+                            <input type="submit" id="search-character-submit" value="Search"/>
+                        </form>
+                        <select id="existing-select" name="existing" style="width:385px; margin-left:50px; display: none">
+                        </select>
+                    </div>
                 </div>
             </div>
             <div>

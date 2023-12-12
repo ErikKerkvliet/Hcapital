@@ -29,13 +29,15 @@
 	use v2\Database\Entity\EntryRelation;
 	use v2\Database\Entity\Link;
 	use v2\Database\Entity\Thread;
-	use v2\Database\Repository\EntryCharacterRepository;
+    use v2\Database\Repository\CharacterRepository;
+    use v2\Database\Repository\EntryCharacterRepository;
 	use v2\Database\Repository\EntryDeveloperRepository;
 	use v2\Database\Repository\EntryRelationRepository;
 	use v2\Database\Repository\EntryRepository;
 	use v2\Database\Repository\LinkRepository;
+    use v2\Transformers\CharacterTransformer;
 
-	require_once("Includes.php");
+    require_once("Includes.php");
 	require_once("RapidgatorClient.php");
 
 	require_once('Database/QueryHandler.php');
@@ -146,6 +148,8 @@
 	require_once('Resolvers/EntryNameResolver.php');
 	require_once('Factories/ThreadFactory.php');
 	require_once('Factories/LinkFactory.php');
+    require_once('Transformers/CharacterTransformer.php');
+    require_once('Transformers/EntryTransformer.php');
 
 	require_once('Classes/Main.php');
 
@@ -258,10 +262,10 @@ dd($data);
 				header('Location: ' . $_SESSION['referrer'] . '?v=2&did=' . request('did'));
 			}
 			if (request('action') == 'insertCharacter' && $admin) {
-				$characterAction = new CharacterActions(true, request('entry-id'));
+				new CharacterActions(true, request('entry-id'));
 			}
 			if (request('action') == 'editCharacter' && $admin) {
-				$characterAction = new CharacterActions(false, request('cid'));
+				new CharacterActions(false, request('cid'));
 
 				header('Location: ' . $_SESSION['referrer'] . '?v=2&id=' . request('id'));
 			}
@@ -282,8 +286,7 @@ dd($data);
 					$findBy['entry_id'] = $entry;
 				}
 
-				$entryCharacters = $entryCharacterRepository
-					->findBy(['entry_id' => $entryId, 'character_id' => $characterId]);
+                $entryCharacters = $entryCharacterRepository->findBy($findBy);
 
 				app('em')->delete($character);
 				foreach ($entryCharacters as $entryCharacter) {
@@ -408,6 +411,17 @@ dd($data);
 					app('em')->delete($link);
 				}
 			}
+            if (request('action') == 'searchCharacters' && ($search = request('search')) && $admin) {
+                /** @var CharacterRepository $characterRepository */
+                $characterRepository = app('em')->getRepository(Character::class);
+                $characters = $characterRepository->findBySearch($search, ['name', 'desc'], []);
+
+                $characterTransformer = new CharacterTransformer();
+                $transformed = $characterTransformer->transform($characters);
+
+                echo json_encode($transformed);
+                exit();
+            }
 			if (request('action') === 'clearDownloads') {
 				$findBy = [];
 				$url = '/?v=2&action=di';

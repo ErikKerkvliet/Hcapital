@@ -312,6 +312,32 @@ function adminInitialise(reInitialize = false) {
 		adminInitialise();
 	});
 
+	$('#search-character-submit').click((e) => {
+		e.preventDefault();
+
+		let search = $('#search-character').val();
+		if (search.length >= 3) {
+			$.ajax({
+				url: 'index.php',
+				type: 'POST',
+				data: {
+					v: 2,
+					action: 'searchCharacters',
+					search: search,
+				},
+				dataType: "json",
+			})
+			.done(function (response) {
+				let html = '<option value=""></option>';
+				response.forEach((character) => {
+					html += `<option value="${character.id}">${character.romanji} - ${character.kanji} - ${character.entries}</option>`
+				});
+				$('#existing-select').html(html);
+				$('#existing-select').css('display', 'unset')
+			});
+		}
+	});
+
 	if (reInitialize === true) {
 		$('.save-sharing-url').click(function () {
 			var $parent = $(this).parent();

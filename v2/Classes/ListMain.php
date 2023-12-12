@@ -288,8 +288,8 @@
 				return $this->items = $entityRepository->findAll((int) $developer, $orderBy, $limit);
 			}
 
-			if ($developer = request('character')) {
-				return $this->items = $entityRepository->findByCharacter((int) $developer, $orderBy, $limit);
+			if (($character = request('character'))) {
+				return $this->items = $entityRepository->findByCharacter((int) $character, $orderBy, $limit);
 			}
 
 			if ($char = request('c')) {

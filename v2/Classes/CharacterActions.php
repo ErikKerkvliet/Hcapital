@@ -46,6 +46,7 @@
 
 		public function __construct($insert = false, $id = 0)
 		{
+            return;
 			$this->imageHandler = new ImageHandler('char');
 
 			$this->insert = $insert;
@@ -53,6 +54,10 @@
 			if ($insert) {
 				$this->character = new Character();
 				$this->entry = app('em')->find(Entry::class, $id);
+                if (($this->characterId = request('existing'))) {
+                    $this->insertEntryCharacter();
+                    return;
+                }
 			} else {
 				$this->characterId = $id;
 				$this->character = app('em')->find(Character::class, $id);
@@ -151,14 +156,7 @@
 
 			$this->makeDirectories();
 
-			/** @var EntryCharacter $entryCharacter */
-			$entryCharacter = new EntryCharacter();
-
-			$entryCharacter->setEntry($this->entry->getId());
-			$entryCharacter->setCharacter($this->characterId);
-
-			app('em')->persist($entryCharacter);
-			app('em')->flush();
+            $this->insertEntryCharacter();
 
 			$this->outputDir .= $this->characterId;
 			if (AdminCheck::checkForLocal()) {
@@ -220,6 +218,16 @@
 				}
 			}
 		}
+
+        private function insertEntryCharacter()
+        {
+            $entryCharacter = new EntryCharacter();
+            $entryCharacter->setEntry($this->entry->getId());
+            $entryCharacter->setCharacter($this->characterId);
+
+            app('em')->persist($entryCharacter);
+            app('em')->flush();
+        }
 
 		private function handleImages()
 		{

@@ -57,8 +57,8 @@
 			$this->characterColumnsString = implode(',', $this->characterColumns);
 
 			$this->entryColumns = [
-				'e.id', 'e.title', 'e.romanji', 'e.developer_id', 'e.relation_id',
-				'e.released', 'e.size', 'e.website', 'e.information', 'e.password', 'e.type', 'e.time_type',
+				'e.id', 'e.title', 'e.romanji', 'e.released', 'e.size',
+                'e.website', 'e.information', 'e.password', 'e.type', 'e.time_type',
 				'e.last_edited', 'e.created', 'e.downloads',
 			];
 
@@ -93,11 +93,11 @@
 		/**
 		 * @param Character $character
 		 * @param array $columns
-		 * @return bool
+		 * @return array
 		 */
-		public function findEntryByCharacter($character, $columns = [])
+		public function findEntryByCharacters(Character $character, array $columns = []): array
 		{
-			$id = is_int($character) ? $character : $character->getId();
+			$id = $character->getId();
 
 			if (! $columns) {
 				$columns = $this->entryColumns;
