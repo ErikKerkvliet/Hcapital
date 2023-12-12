@@ -8,7 +8,9 @@
 
 	namespace v2\Classes;
 
-	class ImageHandler
+	use Imagick as ImagickAlias;
+
+    class ImageHandler
 	{
 		private $outputDir = '';
 
