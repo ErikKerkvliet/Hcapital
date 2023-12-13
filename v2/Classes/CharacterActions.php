@@ -46,7 +46,6 @@
 
 		public function __construct($insert = false, $id = 0)
 		{
-            return;
 			$this->imageHandler = new ImageHandler('char');
 
 			$this->insert = $insert;
@@ -160,21 +159,9 @@
 
 			$this->outputDir .= $this->characterId;
 			if (AdminCheck::checkForLocal()) {
-				$images = $this->images;
-				$this->images = [];
-				$tmpImages = [];
-				if ($images['name'][0]) {
-					for ($i = 0; $i < count($images['name']); $i++) {
-						$image = [
-							'name' => $images['name'][$i],
-							'tmp' => $images['tmp_name'][$i],
-						];
-						$tmpImages = array_merge($tmpImages, [$image]);
-					}
-					$this->images = array_merge($this->images, ['image' => $tmpImages]);
-				}
+                $this->UploadImages();
 
-				if ($this->thumbnail['name']) {
+                if ($this->thumbnail['name']) {
 					$thumbnail = [[
 						'name' => $this->thumbnail['name'],
 						'tmp' => $this->thumbnail['tmp_name'],
@@ -198,25 +185,19 @@
 			app('em')->update($this->character);
 			app('em')->flush();
 
-			if (AdminCheck::checkForLocal()) {
-				if ($this->thumbnail['name']) {
-					if ($this->thumbnail['name']) {
-						$thumbnail = [[
-							'name' => $this->thumbnail['name'],
-							'tmp' => $this->thumbnail['tmp_name'],
-						]];
+            $this->outputDir .= $this->characterId;
+            if (AdminCheck::checkForLocal()) {
+                $this->UploadImages();
 
-					} else {
-						$thumbnail = [[
-							'name' => '__img.jpg',
-							'tmp' => '/home/erik/Desktop/img/__img.jpg',
-						]];
-					}
-
-					$this->images = ['img' => $thumbnail];
-					$this->imageHandler->manipulate($this->characterId, $this->images, self::CHARACTER);
-				}
-			}
+                if ($this->thumbnail['name']) {
+                    $thumbnail = [[
+                        'name' => $this->thumbnail['name'],
+                        'tmp' => $this->thumbnail['tmp_name'],
+                    ]];
+                    $this->images = array_merge($this->images, [$thumbnail]);
+                }
+                $this->imageHandler->manipulate($this->characterId, $this->images, self::CHARACTER);
+            }
 		}
 
         private function insertEntryCharacter()
@@ -270,4 +251,24 @@
 				chmod($directory, 0777);
 			}
 		}
-	}
+
+        /**
+         * @return void
+         */
+        private function UploadImages(): void
+        {
+            $images = $this->images;
+            $this->images = [];
+            $tmpImages = [];
+            if ($images['name'][0]) {
+                for ($i = 0; $i < count($images['name']); $i++) {
+                    $image = [
+                        'name' => $images['name'][$i],
+                        'tmp' => $images['tmp_name'][$i],
+                    ];
+                    $tmpImages = array_merge($tmpImages, [$image]);
+                }
+                $this->images = array_merge($this->images, ['image' => $tmpImages]);
+            }
+        }
+    }
