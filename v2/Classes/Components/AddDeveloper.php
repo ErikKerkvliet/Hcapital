@@ -1,13 +1,18 @@
 <?php
-	/**
+
+use v2\Traits\TextHandler;
+
+/**
 	 * Created by PhpStorm.
 	 * User: erik
 	 * Date: 28-2-20
 	 * Time: 19:53
 	 */
 
-	class AddDeveloper extends \v2\Classes\TextHandler
+	class AddDeveloper
 	{
+        use TextHandler;
+
 		/**
 		 * @var int
 		 */

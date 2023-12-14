@@ -10,9 +10,12 @@
 
 
 	use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Home extends TextHandler
+    class Home
 	{
+        use TextHandler;
+
 		/**
 		 * Home constructor.
 		 * @param $character

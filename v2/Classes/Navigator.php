@@ -10,11 +10,14 @@
 
 
 	use v2\Database\Entity\Entry;
-	use v2\Database\Repository\EntryRepository;
-	use v2\Manager;
+    use v2\Database\Repository\EntryRepository;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Navigator extends TextHandler
+    class Navigator
 	{
+        use TextHandler;
+
 		CONST navigatorButtonAmount = 6;
 
 		private $timeType = '';

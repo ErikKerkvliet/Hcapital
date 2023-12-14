@@ -9,13 +9,15 @@
 	namespace v2\Classes;
 
 	use v2\Database\Entity\Entry;
-	use v2\Database\Entity\EntryDeveloper;
-	use v2\Database\Repository\EntryRepository;
-	use v2\Database\Repository\Repository;
-	use v2\Manager;
+    use v2\Database\Entity\EntryDeveloper;
+    use v2\Database\Repository\EntryRepository;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Latest extends TextHandler
+    class Latest
 	{
+        use TextHandler;
+
 		private $page = 0;
 
 		private $type = '';

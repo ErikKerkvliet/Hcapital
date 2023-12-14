@@ -9,9 +9,12 @@
 	namespace v2\Classes;
 
 	use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class ExportAdvanced extends TextHandler
+    class ExportAdvanced
 	{
+        use TextHandler;
+
 		private $entryIds = [];
 
 		private $type;

@@ -9,9 +9,12 @@
 	namespace v2\Classes;
 
 	use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Developers extends TextHandler
+    class Developers
 	{
+        use TextHandler;
+
 		/**
 		 * @var array
 		 */

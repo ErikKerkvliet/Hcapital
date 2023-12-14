@@ -9,8 +9,12 @@
 	namespace v2\Classes;
 
 
-	class Import extends TextHandler
+	use v2\Traits\TextHandler;
+
+    class Import
 	{
+        use TextHandler;
+
 		public function __construct()
 		{
 			$file = fopen(\v2\Manager::TEMPLATE_FOLDER . 'Import.html', 'r');

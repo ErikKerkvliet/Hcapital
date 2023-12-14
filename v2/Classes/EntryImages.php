@@ -10,9 +10,12 @@
 
 
 	use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class EntryImages extends TextHandler
+    class EntryImages
 	{
+        use TextHandler;
+
 		/**
 		 * @var null
 		 */

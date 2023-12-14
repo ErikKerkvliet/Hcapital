@@ -8,16 +8,16 @@
 
 	namespace v2\Classes;
 
-	use v2\Database\Entity\Entry;
 	use v2\Database\Entity\Character;
-	use v2\Database\Entity\Developer;
-	use v2\Database\Entity\Thread;
-	use v2\Manager;
+    use v2\Database\Entity\Developer;
+    use v2\Database\Entity\Entry;
+    use v2\Database\Entity\Thread;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Main extends TextHandler
+    class Main
 	{
-		public $cssFiles = [];
-		public $jsFiles = [];
+        use TextHandler;
 
 		/**
 		 * Main constructor.

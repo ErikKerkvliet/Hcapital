@@ -9,11 +9,14 @@
 	namespace v2\Classes;
 
 	use HostResolver;
-	use v2\Database\Entity\Link;
-	use v2\Manager;
+    use v2\Database\Entity\Link;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class EntryLinks extends TextHandler
+    class EntryLinks
 	{
+        use TextHandler;
+
 		private $entry = null;
 
 		private $links = [];

@@ -9,9 +9,6 @@
 	namespace v2\Builders;
 
 
-	use v2\Classes\TextHandler;
-	use v2\Manager;
-
 	class Images
 	{
 		/**

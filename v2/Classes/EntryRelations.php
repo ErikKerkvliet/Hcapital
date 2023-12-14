@@ -9,12 +9,15 @@
 	namespace v2\Classes;
 
 	use v2\Database\Entity\Entry;
-	use v2\Database\Entity\EntryRelation;
-	use v2\Database\Repository\EntryRelationRepository;
-	use v2\Manager;
+    use v2\Database\Entity\EntryRelation;
+    use v2\Database\Repository\EntryRelationRepository;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class EntryRelations extends TextHandler
+    class EntryRelations
 	{
+        use TextHandler;
+
 		private $entry = null;
 
 		public function __construct($entry)

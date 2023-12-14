@@ -10,9 +10,12 @@
 
 
 	use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Searcher extends TextHandler
+    class Searcher
 	{
+        use TextHandler;
+
 		private $type = '';
 
 		public function __construct($type)

@@ -1,13 +1,18 @@
 <?php
-	/**
+
+use v2\Traits\TextHandler;
+
+/**
 	 * Created by PhpStorm.
 	 * User: erik
 	 * Date: 13-12-21
 	 * Time: 21:21
 	 */
 
-	class AddSharingUrl extends \v2\Classes\TextHandler
+	class AddSharingUrl
 	{
+        use TextHandler;
+
 		/**
 		 * @var int
 		 */

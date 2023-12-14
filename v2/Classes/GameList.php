@@ -9,16 +9,14 @@
 	namespace v2\Classes;
 
 
-	use v2\Database\Entity\Character;
-	use v2\Database\Entity\Developer;
 	use v2\Database\Entity\Entry;
-	use v2\Database\Repository\CharacterRepository;
-	use v2\Database\Repository\DeveloperRepository;
-	use v2\Database\Repository\EntryRepository;
-	use v2\Manager;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class GameList extends TextHandler
+    class GameList
 	{
+        use TextHandler;
+
 		/**
 		 * @var Entry|null
 		 */

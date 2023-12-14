@@ -3,12 +3,15 @@
 	namespace v2\Classes;
 
 	use v2\Database\Entity\Banned;
-	use v2\Database\Entity\Download;
-	use v2\Database\Repository\DownloadRepository;
-	use v2\Manager;
+    use v2\Database\Entity\Download;
+    use v2\Database\Repository\DownloadRepository;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Downloads extends TextHandler
+    class Downloads
 	{
+        use TextHandler;
+
 		/**
 		 * @var null|int
 		 */

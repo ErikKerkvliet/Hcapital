@@ -9,9 +9,12 @@
 	namespace v2\Classes;
 
 	use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Header extends TextHandler
+    class Header
 	{
+        use TextHandler;
+
 		public function buildContent()
 		{
 			$file= fopen(Manager::TEMPLATE_FOLDER . 'Header.html', 'r');

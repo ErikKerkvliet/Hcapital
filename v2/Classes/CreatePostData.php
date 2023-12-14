@@ -9,14 +9,17 @@
 	namespace v2\Classes;
 
 	use HostResolver;
-	use v2\Database\Entity\Entry;
-	use v2\Database\Entity\Link;
-	use v2\Database\Repository\DeveloperRepository;
-	use v2\Database\Repository\LinkRepository;
-	use v2\Manager;
+    use v2\Database\Entity\Entry;
+    use v2\Database\Entity\Link;
+    use v2\Database\Repository\DeveloperRepository;
+    use v2\Database\Repository\LinkRepository;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class CreatePostData extends TextHandler
+    class CreatePostData
 	{
+        use TextHandler;
+
 		/**
 		 * @var Entry|null
 		 */

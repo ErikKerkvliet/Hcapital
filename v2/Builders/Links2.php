@@ -2,12 +2,14 @@
 	namespace v2\Builders;
 
 	use HostResolver;
-	use LinkResolver;
-	use v2\Database\Entity\Host;
-	use v2\Database\Entity\Link;
+    use LinkResolver;
+    use v2\Database\Entity\Link;
+    use v2\Traits\Builder;
 
-	class Links2 extends Builder
+    class Links2
 	{
+        use Builder;
+
 		/**
 		 * @var array
 		 */

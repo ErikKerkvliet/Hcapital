@@ -10,9 +10,12 @@
 
 
 	use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class OrderBar extends TextHandler
+    class OrderBar
 	{
+        use TextHandler;
+
 		private $type;
 
 		public function __construct($type)

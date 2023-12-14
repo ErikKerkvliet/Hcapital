@@ -9,12 +9,15 @@
 	namespace v2\Classes;
 
 	use v2\ClientException;
-	use v2\Database\Entity\Link;
-	use v2\Manager;
-	use v2\RapidgatorClient;
+    use v2\Database\Entity\Link;
+    use v2\Manager;
+    use v2\RapidgatorClient;
+    use v2\Traits\TextHandler;
 
-	class LinkState extends TextHandler
+    class LinkState
 	{
+        use TextHandler;
+
 		private $from = 0;
 
 		private $to = 0;

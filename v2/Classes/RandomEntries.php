@@ -5,9 +5,12 @@ namespace v2\Classes;
 use v2\Database\Entity\Entry;
 use v2\Database\Repository\EntryRepository;
 use v2\Manager;
+use v2\Traits\TextHandler;
 
-class RandomEntries extends TextHandler
+class RandomEntries
 {
+    use TextHandler;
+
 	/**
 	 * DeveloperList constructor.
 	 * @param $items

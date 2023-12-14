@@ -9,9 +9,12 @@
 	namespace v2\Classes;
 
 	use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Head extends TextHandler
+    class Head
 	{
+        use TextHandler;
+
 		public function __construct(){}
 
 		public function buildContent()

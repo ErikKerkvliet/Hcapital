@@ -6,39 +6,41 @@
 	 * Time: 16:27
 	 */
 
-	namespace v2\Classes;
+	namespace v2\Traits;
 
-	class TextHandler
+	use v2\Classes\AdminCheck;
+
+    trait TextHandler
 	{
 		/**
 		 * @var array
 		 */
-		protected $cssFiles = [];
+		public $cssFiles = [];
 
 		/**
 		 * @var array
 		 */
-		protected $jsFiles = [];
+		public $jsFiles = [];
 
 		/**
 		 * @var null
 		 */
-		protected $content = '';
+		public $content = '';
 
 		/**
 		 * @var array
 		 */
-		protected $placeHolders = [];
+		public $placeHolders = [];
 
 		/**
 		 * @var array
 		 */
-		protected $ifs = [];
+		public $ifs = [];
 
 		/**
 		 * @var array
 		 */
-		protected $fors = [];
+		public $fors = [];
 
 		public function handleAdminView() {
 			if (AdminCheck::checkForAdmin()) {
@@ -56,7 +58,7 @@
 
 		}
 
-		protected function fillIfs()
+		public function fillIfs()
 		{
 			foreach ($this->ifs as $if => $value) {
 				$pattern = '/\{if ' . $if . '\}(.*?)\{\/if\}/s';
@@ -73,7 +75,7 @@
 			$this->content = str_replace('{/if}', '', $this->content);
 		}
 
-		protected function fillFors()
+		public function fillFors()
 		{
 			foreach ($this->fors as $for => $values) {
 				$text = '';
@@ -119,7 +121,7 @@
 			$this->content = str_replace('{/for}', '', $this->content);
 		}
 
-		protected function fillPlaceHolders()
+		public function fillPlaceHolders()
 		{
 			foreach ($this->placeHolders as $placeHolder => $value) {
 				$search = '{{' . $placeHolder . '}}';
@@ -131,7 +133,7 @@
 		/**
 		 * @return array
 		 */
-		protected function getCss()
+		public function getCss()
 		{
 			return $this->cssFiles;
 		}
@@ -139,7 +141,7 @@
 		/**
 		 * @return array
 		 */
-		protected function getJs()
+		public function getJs()
 		{
 			return $this->jsFiles;
 		}

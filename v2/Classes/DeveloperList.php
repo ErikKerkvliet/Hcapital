@@ -9,10 +9,13 @@
 	namespace v2\Classes;
 
 	use v2\Database\Repository\DeveloperRepository;
-	use v2\Manager;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class DeveloperList extends TextHandler
+    class DeveloperList
 	{
+        use TextHandler;
+
 		private $items = [];
 
 		/**

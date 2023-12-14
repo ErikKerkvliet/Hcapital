@@ -10,9 +10,12 @@
 
 
 	use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class ListSelect extends TextHandler
+    class ListSelect
 	{
+        use TextHandler;
+
 		private $buttonTypes = [];
 
 		private $type;

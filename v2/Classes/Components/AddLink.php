@@ -1,16 +1,19 @@
 <?php
 
-	use v2\Database\Entity\Host;
+use v2\Database\Entity\Host;
+use v2\Traits\TextHandler;
 
-	/**
+/**
 	 * Created by PhpStorm.
 	 * User: erik
 	 * Date: 29-2-20
 	 * Time: 0:00
 	 */
 
-	class AddLink extends \v2\Classes\TextHandler
+	class AddLink
 	{
+        use TextHandler;
+
 		/**
 		 * @var int
 		 */

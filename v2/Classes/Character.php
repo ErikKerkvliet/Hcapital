@@ -8,14 +8,15 @@
 
 	namespace v2\Classes;
 
-	use v2\Database\Entity\EntryCharacter;
 	use v2\Database\Entity\Entry;
-	use v2\Database\Repository\EntryCharacterRepository;
-	use v2\Database\Repository\EntryRepository;
-	use v2\Manager;
+    use v2\Database\Repository\EntryRepository;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Character extends TextHandler
+    class Character
 	{
+        use TextHandler;
+
 		/**
 		 * @var string
 		 */

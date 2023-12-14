@@ -9,17 +9,19 @@
 	namespace v2\Classes;
 
 	use EntryNameResolver;
-	use v2\Builders\Characters;
-	use v2\Builders\Images;
-	use v2\Builders\Links2;
-	use v2\Database\Entity\Entry;
-	use v2\Database\Entity\EntryDeveloper;
+use v2\Builders\Characters;
+use v2\Builders\Images;
+use v2\Builders\Links2;
+use v2\Database\Entity\Entry;
+use v2\Database\Entity\EntryDeveloper;
+use v2\Database\Entity\Thread;
+use v2\Manager;
+use v2\Traits\TextHandler;
 
-	use v2\Database\Entity\Thread;
-	use v2\Manager;
-
-	class EntryInfo extends TextHandler
+	class EntryInfo
 	{
+		use TextHandler;
+
 		/**
 		 * @var Entry|null
 		 */

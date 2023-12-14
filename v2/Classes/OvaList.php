@@ -10,9 +10,12 @@
 
 
 	use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class OvaList extends TextHandler
+    class OvaList
 	{
+        use TextHandler;
+
 		/**
 		 * @var array|null
 		 */

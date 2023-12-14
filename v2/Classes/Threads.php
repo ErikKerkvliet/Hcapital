@@ -9,15 +9,18 @@
 	namespace v2\Classes;
 
 	use v2\Database\Entity\Entry;
-	use v2\Database\Entity\Link;
-	use v2\Database\Entity\Thread;
-	use v2\Database\Repository\EntryRepository;
-	use v2\Database\Repository\LinkRepository;
-	use v2\Database\Repository\ThreadRepository;
-	use v2\Manager;
+    use v2\Database\Entity\Link;
+    use v2\Database\Entity\Thread;
+    use v2\Database\Repository\EntryRepository;
+    use v2\Database\Repository\LinkRepository;
+    use v2\Database\Repository\ThreadRepository;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Threads extends TextHandler
+    class Threads
 	{
+        use TextHandler;
+
 		public $page = 0;
 
 		private $threads = [];

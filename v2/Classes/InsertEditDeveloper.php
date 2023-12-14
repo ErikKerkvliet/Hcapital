@@ -9,11 +9,14 @@
 	namespace v2\Classes;
 
 	use v2\Database\Entity\Developer;
-	use v2\Manager;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
 
-	class InsertEditDeveloper extends TextHandler
+    class InsertEditDeveloper
 	{
+        use TextHandler;
+
 		/**
 		 * @var Developer|null
 		 */

@@ -9,9 +9,12 @@
 	namespace v2\Classes;
 
 	use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Footer extends TextHandler
+    class Footer
 	{
+        use TextHandler;
+
 		public function buildContent()
 		{
 			$file = fopen(Manager::TEMPLATE_FOLDER . 'Footer.html', 'r');

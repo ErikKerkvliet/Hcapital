@@ -81,8 +81,8 @@
 	require_once('Database/Repository/SharingThreadRepository.php');
 	require_once('Database/Repository/HostRepository.php');
 
+	require_once('Traits/Builder.php');
 	require_once('Builders/Images.php');
-	require_once('Builders/Builder.php');
 	require_once('Builders/Characters.php');
 	require_once('Builders/Links.php');
 	require_once('Builders/Links2.php');
@@ -90,7 +90,8 @@
 
 	require_once('Classes/AdminCheck.php');
 
-	require_once('Classes/TextHandler.php');
+	require_once('Traits/TextHandler.php');
+	require_once('Builders/Links3.php');
 	require_once('Classes/Borders.php');
 
 	require_once('Classes/Relations.php');
@@ -185,7 +186,7 @@
 //				}
 //				dd();
 //			}
-			require_once('Classes/TextHandler.php');
+			require_once('Traits/TextHandler.php');
 
 			require_once('Classes/Main.php');
 
@@ -447,6 +448,7 @@ dd($data);
 				header('LOCATION: ' . $url);
 				die();
 			}
+            $linkIds = [];
 			if (request('action') === 'fileInfo'
 				&& ($user = request('user'))
 				&& ($password = request('password'))

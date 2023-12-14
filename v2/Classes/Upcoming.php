@@ -10,9 +10,12 @@
 
 
 	use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Upcoming extends TextHandler
+    class Upcoming
 	{
+        use TextHandler;
+
 		public function __construct()
 		{
 			$this->cssFiles = [

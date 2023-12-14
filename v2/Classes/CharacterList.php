@@ -10,9 +10,12 @@
 
 
 	use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class CharacterList extends TextHandler
+    class CharacterList
 	{
+        use TextHandler;
+
 		private $items = [];
 
 		private $originalContent = '';

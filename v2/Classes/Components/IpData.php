@@ -6,10 +6,12 @@
 	 * Time: 15:18
 	 */
 
-	use v2\Classes\TextHandler;
+use v2\Traits\TextHandler;
 
-	class IpData extends TextHandler
+class IpData
 	{
+        use TextHandler;
+
 		private $ipData = [];
 
 		public function __construct($ipData)

@@ -9,22 +9,24 @@
 	namespace v2\Classes;
 
 	use AddLink;
-	use HostResolver;
-	use v2\Database\Entity\DeveloperRelation;
-	use v2\Database\Entity\Entry;
-	use v2\Database\Entity\Developer;
-	use v2\Database\Entity\EntryDeveloper;
-	use v2\Database\Entity\EntryRelation;
-	use v2\Database\Entity\Host;
-	use v2\Database\Entity\Link;
-	use v2\Database\Repository\DeveloperRepository;
-	use v2\Database\Repository\EntryDeveloperRepository;
-	use v2\Database\Repository\EntryRelationRepository;
-	use v2\Database\Repository\LinkRepository;
-	use v2\Manager;
+    use HostResolver;
+    use v2\Database\Entity\Developer;
+    use v2\Database\Entity\Entry;
+    use v2\Database\Entity\EntryDeveloper;
+    use v2\Database\Entity\EntryRelation;
+    use v2\Database\Entity\Host;
+    use v2\Database\Entity\Link;
+    use v2\Database\Repository\DeveloperRepository;
+    use v2\Database\Repository\EntryDeveloperRepository;
+    use v2\Database\Repository\EntryRelationRepository;
+    use v2\Database\Repository\LinkRepository;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class InsertEdit extends TextHandler
+    class InsertEdit
 	{
+        use TextHandler;
+
 		/**
 		 * @var Entry|null
 		 */

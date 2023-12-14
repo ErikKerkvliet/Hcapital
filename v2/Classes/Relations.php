@@ -9,11 +9,14 @@
 	namespace v2\Classes;
 
 	use v2\Database\Entity\EntryRelation;
-	use v2\Database\Repository\EntryRelationRepository;
-	use v2\Manager;
+    use v2\Database\Repository\EntryRelationRepository;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Relations extends TextHandler
+    class Relations
 	{
+        use TextHandler;
+
 		/**
 		 * @var array
 		 */

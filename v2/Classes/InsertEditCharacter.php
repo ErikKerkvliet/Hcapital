@@ -9,11 +9,14 @@
 	namespace v2\Classes;
 
 	use v2\Database\Entity\Character;
-	use v2\Manager;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
 
-	class InsertEditCharacter extends TextHandler
+    class InsertEditCharacter
 	{
+        use TextHandler;
+
 		/**
 		 * @var Character|null
 		 */

@@ -10,9 +10,12 @@
 
 
 	use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class Navigation extends TextHandler
+    class Navigation
 	{
+        use TextHandler;
+
 		/**
 		 * Navigation constructor.
 		 */

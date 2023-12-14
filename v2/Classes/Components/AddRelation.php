@@ -1,13 +1,18 @@
 <?php
-	/**
+
+use v2\Traits\TextHandler;
+
+/**
 	 * Created by PhpStorm.
 	 * User: erik
 	 * Date: 28-2-20
 	 * Time: 23:08
 	 */
 
-	class AddRelation extends \v2\Classes\TextHandler
+	class AddRelation
 	{
+        use TextHandler;
+
 		/**
 		 * @var int
 		 */

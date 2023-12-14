@@ -8,23 +8,24 @@
 
 	namespace v2\Classes;
 
-	use v2\Database\Entity\Entity;
-	use v2\Database\Entity\EntryCharacter;
-	use v2\Database\Entity\Entry;
-	use \v2\Database\Entity\Developer;
-	use v2\Database\Entity\EntryDeveloper;
-	use v2\Database\Entity\EntryRelation;
-	use v2\Database\Entity\Host;
-	use v2\Database\Entity\Link;
-	use v2\Database\Repository\DeveloperRelationRepository;
-	use v2\Database\Repository\EntryCharacterRepository;
-	use v2\Database\Repository\EntryDeveloperRepository;
-	use v2\Database\Repository\EntryRelationRepository;
-	use v2\Database\Repository\EntryRepository;
-	use v2\Database\Repository\LinkRepository;
+	use v2\Database\Entity\Developer;
+    use v2\Database\Entity\Entry;
+    use v2\Database\Entity\EntryCharacter;
+    use v2\Database\Entity\EntryDeveloper;
+    use v2\Database\Entity\EntryRelation;
+    use v2\Database\Entity\Host;
+    use v2\Database\Entity\Link;
+    use v2\Database\Repository\EntryCharacterRepository;
+    use v2\Database\Repository\EntryDeveloperRepository;
+    use v2\Database\Repository\EntryRelationRepository;
+    use v2\Database\Repository\EntryRepository;
+    use v2\Database\Repository\LinkRepository;
+    use v2\Traits\TextHandler;
 
-	class Export extends TextHandler
+    class Export
 	{
+        use TextHandler;
+
 		private $entries = [];
 
 		private $entry = null;

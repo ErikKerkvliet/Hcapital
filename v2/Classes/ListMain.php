@@ -8,26 +8,23 @@
 
 	namespace v2\Classes;
 
-	use LinkFactory;
 	use ThreadFactory;
-	use v2\Database\Entity\Character;
-	use v2\Database\Entity\Developer;
-	use v2\Database\Entity\Entry;
-	use v2\Database\Entity\Link;
-	use v2\Database\Entity\Link2;
-	use v2\Database\Entity\SeriesRelation;
-	use v2\Database\Entity\SharingThread;
-	use v2\Database\Entity\Thread;
-	use v2\Database\Repository\CharacterRepository;
-	use v2\Database\Repository\DeveloperRepository;
-	use v2\Database\Repository\EntryRepository;
-	use v2\Database\Repository\SeriesRelationRepository;
-	use v2\Database\Repository\SharingThreadRepository;
-	use v2\Database\Repository\ThreadRepository;
-	use v2\Manager;
+    use v2\Database\Entity\Character;
+    use v2\Database\Entity\Developer;
+    use v2\Database\Entity\Entry;
+    use v2\Database\Entity\Link2;
+    use v2\Database\Entity\SeriesRelation;
+    use v2\Database\Entity\SharingThread;
+    use v2\Database\Repository\CharacterRepository;
+    use v2\Database\Repository\DeveloperRepository;
+    use v2\Database\Repository\EntryRepository;
+    use v2\Database\Repository\SeriesRelationRepository;
+    use v2\Manager;
+    use v2\Traits\TextHandler;
 
-	class ListMain extends TextHandler
+    class ListMain
 	{
+        use TextHandler;
 
 		private $type = 'all';
 

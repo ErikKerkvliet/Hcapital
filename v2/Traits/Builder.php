@@ -6,12 +6,12 @@
 	 * Time: 12:10
 	 */
 
-	namespace v2\Builders;
+	namespace v2\Traits;
 
 
 	use v2\Database\Entity\Entry;
 
-	class Builder
+    trait Builder
 	{
 		/**
 		 * @var Entry|null
