@@ -184,7 +184,7 @@
 		if (count($data) == 0) {
 			$str = "<i>Empty array.</i>";
 		} else {
-			$str = '<table style="font-size:17px;border-bottom:0px solid #091a1f;" cellpadding="0" cellspacing="0">';
+			$str = '<table style="background:white;font-size:17px;border-bottom:0px solid #091a1f;" cellpadding="0" cellspacing="0">';
 			foreach ($data as $key => $value) {
 				$value = ! (is_int($value) || is_string($value)) ? $value : '&nbsp;' . $value . '&nbsp;';
 				$str .= '<tr>
@@ -282,11 +282,9 @@
 		}
 	}
 
-	function dc($value1 = null, $value2 = null, $value3 = null, $value4 = null, $value5 = null)
+	function dc($data = null)
 	{
-		if (\v2\Classes\AdminCheck::checkForAdmin()) {
-			dd2($value1, $value2, $value3, $value4, $value5, true);
-		}
+		echo dnl($data);
 	}
 
 	function shutdown()

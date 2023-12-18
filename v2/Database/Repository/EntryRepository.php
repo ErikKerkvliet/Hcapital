@@ -417,7 +417,7 @@ class EntryRepository extends Repository
 		$sql = sprintf("SELECT * FROM (SELECT id, romanji FROM entries WHERE type = '%s' AND romanji != ''
 				UNION ALL 
 				SELECT id, title AS romanji FROM entries WHERE type = '%s' AND romanji = '') AS t1
-				GROUP BY romanji",
+				GROUP BY romanji ORDER BY romanji ASC",
 			$type,
 			$type);
 

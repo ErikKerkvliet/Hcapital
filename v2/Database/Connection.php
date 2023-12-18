@@ -35,11 +35,10 @@
 		protected function setupConnection()
 		{
 			if (strpos($_SERVER['HTTP_HOST'], 'hcapital.tk') !== false) {
-				$db = 'hcapital_tk_hcapita';
-				$host = 'localhost';
-				$user = 'hcapi_tk_hcapita';
-				$password = 'dDqK7oDf6fVD';
-
+				$db = 'hcapit_hcapitaltkhcapita8997';
+				$host = 'hcapit-hcapitaltkhcapita8997.db.transip.me';
+				$user = 'hcapit_hcapital';
+				$password = '$X$kzGR%Y8O&wWzN';
 				$this->connection = new \mysqli($host, $user, $password, $db);
 			} else {
 				$db = 'hcapital';

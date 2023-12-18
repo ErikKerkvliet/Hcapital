@@ -62,6 +62,11 @@
 		 */
 		private $information = '';
 
+        /**
+         * @var null|string
+         */
+        private $vndb = '';
+
 		/**
 		 * @var null|string
 		 */
@@ -214,6 +219,25 @@
 
 			return $this;
 		}
+
+        /**
+         * @return int
+         */
+        public function getVndb()
+        {
+            return (int) $this->vndb;
+        }
+
+        /**
+         * @param int $vndb
+         * @return Entry
+         */
+        public function setVndb(int $vndb): Entry
+        {
+            $this->vndb = $vndb;
+
+            return $this;
+        }
 
 		/**
 		 * @return string

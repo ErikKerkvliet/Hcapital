@@ -354,6 +354,8 @@
 				    return 'type';
 			    case 'last_edited':
 				    return 'lastEdit';
+				case 'vndb_id':
+					return 'vndb';
 			    default:
 				    return $name;
 		    }
@@ -381,6 +383,8 @@
 					return 'last_edited';
 				case 'lastEdit':
 					return 'last_edited';
+				case 'vndb':
+					return 'vndb_id';
 				default:
 					return $name;
 			}

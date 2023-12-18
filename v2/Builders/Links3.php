@@ -28,7 +28,7 @@ class Links3
 
     public function buildContent()
     {
-        $file = fopen(Manager::COMPONENT_FOLDER . '/LinkBox.html', 'r');
+        $file = fopen(Manager::COMPONENT_FOLDER . '/LinksBox.html', 'r');
         $this->content = fread($file, 10000);
     }
 }

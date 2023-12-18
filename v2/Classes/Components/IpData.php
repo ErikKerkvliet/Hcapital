@@ -6,9 +6,9 @@
 	 * Time: 15:18
 	 */
 
-use v2\Traits\TextHandler;
+    use v2\Traits\TextHandler;
 
-class IpData
+    class IpData
 	{
         use TextHandler;
 
