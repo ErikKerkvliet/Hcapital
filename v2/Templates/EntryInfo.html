@@ -119,6 +119,21 @@
     </div>
 {/if}
 
+{{admin}}
+    {if vndbExists}
+    <div class='info-row'>
+        <div class='info-col1'>
+            Vndb:
+        </div>
+        <div class='info-col2'>
+            <a href='{{vndb}}' target='_blank'>
+                {{vndb}}
+            </a>
+        </div>
+    </div>
+    {/if}
+{{/admin}}
+
 {if size}
     <div class='info-row'>
         <div class='info-col1'>

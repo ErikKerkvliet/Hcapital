@@ -100,6 +100,8 @@
 					'size' => $this->entry->getSize(),
 					'website' => $this->entry->getWebsite(),
 					'information' => $this->entry->getInformation(),
+					'vndb' => $this->entry->getVndb(),
+					'fullVndb' => $this->entry->getVndb() ? 'https://vndb.org/v' . $this->entry->getVndb() : '',
 					'password' => $this->entry->getPassword(),
 					'rapidgator' => isset($this->links['Rapidgator'])
 						? implode('splitter', $this->links['Rapidgator']['Rapidgator'])
@@ -127,6 +129,7 @@
 					'size' => '',
 					'website' => '',
 					'information' => '',
+                    'fullVndb' => '',
 					'password' => '',
 					'rapidgator' => '',
 					'mexashare' => '',
@@ -141,6 +144,7 @@
 				'insertEdit' => true,
 				'getPost' => false,
 				'local' => AdminCheck::checkForLocal(),
+                'isUpdate' => ! $this->insert,
 			];
 
 			$this->fors = [

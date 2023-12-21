@@ -121,7 +121,7 @@
 				$banned = $bannedRepository->findByIpOrEntryAndLocation($entry, $ip, $location);
 			}
 
-			if (count($banned) > 0) {
+			if (isset($banned) && count($banned) > 0) {
 				//the user is found in the banned list
 				return true;
 			} else {

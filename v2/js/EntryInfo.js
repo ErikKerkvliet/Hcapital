@@ -278,6 +278,8 @@ function goToUrl(id, mouseClickType)
 			} else {
 				window.open(response.link, '_blank');
 			}
+		} else {
+			alert(response.comment);
 		}
 	});
 }

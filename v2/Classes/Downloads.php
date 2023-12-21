@@ -83,7 +83,7 @@
 
 			/** @var Download $download */
 			foreach($downloads as $download) {
-				$dateTime = $download->getTime();
+				$dateTime = $download->getCreated();
 				$ip = $download->getIp();
 				$isBanned = in_array($download->getIp(), $this->banned);
 

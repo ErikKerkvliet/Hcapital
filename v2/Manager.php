@@ -30,6 +30,7 @@
 	use v2\Database\Entity\Link;
 	use v2\Database\Entity\Thread;
     use v2\Database\Repository\CharacterRepository;
+    use v2\Database\Repository\DownloadRepository;
     use v2\Database\Repository\EntryCharacterRepository;
 	use v2\Database\Repository\EntryDeveloperRepository;
 	use v2\Database\Repository\EntryRelationRepository;
@@ -158,7 +159,7 @@
 	{
 		CONST TEST = false;
 
-		CONST CSS_JS_VERSION = 2.36;
+		CONST CSS_JS_VERSION = 2.37;
 
 		CONST TEMPLATE_FOLDER = 'v2/Templates/';
 		CONST COMPONENT_FOLDER = 'v2/Templates/Components/';
@@ -520,25 +521,50 @@ dd($data);
 					app('em')->flush();
 				}
 
-				/** @var Download $download */
-				$download = new Download();
-				$download->setEntry($entry->getId());
-				$download->setLink($link->getId());
-				$download->setIp(AdminCheck::get_ip_address());
+                $url = '';
+                $comment = '';
+                $success = false;
 
-				if (AdminCheck::isBanned($entry)) {
-					$url = Link::BANNED_URL;
-					$download->setComment(Banned::BANNED);
-				} else {
-					$url = $link->getLink();
-				}
+                $download = new Download();
+                if (AdminCheck::checkForAdmin()) {
+                    $url = $link->getLink();
+                    $success = true;
+                } else {
+                    $downloadRepository = app('em')->getRepository(Download::class);
+
+                    $ipAddress = AdminCheck::get_ip_address();
+                    $downloads = $downloadRepository->getDownloadsByIp($ipAddress, 1);
+
+                    if (AdminCheck::isBanned($entry)) {
+                        $comment = Banned::BANNED;
+                        $url = Link::BANNED_URL;
+                        $success = true;
+                    } elseif (count($downloads) > 15) {
+                        $comment = Download::TO_MANY_DOWNLOADS_LINK;
+                    } elseif (count(array_unique(array_map(function ($download) {
+                            return $download->getEntry(true);
+                        }, $downloads))) > 5
+                    ) {
+                        $comment = Download::TO_MANY_DOWNLOADS_ENTRY;
+                    } else {
+                        $url = $link->getLink();
+                        $success = true;
+                    }
+                    $download->setComment($comment);
+                }
+
+                $download->setEntry($entry->getId());
+                $download->setLink($link->getId());
+                $download->setIp(AdminCheck::get_ip_address());
+
 				if ($isAddDownload) {
 					app('em')->flush($download);
 				}
 
 				echo json_encode([
 					'link' => $url,
-					'success' => true,
+                    'comment' => $comment,
+					'success' => $success,
 				]);
 				die();
 			} else if (request('a') == 'listItems') {

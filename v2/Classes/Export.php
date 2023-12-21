@@ -80,6 +80,7 @@
 				$variables[] = 'released|!|' . saveForSql($entry->getReleased());
 				$variables[] = 'size|!|' . saveForSql($entry->getSize());
 				$variables[] = 'website|!|' . saveForSql($entry->getWebsite());
+				$variables[] = 'vndb|!|' . saveForSql($entry->getVndb());
 				$variables[] = 'information|!|' . saveForSql($entry->getInformation());
 				$variables[] = 'password|!|' . saveForSql($entry->getPassword());
 				$variables[] = 'type|!|' . saveForSql($entry->getType());

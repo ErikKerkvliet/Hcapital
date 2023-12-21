@@ -68,7 +68,8 @@
 			$this->size = $this->getSize(requestForSql('size'));
 			$this->website = request('website');
 			$this->information = request('information');
-			$this->password = requestForSql('password');
+			$this->vndb = $this->extractVndb(request('vndb'));
+            $this->password = requestForSql('password');
 
 			foreach (Host::HOSTS as $host) {
 				$variable = $host . 'Links';
@@ -188,6 +189,7 @@
 			$entry->setSize($this->size);
 			$entry->setWebsite($this->website);
 			$entry->setInformation($this->information);
+			$entry->setVndb($this->vndb);
 			$entry->setPassword($this->password);
 
 			if (! $this->insert) {
@@ -506,6 +508,11 @@
 			}
 			return 0;
 		}
+
+        private function extractVndb($vndb): int
+        {
+            return (int) filter_var($vndb, FILTER_SANITIZE_NUMBER_INT);
+        }
 
 		private function getSize($requestSize)
 		{

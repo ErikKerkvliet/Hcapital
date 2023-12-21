@@ -62,8 +62,9 @@
 		    $exploded = explode('\\', $this->entity);
 		    $entity = end($exploded);
 
-			$fileName = $GLOBALS['source'] == 'ajax' ? 'Database/Entity/' . $entity . '.php' :
-				'v2/Database/Entity/' . $entity . '.php';
+			$fileName = isset($GLOBALS['source']) && $GLOBALS['source'] == 'ajax'
+				? 'Database/Entity/' . $entity . '.php'
+				: 'v2/Database/Entity/' . $entity . '.php';
 
 	    	require_once($fileName);
 	    }
@@ -76,7 +77,7 @@
 		    $exploded = explode('\\', $this->entity);
 		    $entity = end($exploded);
 
-		    $fileName = $GLOBALS['source'] == 'ajax' ? 'Database/Repository/' . $entity . 'Repository.php' :
+		    $fileName = isset($GLOBALS['source']) && $GLOBALS['source'] == 'ajax' ? 'Database/Repository/' . $entity . 'Repository.php' :
 			    'v2/Database/Repository/' . $entity . 'Repository.php';
 
 		    require_once($fileName);

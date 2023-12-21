@@ -32,11 +32,22 @@
 				$where[] = "entry_id = " . $entry;
 			}
 			if ($date) {
-				$where[] = "time = '" . $date . "'";
+				$where[] = "created = '" . $date . "'";
 			}
 
 			$query .= ' WHERE ' . implode(' AND ', $where);
 
 			$this->runQuery(null, null, $query);
 		}
+
+        public function getDownloadsByIp(string $ip, int $intervalInDays = 0): array
+        {
+            $query = sprintf("SELECT * FROM downloads WHERE ip = '%s' AND created >= DATE_SUB(NOW(), INTERVAL %d day);",
+                $ip,
+                $intervalInDays
+            );
+
+            return $this->addRaw($query)
+                ->getResult();
+        }
 	}

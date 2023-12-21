@@ -8,12 +8,24 @@
 
 	namespace v2\Database\Entity;
 
-	class Download extends Entity
+	use Exception;
+
+    class Download extends Entity
 	{
 		/**
 		 * @var string
 		 */
 		CONST TABLE = 'downloads';
+
+        /**
+         * @var string
+         */
+        const TO_MANY_DOWNLOADS_LINK = 'To many links downloaded';
+
+        /**
+         * @var string
+         */
+        const TO_MANY_DOWNLOADS_ENTRY = 'To many entries downloaded';
 
 		/**
 		 * @var integer
@@ -43,7 +55,7 @@
 		/**
 		 * @var mixed
 		 */
-		private $time;
+		private $created;
 
 		/**
 		 * @return int
@@ -63,9 +75,9 @@
 
 		/**
 		 * @param string $ip
-		 * @return Downloads
+		 * @return $this
 		 */
-		public function setIp(string $ip): Download
+		public function setIp(string $ip): self
 		{
 			$this->ip = $ip;
 
@@ -76,17 +88,17 @@
 		 * @param bool $onlyId
 		 * @return mixed
 		 */
-		public function getEntry($onlyId = false)
+		public function getEntry(bool $onlyId = false)
 		{
 			return $this->getEntity($onlyId);
 		}
 
 		/**
 		 * @param $entity
-		 * @return Downloads
-		 * @throws \Exception
+		 * @return $this
+		 * @throws Exception
 		 */
-		public function setEntry($entity): Download
+		public function setEntry($entity): self
 		{
 			$this->entry = $this->setEntity($entity);
 
@@ -97,17 +109,17 @@
 		 * @param bool $onlyId
 		 * @return mixed
 		 */
-		public function getLink($onlyId = false)
+		public function getLink(bool $onlyId = false)
 		{
 			return $this->getEntity($onlyId);
 		}
 
 		/**
 		 * @param $entity
-		 * @return Downloads
-		 * @throws \Exception
+		 * @return $this
+		 * @throws Exception
 		 */
-		public function setLink($entity): Download
+		public function setLink($entity): self
 		{
 			$this->link = $this->setEntity($entity);
 
@@ -117,16 +129,17 @@
 		/**
 		 * @return string
 		 */
-		public function getComment()
-		{
+		public function getComment(): ?string
+        {
 			return $this->comment;
 		}
 
-		/**
-		 * @param string $comment
-		 */
-		public function setComment($comment)
-		{
+        /**
+         * @param string $comment
+         * @return $this
+         */
+		public function setComment(string $comment): self
+        {
 			$this->comment = $comment;
 
 			return $this;
@@ -135,20 +148,19 @@
 		/**
 		 * @return mixed
 		 */
-		public function getTime()
+		public function getCreated()
 		{
-			return $this->time;
+			return $this->created;
 		}
 
 		/**
-		 * @param $time
-		 * @return Downloads
+		 * @param $created
+		 * @return $this
 		 */
-		public function setTime($time): Download
+		public function setCreated($created): self
 		{
-			$this->time = $time;
+			$this->created = $created;
 
 			return $this;
 		}
 	}
-?>

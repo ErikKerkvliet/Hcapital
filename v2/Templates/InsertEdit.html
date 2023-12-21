@@ -118,6 +118,20 @@
             </div>
             <div>
                 <div class="description">
+                    Vndb:
+                </div>
+                <div class="data">
+                    <input type='text' id='vndb' name='vndb' value="{{fullVndb}}" size="40">
+                    {if isUpdate}
+                        <div class="data">
+                            <div id="vndb-link" data-vndb-id="{{vndb}}" class="add-button">
+                            Goto {{fullVndb}}
+                        </div>
+                    {/if}
+                </div>
+            </div>
+            <div>
+                <div class="description">
                     Password:
                 </div>
                 <div class="data">

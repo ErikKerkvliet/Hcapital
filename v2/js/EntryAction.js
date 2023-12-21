@@ -105,6 +105,12 @@ $(document).ready(function () {
 		$(this).val(pastedData.replace(/-/g, '/'));
 		$(this).val(pastedData.replace(/\./g, '/'));
 	});
+
+	$('#vndb-link').click(() => {
+		let vndb = window.document.getElementById('vndb-link').getAttribute('data-vndb-id');
+		let url = 'https://vndb.org/v' + vndb;
+		window.open(url, '_blank')
+	})
 });
 
 function addRelation(data) {

@@ -87,6 +87,7 @@ use v2\Traits\TextHandler;
 				'information'   => $this->getInformation(),
 				'size'          => $this->getSize(),
 				'password'      => $this->getPassword(),
+				'vndbExists'	=> $this->entry->getVndb() > 0,
 				'online'        => AdminCheck::checkForLocal() && AdminCheck::checkForAdmin(),
 			];
 
@@ -104,6 +105,7 @@ use v2\Traits\TextHandler;
 				'siteType'          => $this->getSiteType(),
 				'size'              => $this->getSize(),
 				'password'          => $this->getPassword(),
+				'vndb'				=> 'https://vndb.org/v' . $this->entry->getVndb(),
 				'images'            => $this->getImages(),
 				'characters'        => $this->getCharacters(),
 				'relations'         => $relationsHtml,
