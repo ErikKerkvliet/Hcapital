@@ -364,6 +364,14 @@ dd($data);
 
 				app('em')->delete($entryDeveloper);
 			}
+            if (request('action') === 'removeOldDownloads' && $admin) {
+                app('em')->getRepository(Download::class)->deleteOld();
+
+                echo json_encode([
+                    'success' => true,
+                ]);
+                die();
+            }
 			if (request('action') === 'ban' && ($ip = request('ip'))) {
 				$ban = new Banned();
 				$ban->setIp($ip);
@@ -428,7 +436,7 @@ dd($data);
 				$findBy = [];
 				$url = '/?v=2&action=di';
 				if (($date = request('date'))) {
-					$findBy['DATE_FORMAT(time, "%Y-%m-%d")'] = $date;
+					$findBy['DATE_FORMAT(created, "%Y-%m-%d")'] = $date;
 				}
 
 				if (($entry = request('entry'))) {

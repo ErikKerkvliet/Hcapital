@@ -8,7 +8,8 @@
 
 	namespace v2\Database\Entity;
 
-	use v2\Manager;
+	use Exception;
+    use v2\Manager;
 
 	class EntryCharacter extends Entity
 	{
@@ -44,7 +45,7 @@
 		 * @param bool $onlyId
 		 * @return mixed
 		 */
-		public function getCharacter($onlyId = false)
+		public function getCharacter(bool $onlyId = false)
 		{
 			return $this->getEntity($onlyId);
 		}
@@ -52,7 +53,7 @@
 		/**
 		 * @param $entity
 		 * @return EntryCharacter
-		 * @throws \Exception
+		 * @throws Exception
 		 */
 		public function setCharacter($entity): EntryCharacter
 		{
@@ -72,7 +73,7 @@
 		/**
 		 * @param $entity
 		 * @return EntryCharacter
-		 * @throws \Exception
+		 * @throws Exception
 		 */
 		public function setEntry($entity): EntryCharacter
 		{
@@ -81,4 +82,3 @@
 			return $this;
 		}
 	}
-?>

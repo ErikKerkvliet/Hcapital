@@ -1,5 +1,22 @@
 $(document).ready(function ()
 {
+	$('#clear-old').click(function (e) {
+		$.ajax({
+			url: 'index.php',
+			type: 'POST',
+			data: {
+				v: 2,
+				action: 'removeOldDownloads',
+			},
+			dataType: "json",
+		})
+			.done(response => {
+				if (response.success) {
+					alert('success');
+				}
+			});
+	});
+
 	$('.ban-ip').click(function (e) {
 		var ip = $(this).attr('data-ip');
 		var action = $(this).attr('data-ban').toLowerCase();

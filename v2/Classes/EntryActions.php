@@ -682,6 +682,7 @@
 		{
 			unset($entityData['id']);
 			foreach ($entityData as $key => $value) {
+                $value = $value === 'app' ? 'game' : $value;
 				$function = 'set' . ucfirst($key);
 				$entity->{$function}($value);
 			}

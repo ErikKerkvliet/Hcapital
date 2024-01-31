@@ -208,6 +208,8 @@
 
             app('em')->persist($entryCharacter);
             app('em')->flush();
+
+            header('Location: ?v=2&id=' . $this->entry->getId());
         }
 
 		private function handleImages()

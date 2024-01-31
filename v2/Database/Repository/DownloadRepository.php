@@ -40,6 +40,13 @@
 			$this->runQuery(null, null, $query);
 		}
 
+        public function deleteOld()
+        {
+            $query = "DELETE FROM downloads WHERE created < DATE_SUB(NOW(), INTERVAL 1 month);";
+
+            $this->runQuery(null, null, $query);
+        }
+
         public function getDownloadsByIp(string $ip, int $intervalInDays = 0): array
         {
             $query = sprintf("SELECT * FROM downloads WHERE ip = '%s' AND created >= DATE_SUB(NOW(), INTERVAL %d day);",
