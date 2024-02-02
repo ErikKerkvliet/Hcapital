@@ -159,7 +159,7 @@
 	{
 		CONST TEST = false;
 
-		CONST CSS_JS_VERSION = 2.37;
+		CONST CSS_JS_VERSION = 2.38;
 
 		CONST TEMPLATE_FOLDER = 'v2/Templates/';
 		CONST COMPONENT_FOLDER = 'v2/Templates/Components/';
