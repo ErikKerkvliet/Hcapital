@@ -229,12 +229,19 @@
 		return $str;
 	}
 
-	function dnl($data)
+	function dnl($data, $var2 = 'NULL', $var3 = 'NULL')
 	{
 		echo d($data) . "<br>\n";
+
+		if ($var2 !== 'NULL') {
+			echo d($var2) . "<br>\n";
+		}
+		if ($var3 !== 'NULL') {
+			echo d($var3) . "<br>\n";
+		}
 	}
 
-	function dd($data = null, $success = false)
+	function dd($data = null, $var2 = 'NULL', $var3 = 'NULL')
 	{
 		if (! empty($GLOBALS['dd']) && $GLOBALS['dd'] === false || ! \v2\Classes\AdminCheck::checkForAdmin()) {
 			return;
@@ -245,7 +252,7 @@
 			$data = '_null_';
 		}
 
-		echo dnl($data);
+		echo dnl($data, $var2, $var3);
 		exit;
 	}
 
@@ -282,9 +289,9 @@
 		}
 	}
 
-	function dc($data = null)
+	function dc($data = null, $var2 = 'NULL', $var3 = 'NULL')
 	{
-		echo dnl($data);
+		echo dnl($data, $var2, $var3);
 	}
 
 	function shutdown()

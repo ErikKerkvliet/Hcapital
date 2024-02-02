@@ -246,6 +246,10 @@
 			$entryDeveloperRepository = app('em')->getRepository(EntryDeveloper::class);
 			$entryDevelopers = $entryDeveloperRepository->findBy(['entry' => $this->entry]);
 
+            if (! $entryDevelopers) {
+                return [];
+            }
+            
 			$ids = array_map(function ($entryDeveloper) {
 				return $entryDeveloper->getDeveloper(true);
 			}, $entryDevelopers);

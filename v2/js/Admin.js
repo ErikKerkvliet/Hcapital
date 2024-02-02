@@ -42,6 +42,17 @@ function adminInitialise(reInitialize = false) {
 		post('?v=2', object)
 	});
 
+	$('#submit').click(function (e) {
+		if (document.getElementsByClassName('developer_select').length === 0 &&
+			document.getElementsByClassName('developers').length === 0) {
+			e.preventDefault();
+			alert('No developer');
+			return;
+		}
+		let object = {EntryAction: 'insert'};
+		post('?v=2', object)
+	});
+
 	$('#insert').click(function () {
 		let object = {EntryAction: 'insert'};
 

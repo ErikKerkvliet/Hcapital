@@ -50,11 +50,13 @@
 				$this->select('DISTINCT ' . $columnString)
 					->from(EntryRelation::TABLE, 'r')
 					->leftJoin(EntryRelation::TABLE, 'r1', 'r.relation_id', '=', 'r1.relation_id')
-					->where('r.entry_id', '=', $id);
+					->where('r.entry_id', '=', $id)
+                    ->orderBy('r.type', 'ASC');
 			} else {
 				$this->select('r.id, r.entry_id AS relation_id, r.relation_id AS entry_id, r.type')
 					->from(EntryRelation::TABLE, 'r')
-					->where('r.entry_id', '=', $id);
+					->where('r.entry_id', '=', $id)
+                    ->orderBy('r.type', 'ASC');
 			}
 
 			$entryRelations = $this->getResult();

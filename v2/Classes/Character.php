@@ -74,9 +74,9 @@
 				'age'       => $this->setSpace($this->character->getAge()),
 				'height'    => $this->setSpace($this->character->getHeight()),
 				'weight'    => $this->setSpace($this->character->getWeight()),
-				'waist'     => $this->setSpace($this->character->getWaist()),
-				'bust'      => $this->setSpace($this->getBust()),
-				'hips'      => $this->setSpace($this->character->getHips()),
+				'waist'     => $this->character->getWaist(),
+				'bust'      => $this->getBust(),
+				'hips'      => $this->character->getHips(),
 				'cup'       => $this->getBust() ? null : $this->setSpace($this->character->getCup()),
 				'orderBar'  => $this->getOrderBar(),
 			];
