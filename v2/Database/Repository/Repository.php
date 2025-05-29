@@ -25,7 +25,7 @@
 	use v2\Database\Repository\EntryRepository;
 	use v2\Database\Repository\EntryRelationRepository;
 	use v2\Database\Repository\LinkRepository;
-	use v2\Database\Repository\ToDoRepository;
+
 
 	class Repository extends QueryBuilder
 	{
@@ -80,7 +80,12 @@
 		 */
 		public function findBy(array $conditions, array $orderBy = [], array $limit = [])
 		{
-			$this->query = "SELECT * FROM " . $this->entityClass::TABLE . " WHERE";
+			$this->query = "SELECT * FROM " . $this->entityClass::TABLE;
+			
+			if ($conditions) {
+				$this->query .= " WHERE";
+			}
+
 			$comma = '';
 			foreach($conditions as $originalKey => $condition) {
 				$comma = ! $comma ? ' ' : ' AND ';
@@ -90,7 +95,7 @@
 				$condition = is_string($condition) ? "'". $condition ."'" : $condition;
 				$this->query .= $comma . $key . "=" . $condition;
 			}
-
+			
 			$comma = '';
 			foreach ($orderBy as $by => $order) {
 				$comma = ! $comma ? ' ' : ' ';

@@ -152,7 +152,7 @@
 				return $bust . ' cm (' . $cup . ')';
 			}
 			if ($bust = $this->character->getBust()) {
-				return $bust;
+				return $bust . ' cm';
 			}
 			return '';
 		}

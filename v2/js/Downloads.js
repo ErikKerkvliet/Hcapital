@@ -20,12 +20,14 @@ $(document).ready(function ()
 	$('.ban-ip').click(function (e) {
 		var ip = $(this).attr('data-ip');
 		var action = $(this).attr('data-ban').toLowerCase();
+		action = action === 'unban' ? 'delete' : action;
 		$.ajax({
 			url: 'index.php',
 			type: 'POST',
 			data: {
 				v: 2,
 				action: action,
+				entity: 'banned',
 				ip: ip,
 			},
 			dataType: "json",
@@ -35,7 +37,7 @@ $(document).ready(function ()
 			$(this).attr('data-ban', (action === 'ban' ? 'unban' : 'ban'));
 
 			$parent = $(this).parent().parent().parent();
-			if (action === 'unban') {
+			if (action === 'delete') {
 				$parent.attr('class', $parent.attr('data-tr'))
 			} else {
 				$parent.attr('class', 'banned_tr')

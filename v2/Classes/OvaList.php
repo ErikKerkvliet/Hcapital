@@ -128,7 +128,7 @@
 
 			foreach($this->series as &$episodes) {
 				usort($episodes, function($a, $b) {
-					return $a->getReleased() <=> $b->getReleased();
+					return $a->getTitle() <=> $b->getTitle();
 				});
 			}
 		}

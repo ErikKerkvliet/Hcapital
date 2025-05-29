@@ -166,7 +166,6 @@
 						'name' => $this->thumbnail['name'],
 						'tmp' => $this->thumbnail['tmp_name'],
 					]];
-
 				} else {
 					$thumbnail = [[
 						'name' => '__img.jpg',

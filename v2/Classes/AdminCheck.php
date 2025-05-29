@@ -8,6 +8,8 @@
 
 	namespace v2\Classes;
 
+	loadEnv(str_replace('Classes', '', __DIR__) . '.env');
+
 	use v2\Database\Entity\Banned;
 	use v2\Database\Repository\BannedRepository;
 
@@ -45,7 +47,7 @@
 		private static function checkLogin($ip) {
 			if (! empty($_SESSION) &&
 				(isset($_SESSION['ip']) && $ip == $_SESSION['ip']) &&
-				time() - $_SESSION['code_time'] < 3600 && $_SESSION['name'] == 'yuuichi') {
+				time() - $_SESSION['code_time'] < getenv('SESSION_TIMEOUT_TIME') && $_SESSION['name'] == getenv('SESSION_NAME')) {
 				return true;
 			}
 			return false;
@@ -54,13 +56,10 @@
 		public static function checkForAdmin()
 		{
 			$ip = self::get_ip_address();
-
-			if (self::checkLogin($ip) ||
-				$ip == '77.167.87.187' ||
-				$ip == '80.60.131.14' ||
-				$ip == '127.0.0.1' ||
-				$ip == '::1' ||
-				(strpos($ip, '2a02:a442:9a74') !== false) ||
+			$allowedIps = explode(', ', getenv('IP_V4_ADDRESSES'));
+			if (true||self::checkLogin($ip) ||
+				in_array($ip, $allowedIps, true) ||
+				(strpos($ip, getenv('IP_V6_MATCH')) !== false) ||
                 file_exists('./check.txt')) {
 				return true;
 			} else {
@@ -70,7 +69,7 @@
 
 		public static function checkForLocal()
 		{
-			if (strpos($_SERVER['HTTP_HOST'], 'hcapital.tk') !== false) {
+			if (strpos($_SERVER['HTTP_HOST'], getenv('SITE_NAME')) !== false) {
 				return false;
 			} else {
 				return true;

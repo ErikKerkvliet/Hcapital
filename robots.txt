@@ -1,0 +1,26 @@
+User-agent: Facebookbot
+Disallow: /
+
+User-agent: facebookexternalhit
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: Facebot
+Disallow: /
+
+User-agent: Facebook External Hit
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: OAI-SearchBot
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /

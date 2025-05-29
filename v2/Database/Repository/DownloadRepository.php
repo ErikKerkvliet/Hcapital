@@ -18,12 +18,12 @@
 		 */
 		protected $entity = Download::class;
 
-		public function deleteResults($date = null, $entry = null)
+		public function deleteDownloads($entry = null, $date = null)
 		{
 			$query = 'DELETE FROM downloads';
 
 			if (empty($date) && empty($entry)) {
-				$this->runQuery($query);
+				$this->runQuery(null, null, $query);
 				return;
 			}
 
@@ -32,20 +32,13 @@
 				$where[] = "entry_id = " . $entry;
 			}
 			if ($date) {
-				$where[] = "created = '" . $date . "'";
+				$where[] = "created < '" . $date . "'";
 			}
 
 			$query .= ' WHERE ' . implode(' AND ', $where);
 
 			$this->runQuery(null, null, $query);
 		}
-
-        public function deleteOld()
-        {
-            $query = "DELETE FROM downloads WHERE created < DATE_SUB(NOW(), INTERVAL 1 month);";
-
-            $this->runQuery(null, null, $query);
-        }
 
         public function getDownloadsByIp(string $ip, int $intervalInDays = 0): array
         {

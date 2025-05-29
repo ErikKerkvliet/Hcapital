@@ -321,8 +321,11 @@
 		}
 	}
 
-	function request($key)
+	function request($key = 'all', $default = false)
 	{
+		if ($key == 'all') {
+			return array_merge($_GET, $_POST, $_FILES);
+		}
 		if (isset($_POST[$key])) {
 			return $_POST[$key];
 		}
@@ -332,13 +335,18 @@
 		if (isset($_FILES[$key])) {
 			return $_FILES[$key];
 		}
-		return false;
+		
+		return $default;
 	}
 
-	function ra()
+	function ra(bool $return = false)
 	{
 		if (\v2\Classes\AdminCheck::checkForAdmin()) {
-			dd(array_merge($_GET, $_POST, $_FILES));
+			$data = array_merge($_GET, $_POST, $_FILES);
+			if ($return) {
+				return $data;
+			}
+			dd($data);
 		}
 	}
 
@@ -416,6 +424,28 @@
 			return '';
 		}
 		return $incomingString;
+	}
+
+	/**
+	 * Loads environment variables from a .env file.
+	 */
+	function loadEnv($path) {
+		if (!file_exists($path)) return;
+
+		$lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+		foreach ($lines as $line) {
+			if (strpos(trim($line), '#') === 0) continue;
+
+			list($key, $value) = explode('=', $line, 2);
+			$key = trim($key);
+			$value = trim($value);
+
+			if (!array_key_exists($key, $_ENV)) {
+				putenv("$key=$value");
+				$_ENV[$key] = $value;
+				$_SERVER[$key] = $value;
+			}
+		}
 	}
 ?>
 

@@ -43,6 +43,11 @@
 		 */
 		private $comment = '';
 
+		/**
+		 * @var string
+		 */
+		private $created_at;
+
 
 		/**
 		 * @return int
@@ -126,6 +131,18 @@
 		public function setComment(string $comment): Link
 		{
 			$this->comment = $comment;
+
+			return $this;
+		}
+
+		public function getCreated(): ?string
+		{
+			return $this->created_at;
+		}
+
+		public function setCreated(string $created): Link
+		{
+			$this->created_at = $created;
 
 			return $this;
 		}

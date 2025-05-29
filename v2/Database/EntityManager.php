@@ -83,6 +83,12 @@
 		    require_once($fileName);
 	    }
 
+		public function getReference($entityClass, $id) {
+			$entity = new $entityClass();
+			$entity->setId($id);
+			return $entity;
+		}
+
 		/**
 		 * @param $entityClass
 		 * @return mixed
@@ -105,9 +111,9 @@
 		 * @param $id
 		 * @return mixed
 		 */
-	    public function find($entityClass, $entry)
+	    public function find($entityClass, $item)
 	    {
-	    	$id = is_numeric($entry) ? $entry : $entry->getId();
+	    	$id = is_numeric($item) ? $item : (is_string($item) ? $item : $item->getId());
 
 		    $this->entity = $entityClass;
 
@@ -355,6 +361,8 @@
 				    return 'type';
 			    case 'last_edited':
 				    return 'lastEdit';
+				case 'created_at':
+					return 'created';
 				case 'vndb_id':
 					return 'vndb';
 			    default:
@@ -384,6 +392,8 @@
 					return 'last_edited';
 				case 'lastEdit':
 					return 'last_edited';
+				case 'created':
+					return 'created_at';
 				case 'vndb':
 					return 'vndb_id';
 				default:

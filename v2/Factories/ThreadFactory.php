@@ -1,5 +1,7 @@
 <?php
 
+	namespace v2\Factories;
+	
 	use v2\Database\Entity\Thread;
 
 	/**
@@ -11,16 +13,43 @@
 
 	class ThreadFactory
 	{
-		public function create($data)
+		/**
+		 * 
+		 * @param mixed $data
+		 * @return Thread
+		 */
+		public function create($data): Thread
 		{
 			$thread = new Thread();
+			$thread = $this->fill($thread, $data);
+
+			app('em')->persist($thread);
+
+			return $thread;
+		}
+
+		/**
+		 * @param Thread $thread
+		 * @param array $data
+		 * @return Thread
+		 */
+		public function update(Thread $thread, array $data): Thread
+		{
+			return $this->fill($thread, $data);
+		}
+
+		/**
+		 * @param Thread $thread
+		 * @param array $data
+		 * @return Thread
+		 */
+		private function fill(Thread $thread, array $data): Thread
+		{
 			foreach ($data as $key => $value) {
 				$function = 'set' . ucfirst($key);
 
 				$thread->{$function}($value);
 			}
-			app('em')->persist($thread);
-
 			return $thread;
 		}
 	}

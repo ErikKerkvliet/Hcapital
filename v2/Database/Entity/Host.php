@@ -57,9 +57,9 @@
 			self::HOST_RAPIDGATOR,
 			self::HOST_MEXASHARE,
 			self::HOST_KATFILE,
-			self::HOST_ROSEFILE,
-			self::HOST_DDOWNLOAD,
-			self::HOST_FIKPER,
+			// self::HOST_DDOWNLOAD,
+			// self::HOST_FIKPER,
+			// self::HOST_ROSEFILE,
 		];
 
 		/**
@@ -76,6 +76,11 @@
 		 * @var string
 		 */
 		protected $url;
+
+		/**
+		 * @var bool
+		 */
+		protected $active;
 
 		/**
 		 * @return int
@@ -116,5 +121,21 @@
 		{
 			$this->url = $url;
 		}
+
+		/**
+		 * @return bool
+		 */
+		public function isActive()
+		{
+			return $this->active;
+		}
+
+		/**
+		 * @param string $bool
+		 */
+		public function setActive($isActive)
+		{
+			$this->active = $isActive;
+		}	
 	}
 ?>

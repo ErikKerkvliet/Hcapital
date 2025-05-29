@@ -54,16 +54,20 @@
 //					dd($query);
 //					return 99999;
 //				}
-//				if (strpos(strtoupper($query), 'DELETE') !== false) {
-//					dd($query);
-//				}
+				// if (strpos(strtoupper($query), 'DELETE') !== false) {
+				// 	dd($query);
+				// 	return;
+				// }
 //				if (Manager::TEST) {
 //					dc($query);
 //				}
 			}
+			// dc($query);
+
 			if (Manager::TEST) {
 				logQuery($query, $connection, 'INSERT');
 			}
+			
 			mysqli_set_charset($connection,"utf8");
 
 			mb_regex_encoding('UTF-8');

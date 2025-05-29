@@ -59,7 +59,7 @@
 			$this->entryColumns = [
 				'e.id', 'e.title', 'e.romanji', 'e.released', 'e.size',
                 'e.website', 'e.information', 'e.password', 'e.type', 'e.time_type',
-				'e.last_edited', 'e.created', 'e.downloads',
+				'e.last_edited', 'e.created_at', 'e.downloads',
 			];
 
 			$this->entryColumnsString = implode(',', $this->entryColumns);

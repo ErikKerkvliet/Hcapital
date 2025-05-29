@@ -101,14 +101,54 @@
 					$this->andWhere('l.link', 'REGEXP', '"' . $pattern . '"');
 				}
 			}
+			$this->limit(0, 20);
+
 			return $this->getResult();
 		}
 
-		public function deleteByHost(int $entryId, string $host)
+		public function findByEntryAndHostAndPart($entry, $host, $part = 0)
+		{
+			$this->select()
+				->from(Link::TABLE, 'l')
+				->where('l.entry_id', '=', $entry->getId())
+				->andWhere('l.link', 'REGEXP', '"' . $host . '"');
+
+			if ($part) {
+				$this->andWhere('l.part', '=', $part);
+			}
+
+			return $this->getResult();
+		}
+
+
+		public function findLinksFromLast5Hours($host, $entry = null)
+		{
+			$this->select('l.*')
+				->from(Link::TABLE, 'l')
+				->leftJoin(Entry::TABLE, 'e', 'e.id', '=', 'l.entry_id');
+
+			// Bereken de tijd van 5 uur geleden
+			$dayAgo = date('Y-m-d H:i:s', strtotime('-1 hours'));
+
+			// Voeg een WHERE-clausule toe om alleen links van het laatste uur op te halen
+			$this->where('l.created_at', '>=', '"' . $dayAgo . '"');
+			$this->andWhere('l.link', 'REGEXP', '"' . $host . '"');
+			if ($entry) {
+				$this->andWhere('l.entry_id', '>=', $entry->getId());
+			}
+
+			$this->limit(0, 100);
+
+			return $this->runQuery(Link::class, null, $this->getSQL());
+		}
+		
+		public function deleteByHost($entryId, string $host, $parts = [])
 		{
 			$query = 'DELETE FROM entry_links WHERE entry_id = ' . $entryId;
-			$query .= ' AND link REGEXP "' . $host . '";';
-
+			$query .= ' AND link REGEXP "' . $host . '"';
+			if ($parts) {
+				$query .= ' AND part IN (' . implode(',', $parts) . ')';
+			}
 			$this->runQuery(null, null, $query);
 		}
 

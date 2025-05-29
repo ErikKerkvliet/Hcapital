@@ -27,24 +27,19 @@
 		protected $entry = null;
 
 		/**
-		 * @var string
+		 * @var int
 		 */
-		protected $type = '';
+		protected $number = 0;
 
 		/**
 		 * @var string
 		 */
-		protected $url;
+		protected $url = '';
 
 		/**
 		 * @var string
 		 */
 		protected $author = '';
-
-		/**
-		 * @var boolean
-		 */
-		protected $confirmed = false;
 
 		/**
 		 * @return int
@@ -73,7 +68,7 @@
 		 * @return EntryRelation
 		 * @throws /Exception
 		 */
-		public function setEntry($entity)
+		public function setEntry($entity): Thread
 		{
 			$this->entry = $this->setEntity($entity);
 
@@ -81,20 +76,20 @@
 		}
 
 		/**
-		 * @return string
+		 * @return int
 		 */
-		public function getType(): string
+		public function getNumber(): int
 		{
-			return $this->type;
+			return $this->number;
 		}
 
 		/**
-		 * @param string $type
+		 * @param int $number
 		 * @return Thread
 		 */
-		public function setType(string $type): Thread
+		public function setNumber(int $number): Thread
 		{
-			$this->type = $type;
+			$this->number = $number;
 			return $this;
 		}
 
@@ -132,25 +127,6 @@
 		public function setAuthor(string $author): Thread
 		{
 			$this->author = $author;
-			return $this;
-		}
-
-		/**
-		 * @return boolean
-		 */
-		public function getConfirmed(): bool
-		{
-			return (bool) $this->confirmed;
-		}
-
-		/**
-		 * @param bool $confirmed
-		 * @return Thread
-		 */
-		public function setConfirmed($confirmed): Thread
-		{
-			$this->confirmed = $confirmed;
-
 			return $this;
 		}
 	}

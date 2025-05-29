@@ -15,15 +15,21 @@
 		 */
 		private $links = [];
 
+		/**
+		 * @var HostResolver
+		 */
 		private $hostResolver;
 
 		/**
-		 * @param array $links
-		 * @param int $entryId
-		 * @return string
+		 * @var bool
 		 */
+		private $single = false;
+
+        /**
+         * @return string
+         */
 		public function createLinks()
-		{
+        {
 			$this->hostResolver = new HostResolver();
 			$linkRepository = app('em')->getRepository(Link::class);
 			$this->links = $linkRepository->findBy(['entry' => $this->entry]);
@@ -65,9 +71,11 @@
 		private function buildHostLinks(array $linksByHost)
 		{
 			$this->html .= '<div class="link-box">';
-			foreach ($linksByHost as $host => $links) {
+			foreach ($linksByHost as $links) {
 				$host = $this->hostResolver->byUrl($links[0]->getLink());
-				if ($host) {
+				$this->single = count($links) == 1;
+
+				if ($host && ! $this->single) {
 					$this->html .= '<div class="host-header"><b>' . ucfirst($host) . ':</b></div>';
 				}
 
@@ -81,6 +89,13 @@
 		 */
 		private function buildLinks(array $links)
 		{
+			usort($links, function ($a, $b) {
+				$a->setPart($a->getOriginalValues()['part']);
+				$b->setPart($b->getOriginalValues()['part']);
+
+				return $a->getPart() <=> $b->getPart();
+			});
+
 			foreach($links as $link) {
 				$this->buildLinkButton($link);
 			}
@@ -103,11 +118,12 @@
 		private function buildLinkButton(Link $link)
 		{
 			$id = $link->getId();
-			$part = $link->getPart();
+			$part = $this->getPart($link);
 
-			$text = $part == '0' ? 'Download' : 'part ' . $part;
-			$download = $part == '0' ? 'link-button link-button-download' : 'link-button';
+			$host = $this->hostResolver->byUrl($link->getLink());
 
+			$text = ! $part ? ucfirst($host) : 'part ' . $part;
+			$download = $part ? 'link-button link-button-download' : 'link-button';
 			$url = $link->getLink();
 			if ($this->checkIfLink($url)) {
 				$this->html .= '<div class="' . $download . '" data-link-id="' . $id . '">' . $text . '</div>';
@@ -125,4 +141,21 @@
 			return strpos($link, 'http://') !== false ||
 				strpos($link, 'https://') !== false;
 		}
+
+		public function getSingle()
+		{
+			return $this->single;
+		}
+
+        private function getPart($link)
+        {
+            $pattern="/.part\K.\*+?(?=.)/";
+            $success = preg_match($pattern, $link->getLink(), $match);
+
+            if ($success) {
+                return $match[0];
+            } else {
+                return ($number = $link->getPart()) ? $number : false;
+            }
+        }
 	}

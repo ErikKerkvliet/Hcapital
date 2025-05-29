@@ -133,7 +133,6 @@
 						$series = array_merge($tmpSeries, $stash);
 					}
 				}
-
 				$list = new OvaList($series);
 			}
 

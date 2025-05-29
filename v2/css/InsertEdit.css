@@ -109,6 +109,31 @@
 	margin-left:200px;
 }
 
+.item-button {
+	height: 25px;
+	width: 110px;
+	text-align: center;
+	border-radius: 3px;
+	border: 1px solid #091925;
+	line-height: 22px;
+	font-weight: bold;
+	box-shadow: 1px 1px 1px #000;
+	margin: 8px 8px 10px 3px;
+	color: rgba(0, 0, 0, 0.8);
+	cursor: pointer;
+	user-select: none;
+}
+
+.item-button:hover {
+	cursor: pointer;
+	background: #405062;
+}
+
+.item-button:active {
+	color: rgb(0, 0, 0);
+	box-shadow: 0px 0px 0px #000;
+}
+
 #character-submit {
 	margin-bottom: 20px;
 }

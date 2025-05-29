@@ -1,5 +1,4 @@
 var addChar = null;
-
 function adminInitialise(reInitialize = false) {
 	let linksLinks = $('.links-links');
 
@@ -17,29 +16,6 @@ function adminInitialise(reInitialize = false) {
 			});
 			$(this).html(links.join('\n'));
 		}
-	});
-
-	$('.admin-button').mousedown(function () {
-		// $(this).css('margin', '8px 7px 9px 4px');
-		// .admin-button:active {
-		// margin-top: 9px;
-		// margin-bottom: 7px;
-		// margin-left: 4px;
-		// margin-right: 9px;
-		//
-		// /*margin: 8px 7px 9px 4px;*/
-		// color: rgb(0, 0, 0);
-		// box-shadow: 0px 0px 0px #000;
-		// }
-	});
-
-	$('#threads').click(function () {
-		let object = {
-			EntryAction: 'threads',
-			page: 1,
-		};
-
-		post('?v=2', object)
 	});
 
 	$('#submit').click(function (e) {
@@ -73,7 +49,7 @@ function adminInitialise(reInitialize = false) {
 		let id = window.location.href.split('=').pop();
 		let object = {
 			action: 'exportAdvanced',
-			entryIds: id,
+			ids: id,
 		};
 
 		post('?v=2', object)
@@ -115,52 +91,12 @@ function adminInitialise(reInitialize = false) {
 		post('?v=2', object)
 	});
 
-
 	$('#download-info').click(function () {
 		window.location.href = '?v=2&action=di';
 	});
 
 	$('#validate').click(function() {
 		window.location.href = '?v=2&action=lv'
-	});
-
-	$('#clear-downloads').click(function () {
-		var date = $('#download-date').val();
-		var hasEntry = window.location.href.includes('entry');
-		var deleteAll = document.getElementById('delete-all').checked;
-
-		if (! date && ! deleteAll && ! hasEntry) {
-			alert('No date or entry entered');
-			return;
-		}
-		var url = '/?v=2&action=clearDownloads';
-		if (date) {
-			url += '&date=' + date;
-		}
-		if (deleteAll) {
-			url += '&all=true';
-		}
-		if (hasEntry) {
-			var entryId = window.location.href.split('=').pop();
-			url += '&entry=' + entryId
-		}
-		window.location.href = url;
-	});
-
-	$('#delete').click(function () {
-		let id = window.location.href.split('=').pop();
-		let object = {
-			EntryAction: 'delete',
-			entryId: id,
-		};
-
-		let answer = confirm('Do you really want to delete this entry?');
-
-		if (answer) {
-			post('?v=2', object);
-		} else {
-			return;
-		}
 	});
 
 	$('.move-to').click(function () {
@@ -232,6 +168,23 @@ function adminInitialise(reInitialize = false) {
 		window.location.href = '/?v=2&_did=' + developerId;
 	});
 
+	$('#delete').click(function () {
+		let entryId = window.location.href.split('=').pop();
+		let object = {
+			action: 'delete',
+			entity: 'entry',
+			entry: entryId,
+		};
+
+		let answer = confirm('Do you really want to delete this entry?');
+
+		if (answer) {
+			post('?v=2', object);
+		} else {
+			return;
+		}
+	});
+
 	$('#delete-developer').click(function () {
 		if (!confirm('Are you sure you want to fully delete this developer?')) {
 			return;
@@ -244,8 +197,9 @@ function adminInitialise(reInitialize = false) {
 			type: 'POST',
 			data: {
 				v: 2,
-				action: 'removeDeveloper',
-				developerId: developerId,
+				action: 'delete',
+				entity: 'developer',
+				developer: developerId,
 			},
 			dataType: "json",
 		})
@@ -253,6 +207,35 @@ function adminInitialise(reInitialize = false) {
 				reInitialize = true;
 				window.location.href = '?v=2&l=d';
 			});
+	});
+
+	$('.char-edit').click(function() {
+		let charId = $(this).attr('char-id');
+		let entryId = $('#info-title').attr('data-id');
+
+		window.location.href = '/?v=2&id=' + entryId + '&_cid=' + charId;
+	});
+
+	$('.char-delete').click(function() {
+		let charId = $(this).attr('char-id');
+		let entryId = document.getElementById('info-title').getAttribute('data-id');
+		$.ajax({
+			url: 'index.php',
+			type: 'POST',
+			data: {
+				v: 2,
+				action: 'delete',
+				entity: 'entryCharacter',
+				entry: entryId,
+				character: charId,
+			},
+			dataType: "json",
+		})
+		.done(function(response) {
+			if (response.success) {
+				$('div[character-box="' + charId + '"]').remove();
+			}
+		});
 	});
 
 	$('.remove-relation').click(function () {
@@ -266,9 +249,10 @@ function adminInitialise(reInitialize = false) {
 			type: 'POST',
 			data: {
 				v: 2,
-				action: 'removeRelation',
-				entryId: entryId,
-				relationId: relationId,
+				action: 'delete',
+				entity: 'entryRelation',
+				entry: entryId,
+				relation: relationId,
 			},
 			dataType: "json",
 		})
@@ -285,9 +269,10 @@ function adminInitialise(reInitialize = false) {
 				type: 'POST',
 				data: {
 					v: 2,
-					action: 'removeEntryDeveloper',
-					entryId: $('#entry-id').attr('entry-id'),
-					developerId: $(this).attr('developer-id'),
+					action: 'delete',
+					entity: 'entryDeveloper',
+					entry: $('#entry-id').attr('entry-id'),
+					developer: $(this).attr('developer-id'),
 				},
 				dataType: "json",
 			})
@@ -311,8 +296,9 @@ function adminInitialise(reInitialize = false) {
 			type: 'POST',
 			data: {
 				v: 2,
-				action: 'removeLinks',
-				entryId: entryId,
+				action: 'delete',
+				entity: 'link',
+				entry: entryId,
 				comment: comment,
 			},
 			dataType: "json",
@@ -321,6 +307,47 @@ function adminInitialise(reInitialize = false) {
 			});
 
 		adminInitialise();
+	});
+
+	$('#clear-downloads').click(function () {
+		var date = $('#download-date').val();
+		var hasEntry = window.location.href.includes('entry');
+		var deleteAll = document.getElementById('delete-all').checked;
+
+		if (! date && ! deleteAll && ! hasEntry) {
+			alert('No date or entry entered');
+			return;
+		}
+
+		let data = {
+			v: 2,
+			action: 'delete',
+			entity: 'download',
+			date: date,
+		};
+
+		if (hasEntry) {
+			data['entry'] = window.location.href.split('=').pop();
+		}
+
+		$.ajax({
+			url: 'index.php',
+			type: 'POST',
+			data: data,
+			dataType: "json",
+		})
+		.done(function (response) {
+			if (response.success) {
+				alert('Downloads cleared');
+				if (hasEntry) {
+					window.location.href = '?v=2&id=' + window.location.href.split('=').pop();
+				} else {
+					window.location.href = '?v=2&action=di';
+				}
+			} else {
+				alert('Failed to clear downloads');
+			}
+		});
 	});
 
 	$('#search-character-submit').click((e) => {
@@ -349,6 +376,11 @@ function adminInitialise(reInitialize = false) {
 		}
 	});
 
+	$('#downloads-div').click(() => {
+		let entryId = $('#info-title').attr('data-id')
+		window.location.href = '/?v=2&action=di&entry=' + entryId;
+	});
+
 	if (reInitialize === true) {
 		$('.save-sharing-url').click(function () {
 			var $parent = $(this).parent();
@@ -361,10 +393,8 @@ function adminInitialise(reInitialize = false) {
 					v: 2,
 					EntryAction: 'updateSharingUrl',
 					entryId: $parent.find('.sharing-entry-id').first().val(),
-					type: $parent.find('.sharing-type').first().val(),
 					author: $parent.find('.sharing-author').first().val(),
 					url: $parent.find('.sharing-url').first().val(),
-					threadId: $(this).attr('thread-id'),
 				},
 				dataType: "json",
 			})
@@ -383,9 +413,47 @@ function adminInitialise(reInitialize = false) {
 	}
 }
 
-$(document).ready(function()
-{
-	adminInitialise();
+$(document).ready(function () {
+	$('.item-button').click(function (event) {
+		const button = event.currentTarget;
+
+		if (location.href.includes('_id')) {
+			$.ajax({
+				url: 'index.php',
+				type: 'POST',
+				data: {
+					v: 2,
+					action: 'getenv',
+					keys: ['ROOT_PATH', 'LOCAL_PC_PASSWORD'],
+				},
+				dataType: "json",
+			})
+			.done((response) => {
+				if (response.success === true) {
+					let rootPath = response.envs.ROOT_PATH;
+					let localPcPassword = response.envs.LOCAL_PC_PASSWORD;
+
+					const el = document.createElement('textarea');
+					let type = button.getAttribute('type') === 'entry' ? 'entries' : 'char';
+					let path = rootPath + '/entry_images/' + type + '/' + button.getAttribute('item-id');
+
+					if (button.getAttribute('action-type') === 'folder') {
+						el.value = 'echo ' + localPcPassword + ' | sudo -S thunar ' + path;
+					}
+					else if (button.getAttribute('action-type') === 'permission') {
+						el.value = 'echo ' + localPcPassword + ' | sudo -S chmod -R 777 ' + path;
+					}
+					el.setAttribute('readonly', '');
+					el.style.position = 'absolute';
+					el.style.left = '-9999px';
+					document.body.appendChild(el);
+					el.select();
+					document.execCommand('copy');
+					document.body.removeChild(el);
+				}
+			});
+		}
+	});
 });
 
 function logKey(e) {
@@ -437,8 +505,6 @@ if (window.location.href.includes('&id=')) {
 				data: {
 					v: 2,
 					action: 'fileInfo',
-					user: 'public.rapidgator@gmail.com',
-					password: '1I^uDckm$d92PEaE*1Z',
 					linkIds: ids.join(','),
 					dataType: "json",
 				}

@@ -7,17 +7,19 @@
         {for sharing_urls}
         <div>
             <form id="sharing-url-form-{{nr}}" class="sharing-form">
-                <input type="hidden" class="sharing-type" value="{{type}}"/>
                 <input type="hidden" class="sharing-entry-id" value="{{entry-id}}"/>
                 <input type="hidden" class="sharing-author" value="{{author}}"/>
-                <textarea form="sharing-url-form-{{nr}}" name="sharing-url-{{nr}}" class="sharing-url" cols="145" rows="4">
+                <textarea form="sharing-url-form-{{nr}}" id='sharing-textarea-{{nr}}' name="sharing-url-{{nr}}" class="sharing-url" cols="145" rows="4">
                     {{sharing_url_{{nr}}}}
                 </textarea>
-                <div thread-id={{id}} class="admin-button save-sharing-url">Save</div>
-                <div class="admin-button open-sharing-url">Open</div>
-                <div thread-id={{id}} class="admin-button add-sharing-url">Add</div>
-                <div thread-id={{id}} class="admin-button update-thread" nr="{{nr}}">Update</div>
-                <div thread-id={{id}} class="admin-button delete-sharing-url" nr="{{nr}}">Delete</div>
+                <div id="save-{{nr}}" class="admin-button save-sharing-url">Save</div>
+                <div id="open-{{nr}}" class="admin-button open-sharing-url">Open</div>
+                <div id="add-sharing-{{nr}}" class="admin-button add-sharing-url">Add</div>
+                <div id="update-sharing-{{nr}}" class="admin-button update-sharing-url">{{update}}</div>
+                <select id="user-select-{{nr}}" author="{{author}}" class="admin-button user-select">
+                    {{options}}
+                </select>
+                <div id="delete-{{nr}}" class="admin-button delete-sharing-url" nr="{{nr}}">Delete</div>
                 <div id="more-sharing-urls"></div>
             </form>
         </div>
@@ -61,7 +63,7 @@
     </div>
 {{/admin}}
 
-<div class="header-style" id="info-title"  data-id="{{id}}" data-type="{{type}}">{{title}}</div>
+<div class="header-style" id="info-title"  data-id="{{id}}" data-type="{{type}}" data-thread-count="{{threads}}">{{title}}</div>
 
 {if romanji}<div class='header-style' id='info-romanji'>{{romanji}}</div>{/if}
 
@@ -119,20 +121,20 @@
     </div>
 {/if}
 
-{{admin}}
-    {if vndbExists}
+
+{if vndbExists}
     <div class='info-row'>
         <div class='info-col1'>
-            Vndb:
+            {{siteLabel}}:
         </div>
         <div class='info-col2'>
-            <a href='{{vndb}}' target='_blank'>
-                {{vndb}}
+            <a href='{{site}}' target='_blank'>
+                {{site}}
             </a>
         </div>
     </div>
-    {/if}
-{{/admin}}
+{/if}
+
 
 {if size}
     <div class='info-row'>

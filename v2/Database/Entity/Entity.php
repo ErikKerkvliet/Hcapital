@@ -21,7 +21,6 @@
 	use v2\Database\Entity\Entry;
 	use v2\Database\Entity\EntryRelation;
 	use v2\Database\Entity\Link;
-	use v2\Database\Entity\ToDo;
 
 	class Entity
 	{

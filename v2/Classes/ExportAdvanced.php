@@ -23,8 +23,7 @@
 
 		private $to = 0;
 
-		private $all = false;
-
+		private $multiple = false;
 
 		/**
 		 * ExportAdvanced constructor.
@@ -32,15 +31,15 @@
 		 * @param string $type
 		 * @param int $from
 		 * @param int $to
-		 * @param bool $all
+		 * @param bool $multiple
 		 */
-		public function __construct($entryIds, $type = 'entry', $all = false, $from = 0, $to = 0)
+		public function __construct($entryIds, $type = 'entry', $multiple = false, $from = 0, $to = 0)
 		{
 			$this->entryIds = $entryIds;
 			$this->type = $type;
 			$this->from = $from;
 			$this->to = $to;
-			$this->all = $all;
+			$this->multiple = $multiple;
 
 			$file = fopen(Manager::TEMPLATE_FOLDER . 'ExportAdvanced.html', 'r');
 			$this->content = fread($file, 10000);
@@ -63,10 +62,13 @@
 			$this->fillPlaceHolders();
 		}
 
-		public function getExportCode()
+		public function getExportData()
 		{
-			$export = new Export($this->entryIds, $this->type, $this->all);
-			return $export->getExportEntry();
-		}
+			$export = new Export($this->entryIds, $this->type, $this->multiple);
 
+			return [
+				'message' => $export->getExportEntry(),
+				'errors' => $export->getErrors(),
+			];
+		}
 	}

@@ -19,7 +19,8 @@
     use v2\Database\Repository\DeveloperRepository;
     use v2\Database\Repository\EntryDeveloperRepository;
     use v2\Database\Repository\EntryRelationRepository;
-    use v2\Database\Repository\LinkRepository;
+	use v2\Database\Repository\HostRepository;
+	use v2\Database\Repository\LinkRepository;
     use v2\Manager;
     use v2\Traits\TextHandler;
 
@@ -100,8 +101,10 @@
 					'size' => $this->entry->getSize(),
 					'website' => $this->entry->getWebsite(),
 					'information' => $this->entry->getInformation(),
+					'dbSite' => $this->entry->getType() == 'game' ? 'Vndb' : 'AniDB',
 					'vndb' => $this->entry->getVndb(),
-					'fullVndb' => $this->entry->getVndb() ? 'https://vndb.org/v' . $this->entry->getVndb() : '',
+					'fullVndb' => $this->entry->getVndb() ? 
+					($this->entry->getType() == 'game' ? 'https://vndb.org/v' : 'https://anidb.net/anime/') . $this->entry->getVndb() : '',
 					'password' => $this->entry->getPassword(),
 					'rapidgator' => isset($this->links['Rapidgator'])
 						? implode('splitter', $this->links['Rapidgator']['Rapidgator'])
@@ -123,6 +126,7 @@
 					'id' => 0,
 					'action' => 'insert',
 					'cover' => '_cover_.jpg',
+					'dbSite' => 'Database',
 					'title' => '',
 					'romanji' => '',
 					'released' => '',
@@ -357,13 +361,17 @@
 		private function setHosts()
 		{
 			$nr = 0;
-			foreach (Host::HOSTS as $host) {
+			$hosts = app('em')->getRepository(Host::class)
+				->findBy(['active' => True]);
+
+			foreach ($hosts as $host) {
+				$hostName = $host->getName();
 				$this->hosts[] = [
 					'nr' => $nr,
-					'label' => ucfirst($host),
-					'host' => $host,
-					'links' => isset($this->links[''][$host])
-						? implode('splitter', $this->links[''][$host]) : '',
+					'label' => ucfirst($hostName),
+					'host' => $hostName,
+					'links' => isset($this->links[''][$hostName])
+						? implode('splitter', $this->links[''][$hostName]) : '',
 				];
 				$nr++;
 			}

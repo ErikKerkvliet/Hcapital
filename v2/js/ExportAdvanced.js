@@ -10,14 +10,22 @@ $(document).ready(function() {
 				action: 'getExportCode',
 				entryIds: $('#entry-ids').val(),
 				type: $('input[name="type"]:checked').val(),
-				all: $('input[name="all"]').is(':checked'),
+				multiple: $('input[name="multiple"]').is(':checked'),
 			},
 			dataType: "json",
 		}).done(response => {
-			$('#spinner').css('display', 'none');
-			if (response.success) {
+			if (response) {
+				$('#spinner').css('display', 'none');
+				let color = 'red';
+				if (! response.state) {
+					$('#export-errors').html(response.errors.replace(/,/g, '</br>'));
+				} else {
+					color = '#38a751';
+					setTimeout(switch_source, 50);
+				}
+			
 				$('#export-text').html(response.exportCode);
-
+				
 				const el = document.createElement('textarea');
 				el.value = $('#export-text').html().trim();
 				el.setAttribute('readonly', '');
@@ -28,7 +36,7 @@ $(document).ready(function() {
 				document.execCommand('copy');
 				document.body.removeChild(el);
 
-				colorTimer($('#get-export'), '#38a751', 5000);
+				colorTimer($('#get-export'), color, 5000);
 			}
 		});
 	});
@@ -37,6 +45,10 @@ $(document).ready(function() {
 $('#link-status-form').submit(function() {
 	$('#spinner').css('display', 'unset');
 });
+
+function switch_source() {
+	$('#switch_source').click();
+}
 
 function colorTimer($element, color, time) {
 	$element.css('background', color);

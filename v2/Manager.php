@@ -8,6 +8,7 @@
 
 	namespace v2;
 
+	use DeleteHandler;
 	use v2\Classes\AdminCheck;
 	use v2\Classes\CharacterActions;
 	use v2\Classes\DeveloperActions;
@@ -38,7 +39,6 @@
 	use v2\Database\Repository\LinkRepository;
     use v2\Transformers\CharacterTransformer;
 
-    require_once("Includes.php");
 	require_once("RapidgatorClient.php");
 
 	require_once('Database/QueryHandler.php');
@@ -57,11 +57,9 @@
 	require_once('Database/Entity/Download.php');
 	require_once('Database/Entity/EntryRelation.php');
 	require_once('Database/Entity/Link.php');
-	require_once('Database/Entity/ToDo.php');
 	require_once('Database/Entity/SeriesRelation.php');
 	require_once('Database/Entity/EntryDeveloper.php');
 	require_once('Database/Entity/Thread.php');
-	require_once('Database/Entity/SharingThread.php');
 	require_once('Database/Entity/Host.php');
 
 	require_once('Database/Repository/Repository.php');
@@ -75,24 +73,20 @@
 	require_once('Database/Repository/EntryRepository.php');
 	require_once('Database/Repository/EntryRelationRepository.php');
 	require_once('Database/Repository/LinkRepository.php');
-	require_once('Database/Repository/ToDoRepository.php');
 	require_once('Database/Repository/SeriesRelationRepository.php');
 	require_once('Database/Repository/EntryDeveloperRepository.php');
 	require_once('Database/Repository/ThreadRepository.php');
-	require_once('Database/Repository/SharingThreadRepository.php');
 	require_once('Database/Repository/HostRepository.php');
 
 	require_once('Traits/Builder.php');
 	require_once('Builders/Images.php');
 	require_once('Builders/Characters.php');
 	require_once('Builders/Links.php');
-	require_once('Builders/Links2.php');
 	require_once('Database/EntityManager.php');
 
 	require_once('Classes/AdminCheck.php');
 
 	require_once('Traits/TextHandler.php');
-	require_once('Builders/Links3.php');
 	require_once('Classes/Borders.php');
 
 	require_once('Classes/Relations.php');
@@ -140,11 +134,11 @@
 	require_once('Classes/Downloads.php');
 	require_once('Classes/LinkState.php');
 	require_once('Classes/ImageHandler.php');
+	require_once('Classes/DeleteHandler.php');
 	require_once('Classes/EntryActions.php');
 	require_once('Classes/CharacterActions.php');
 	require_once('Classes/DeveloperActions.php');
 	require_once('Classes/CreatePostData.php');
-	require_once('Classes/Threads.php');
 	require_once('Resolvers/LinkResolver.php');
 	require_once('Resolvers/HostResolver.php');
 	require_once('Resolvers/EntryNameResolver.php');
@@ -159,7 +153,7 @@
 	{
 		CONST TEST = false;
 
-		CONST CSS_JS_VERSION = 2.38;
+		CONST CSS_JS_VERSION = 2.39;
 
 		CONST TEMPLATE_FOLDER = 'v2/Templates/';
 		CONST COMPONENT_FOLDER = 'v2/Templates/Components/';
@@ -190,20 +184,25 @@
 			require_once('Traits/TextHandler.php');
 
 			require_once('Classes/Main.php');
-
 			$admin = AdminCheck::checkForAdmin();
-			if ($admin && request('id') && request('getLinksFromPython') && request('key')) {
-				$key = request('key') === 'Nitc0sGyCZ^Jmvi2CB';
-				$author = request('author');
-				/** @var LinkRepository $linkRepository */
-				$linkRepository = app('em')->getRepository(Link::class);
-				$data = $linkRepository->getEntryLinks(request('id'), $author);
-dd($data);
-				if ($key) {
-					echo $data;
-				}
 
-				die;
+			if (request('action') == 'getenv' && $admin) {
+				$keys = request('keys');
+				$envs = [];
+				foreach ($keys as $key) {
+					$envs[$key] = getenv($key);
+				}
+				if (count($envs) > 0) {
+					echo json_encode([
+						'success' => true,
+						'envs' => $envs,
+					]);
+				} else {
+					echo json_encode([
+						'success' => false,
+					]);
+				}
+				die();
 			}
 
 			if (request('action') == 'add' && $admin) {
@@ -224,9 +223,8 @@ dd($data);
 				} else if (request('type') == 'sharingUrl') {
 					$entryId = request('entryId');
 					$threadId = request('threadId');
-					$entryType = request('entryType');
 					$author = request('author');
-					$links = new \AddSharingUrl($nr, $entryId, $threadId, $entryType, $author);
+					$links = new \AddSharingUrl($nr, $entryId, $threadId, $author);
 					$links->buildContent();
 					$content = $links->getContent();
 				} else if (request('type') == 'ipData' && ($ipData = request('ipData'))) {
@@ -271,47 +269,11 @@ dd($data);
 
 				header('Location: ' . $_SESSION['referrer'] . '?v=2&id=' . request('id'));
 			}
-			if (request('action') == 'deleteCharacter' && $admin) {
-				$entryId = request('entry');
-				$characterId = request('character');
-
-				$character = app('em')->find(Character::class, $characterId);
-
-				/** @var EntryCharacterRepository $entryCharacterRepository */
-				$entryCharacterRepository = app('em')->getRepository(EntryCharacter::class);
-
-				$findBy = [
-					'character_id' => $characterId,
-				];
-
-				if (($entry = request('entry'))) {
-					$findBy['entry_id'] = $entry;
-				}
-
-                $entryCharacters = $entryCharacterRepository->findBy($findBy);
-
-				app('em')->delete($character);
-				foreach ($entryCharacters as $entryCharacter) {
-					app('em')->delete($entryCharacter);
-				}
-
-				echo json_encode([
-					'success' => true,
-				]);
-				die();
-			}
-			if (request('action') == 'removeDeveloper') {
-				$developer = app('em')->find(Developer::class, request('developerId'));
-
-				app('em')->delete($developer);
-			}
+			
 			if (request('action') == 'confirm' && $admin && request('threadId') && request('state')) {
 				$id = request('threadId');
-				$state = request('state') == 'on' ? false : true;
 
 				$thread = app('em')->find(Thread::class, $id);
-
-				$thread->setConfirmed($state);
 
 				app('em')->update($thread);
 				app('em')->flush();
@@ -334,61 +296,73 @@ dd($data);
 				app('em')->flush();
 				die();
 			}
-			if (request('action') == 'removeRelation' && request('relationId') && $admin) {
-				$entryId = request('entryId');
-				$relationId = request('relationId');
 
-				/** @var EntryRelationRepository $entryRelationRepository */
-				$entryRelationRepository = app('em')->getRepository(EntryRelation::class);
-				$entryRelations = $entryRelationRepository->findRelationsByEntryAndRelation($entryId, $relationId);
+			if (request('action') == 'delete' && ($entity = request('entity')) && $admin) {
+				$deleteHandler = new DeleteHandler();
+			
+				switch ($entity) {
+					case 'entry':
+						if (request('entry')) {
+							$entry = app('em')->find(Entry::class, request('entry'));
+							$deleteHandler->deleteEntry($entry);
+						}
+					case 'entryCharacter':
+						if (($entryId = request('entry')) && ($character = request('character'))) {
+							$entry = app('em')->find(Entry::class, $entryId);
+							$deleteHandler->deleteByEntryAndCharacter($entry, $character);
+						}
+						break;
+					case 'entryRelation':
+						if (($entry = request('entry')) && ($relation = request('relation'))) {
+							$deleteHandler->deleteByEntryAndRelation($entry, $relation);
+						}
+						break;
+					case 'entryDeveloper':
+						if (($entry = request('entry')) && ($developer = request('developer'))) {
+							$deleteHandler->deleteByEntryAndDeveloper($entry, $developer);
+						}
+						break;
+					case 'developer':
+						if (($developerId = request('developer'))) {
+							$developer = app('em')->find(Developer::class, $developerId);
+							$deleteHandler->deleteDeveloper($developer);
+						}
+						break;
+					case 'character':
+						if (($characterId = request('character'))) {
+							$character = app('em')->find(Character::class,$characterId);
+							$deleteHandler->deleteCharacter($character);
+						}
+						break;
+					case 'link':
+						if (($entry = request('entry')) && ($comment = request('comment'))) {
+							$deleteHandler->deleteLinksByEntryAndComment($entry, $comment);
+						}
+						break;
+					case 'thread':
+						if (($entryId = request('entry')) && ($number = request('number'))) {
+							$deleteHandler->deleteThreads($entry, $number);
+						}
+						break;
+					case 'banned':
+						if (($ip = request('ip'))) {
+							$deleteHandler->deleteBanned($ip);
+						}
+						break;
+					case 'download':
+						$entry = request('entry');
+						$date = request('date');
 
-				foreach ($entryRelations as $entryRelation) {
-					app('em')->delete($entryRelation);
+						$deleteHandler->deleteDownloads($entry, $date);
 				}
+				echo json_encode(['success' => true]);
+				die();
 			}
-			if (request('action') == 'removeDeveloper' && request('developerId') && $admin) {
-				$entryId = request('entryId');
-				$developerId = request('developerId');
-
-				/** @var EntryDeveloperRepository $entryDeveloperRepository */
-				$entryDeveloperRepository = app('em')->getRepository(EntryDeveloper::class);
-				$entryDeveloper = $entryDeveloperRepository->findOneBy(['entry' => $entryId, 'developer' => $developerId]);
-
-				app('em')->delete($entryDeveloper);
-			}
-			if (request('action') == 'removeEntryDeveloper' && $admin
-				&& ($developerId = request('developerId')) && ($entryId = request('entryId'))
-			) {
-				$entryDeveloperRepository = app('em')->getRepository(EntryDeveloper::class);
-				$entryDeveloper = $entryDeveloperRepository->findOneBy(['entry' => $entryId, 'developer' => $developerId]);
-
-				app('em')->delete($entryDeveloper);
-			}
-            if (request('action') === 'removeOldDownloads' && $admin) {
-                app('em')->getRepository(Download::class)->deleteOld();
-
-                echo json_encode([
-                    'success' => true,
-                ]);
-                die();
-            }
 			if (request('action') === 'ban' && ($ip = request('ip'))) {
 				$ban = new Banned();
 				$ban->setIp($ip);
 
 				app('em')->flush($ban);
-				echo json_encode([
-					'success' => true,
-				]);
-				die();
-			}
-			if (request('action') === 'unban' && ($ip = request('ip'))) {
-				$bannedRepository = app('em')->getRepository(Banned::class);
-				$banned = $bannedRepository->findBy(['ip' => $ip]);
-
-				foreach($banned as $ban) {
-					app('em')->delete($ban);
-				}
 				echo json_encode([
 					'success' => true,
 				]);
@@ -409,17 +383,32 @@ dd($data);
 					'success' => true,
 				]);
 			}
-			if (request('action') == 'removeLinks' && request('comment') && $admin) {
-				$entryId = request('entryId');
-				$comment = request('comment');
+			if (request('action') == 'characterFolder' && ($characterId = request('characterId')) && $admin) {
+				$password = getenv('LOCAL_PC_PASSWORD');
 
-				/** @var LinkRepository $linkRepository */
-				$linkRepository = app('em')->getRepository(Link::class);
-				$links = $linkRepository->findBy(['entry' => $entryId, 'comment' => $comment]);
-
-				foreach ($links as $link) {
-					app('em')->delete($link);
+				$descriptorspec = array(
+					0 => array("pipe", "r"),  // stdin
+					1 => array("pipe", "w"),  // stdout
+					2 => array("pipe", "w")   // stderr
+				);
+				
+				$process = proc_open("sudo -S thunar /home", $descriptorspec, $pipes);
+				
+				if (is_resource($process)) {
+					fwrite($pipes[0], $password . "\n");
+					$output = stream_get_contents($pipes[1]);
+					$error = stream_get_contents($pipes[2]);
+					$return_value = proc_close($process);
+				
+					if ($return_value == 0) {
+						echo "Thunar is geopend in de /home directory.";
+					} else {
+						echo "Er is een fout opgetreden bij het openen van Thunar: " . $error;
+					}
+				} else {
+					echo "Kan Thunar niet openen.";
 				}
+				die();
 			}
             if (request('action') == 'searchCharacters' && ($search = request('search')) && $admin) {
                 /** @var CharacterRepository $characterRepository */
@@ -432,35 +421,10 @@ dd($data);
                 echo json_encode($transformed);
                 exit();
             }
-			if (request('action') === 'clearDownloads') {
-				$findBy = [];
-				$url = '/?v=2&action=di';
-				if (($date = request('date'))) {
-					$findBy['DATE_FORMAT(created, "%Y-%m-%d")'] = $date;
-				}
-
-				if (($entry = request('entry'))) {
-					$findBy['entry'] = (int) $entry;
-					$url .= '&entry=' . $entry;
-				}
-
-				if (! $findBy && request('all') !== 'true') {
-					header('LOCATION: ' . $url);
-					die();
-				}
-
-				$downloadRepository = app('em')->getRepository(Download::class);
-				$downloads = $downloadRepository->findBy($findBy);
-
-				app('em')->delete($downloads);
-
-				header('LOCATION: ' . $url);
-				die();
-			}
+			
             $linkIds = [];
 			if (request('action') === 'fileInfo'
-				&& ($user = request('user'))
-				&& ($password = request('password'))
+				&& $admin
 				&& ($fileIds = request('fileIds'))
 					|| ($linkIds = request('linkIds'))
 			) {
@@ -481,7 +445,10 @@ dd($data);
 				} else {
 					$fileIds = explode(',', $fileIds);
 				}
-				$client = new RapidgatorClient($user, $password);
+
+				$user = getenv('RAPIDGATOR_USERNAME');
+				$password = getenv('RAPIDGATOR_PASSWORD');
+				$client = new RapidgatorClient($user, $password, null);
 
 				$states = [];
 				foreach ($fileIds as $key => $id) {
@@ -500,17 +467,19 @@ dd($data);
 				echo json_encode($states);
 				die();
 			}
-			if (request('action') === 'getExportCode') {
+			if (request('action') == 'getExportCode') {
 				$entryIds = explode(',', request('entryIds'));
 				$type = request('type');
-				$all = request('all') === 'true';
+				$multiple = request('multiple') === 'true';
 				$from = (int) request('from');
 				$to = (int) request('to');
 
-				$advancedExport = new ExportAdvanced($entryIds, $type, $all, $from, $to);
+				$advancedExport = new ExportAdvanced($entryIds, $type, $multiple, $from, $to);
+				$exportData = $advancedExport->getExportData();
 				echo json_encode([
-					'success' => true,
-					'exportCode' => $advancedExport->getExportCode(),
+					'exportCode' => $exportData['message'],
+					'errors' => $exportData['errors'],
+					'state' => ! $exportData['errors'],
 				]);
 				die();
 			}
@@ -542,7 +511,6 @@ dd($data);
 
                     $ipAddress = AdminCheck::get_ip_address();
                     $downloads = $downloadRepository->getDownloadsByIp($ipAddress, 1);
-
                     if (AdminCheck::isBanned($entry)) {
                         $comment = Banned::BANNED;
                         $url = Link::BANNED_URL;

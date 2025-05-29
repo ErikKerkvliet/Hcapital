@@ -8,6 +8,8 @@
 
 	namespace v2\Classes;
 
+	loadEnv(str_replace('Classes', '', __DIR__) . '.env');
+
 	use v2\ClientException;
     use v2\Database\Entity\Link;
     use v2\Manager;
@@ -23,6 +25,8 @@
 		private $to = 0;
 
 		private $links = [];
+
+		private $linkString = '';
 
 		/**
 		 * LinkState constructor.
@@ -54,10 +58,14 @@
 				'online'   => $admin && ! AdminCheck::checkForLocal(),
 				'local'    => $admin && AdminCheck::checkForLocal(),
 			];
-
+			
 			if ($this->to) {
 				$this->getLinkData();
 			}
+
+			$this->placeHolders = [
+				'linkString' => $this->linkString,
+			];
 
 			$this->fors = [
 				'links' => $this->links,
@@ -70,7 +78,7 @@
 		private function getLinkData()
 		{
 			$fileStates = [];
-			$client = new RapidgatorClient('public.rapidgator@gmail.com', '1I^uDckm$d92PEaE*1Z');
+			$client = new RapidgatorClient(getenv('RAPIDGATOR_USERNAME'), getenv('RAPIDGATOR_PASSWORD'), null);
 
 			$linkRepository = app('em')->getRepository(Link::class);
 			$links = $linkRepository->findBetweenEntry($this->from, $this->to);
@@ -84,6 +92,11 @@
 					} catch (ClientException $e) {
 						dd($e);
 					}
+					if (request('state') == '1' && $response->status !== 200 
+						|| request('state') == '2' && $response->status === 200
+					) {
+						continue;
+					}
 					$fileStates[$url] = [
 						'linkId' => $link->getId(),
 						'entryId' => $link->getEntry(true),
@@ -93,7 +106,9 @@
 			}
 
 			$row = 0;
+			$stateIds = [];
 			foreach($fileStates as $key => $state) {
+				$stateIds[] = $state['entryId'];
 				$this->links[] = [
 					'tr' => 'row-color-' . ($row % 2),
 					'link' => $state['linkId'],
@@ -103,5 +118,7 @@
 				];
 				$row++;
 			};
+			$stateIds = array_unique($stateIds);
+			$this->linkString = implode(',', $stateIds);
 		}
 	}

@@ -9,3 +9,6 @@ entry_images/
 sitemap.xml
 BingSiteAuth.xml
 /entry_images/
+v3/
+v2/.env
+v2/js/admin.js

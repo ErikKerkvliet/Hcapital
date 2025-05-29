@@ -7,7 +7,6 @@ $(document).ready(function () {
 			var newline = String.fromCharCode(13, 10);
 
 			links = links.replace(/splitter/g, newline);
-			console.log('input[name="hidden-' + key + '-links"]');
 			$(item).text(links);
 		}, 100);
 	});
@@ -108,9 +107,30 @@ $(document).ready(function () {
 
 	$('#vndb-link').click(() => {
 		let vndb = window.document.getElementById('vndb-link').getAttribute('data-vndb-id');
-		let url = 'https://vndb.org/v' + vndb;
-		window.open(url, '_blank')
-	})
+		var selectedValue = $('#type').val();
+		if (parseInt(vndb) < 0) {
+			let url = $('#website').val() != '' ? $('#website').val() : $('#information').val();
+			window.open(url, '_blank');
+			return;
+		}
+        if (selectedValue === 'ova') {
+			let url = 'https://vndb.org/v' + vndb;
+        } else if (selectedValue == 'game') {
+			let url = 'https://anidb.net/anime/' + vndb;		
+		} else if (selectedValue == '3D') {
+			let url = $('#website').val();		
+		}	
+		window.open(url, '_blank');
+	});
+
+	$('#type').change(function() {
+        var selectedValue = $(this).val();
+        if (selectedValue === 'ova') {
+			$('div.description:contains("Vndb:")').text("AniDB:");
+        } else if (selectedValue == 'game') {
+			$('div.description:contains("AniDB:")').text("Vndb:");
+		}
+    });
 });
 
 function addRelation(data) {

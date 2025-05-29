@@ -8,18 +8,17 @@
 
 	namespace v2\Classes;
 
-	use ThreadFactory;
     use v2\Database\Entity\Character;
     use v2\Database\Entity\Developer;
     use v2\Database\Entity\Entry;
-    use v2\Database\Entity\Link2;
+    use v2\Database\Entity\Link;
     use v2\Database\Entity\SeriesRelation;
-    use v2\Database\Entity\SharingThread;
     use v2\Database\Repository\CharacterRepository;
     use v2\Database\Repository\DeveloperRepository;
     use v2\Database\Repository\EntryRepository;
     use v2\Database\Repository\SeriesRelationRepository;
-    use v2\Manager;
+	use v2\Factories\ThreadFactory;
+	use v2\Manager;
     use v2\Traits\TextHandler;
 
     class ListMain
@@ -207,54 +206,8 @@
 			if ($this->type == 'all') {
 				/** @var EntryRepository $entryRepository */
 				$entryRepository = app('em')->getRepository(Entry::class);
-
-				if (false && adminCheck::checkForAdmin()) {
-					$sharingRepository = app('em')->getRepository(SharingThread::class);
-					$entryRepository = app('em')->getRepository(Entry::class);
-
-					$sharing = $sharingRepository->findBy(['type' => 'ova']);
-					$entries = $entryRepository->findBy(['type' => '3d']);
-
-					$titles = array_filter(array_map(function($entry) {
-						return [
-							'id'    => $entry->getId(),
-							'title' => $entry->getTitle(),
-						];
-					}, $entries));
-
-					$threads = array_filter(array_map(function($thread) {
-						return [
-							'title' => $thread->getTitle(),
-							'link'  => $thread->getUrl(),
-							'author'=> $thread->getAuthor(),
-						];
-					}, $sharing));
-
-					$matches = [];
-					foreach($threads as $thread) {
-						foreach ($titles as $title) {
-							if (strpos($thread['title'], $title['title']) !== false) {
-								$matches[] = [
-									'entry'     => $title['id'],
-									'author'    => $thread['author'],
-									'type'      => '3d',
-									'url'       => $thread['link'],
-								];
-							}
-						}
-					}
-
-					$factory = new ThreadFactory();
-					foreach ($matches as $match) {
-						$factory->create($match);
-					}
-					app('em')->flush();
-
-				} else {
-					$types = $entryRepository->findAllTypes($this->search);
-				}
-
-				return $this->itemTypes = $types;
+				
+				return $this->itemTypes = $entryRepository->findAllTypes($this->search);
 			}
 			/**
 		    * @var EntryRepository|DeveloperRepository|CharacterRepository|SeriesRelationRepository $entityRepository
@@ -306,7 +259,6 @@
 					($this->type == 'character' ?
 						$entityRepository->findBySearch($this->search, $orderBy, $limit) :
 							$entityRepository->findBySearch($this->search, $this->type, $orderBy, $limit));
-
 			return true;
 		}
 	}

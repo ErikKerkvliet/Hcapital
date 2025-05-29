@@ -20,7 +20,6 @@
 		 */
 		protected $query = '';
 
-
 		/**
 		 * Connection constructor.
 		 */
@@ -34,17 +33,17 @@
 		 */
 		protected function setupConnection()
 		{
-			if (strpos($_SERVER['HTTP_HOST'], 'hcapital.tk') !== false) {
-				$db = 'hcapit_hcapitaltkhcapita8997';
-				$host = 'hcapit-hcapitaltkhcapita8997.db.transip.me';
-				$user = 'hcapit_hcapital';
-				$password = '$X$kzGR%Y8O&wWzN';
+			if (strpos($_SERVER['HTTP_HOST'], getenv('SITE_NAME')) !== false) {
+				$db = getenv('DB_NAME_REMOTE');
+				$host = getenv('DB_HOST_REMOTE');
+				$user = getenv('DB_USER_REMOTE');
+				$password = getenv('DB_PASS_REMOTE');
 				$this->connection = new \mysqli($host, $user, $password, $db);
 			} else {
-				$db = 'hcapital';
-				$host = 'localhost';
-				$user = 'yuuichi_sagara';
-				$password = 'firefly';
+				$db = getenv('DB_NAME_LOCAL');
+				$host = getenv('DB_HOST_LOCAL');
+				$user = getenv('DB_USER_LOCAL');
+				$password = getenv('DB_PASS_LOCAL');
 
 				$this->connection = new \mysqli($host, $user, $password, $db);
 

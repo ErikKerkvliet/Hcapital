@@ -40,7 +40,7 @@
 		 *         return get_auth_code('your_secret');
 		 *     });
 		 */
-		public function __construct(string $login = null, string $password = null, callable $code = null)
+		public function __construct(?string $login, ?string $password, ?callable $code)
 		{
 			if (!empty($login)) {
 				$this->login($login, $password, $code);
@@ -55,7 +55,7 @@
 		 * @param callable|null $code - an anonymous client function that returns a confirmation code based on a secret code
 		 * @return mixed
 		 */
-		public function login(string $login, string $password, callable $code = null)
+		public function login(string $login, string $password, ?callable $code)
 		{
 			$response = $this->_process('user/login', [
 				'login' => $login, 'password' => $password, 'code' => $code ? $code() : null
@@ -82,6 +82,7 @@
 			if ($this->_ch === null) {
 				$this->_ch = curl_init();
 				curl_setopt($this->_ch, CURLOPT_HEADER, false);
+				curl_setopt($this->_ch, CURLOPT_TIMEOUT, 600); // set timeout to 10 minutes
 				curl_setopt($this->_ch, CURLOPT_RETURNTRANSFER, true);
 			}
 

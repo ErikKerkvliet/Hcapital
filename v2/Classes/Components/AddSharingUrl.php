@@ -46,13 +46,11 @@ use v2\Traits\TextHandler;
 		 * @param $entryType
 		 * @param $author
 		 */
-		public function __construct($nr, $entryId, $threadId, $entryType, $author)
+		public function __construct($nr, $entryId, $threadId, $author)
 		{
-
 			$this->nr = $nr;
 			$this->entryId = $entryId;
 			$this->threadId = $threadId;
-			$this->entryType = $entryType;
 			$this->author = $author;
 
 			$file = fopen(\v2\Manager::COMPONENT_FOLDER . 'AddSharingUrl.html', 'r');
@@ -65,10 +63,24 @@ use v2\Traits\TextHandler;
 				'nr'    => ($this->nr),
 				'entry-id' => $this->entryId,
 				'author' => $this->author,
-				'type' => $this->entryType,
 				'id' => 0,
+				'update' => 'Create',
+				'options' => $this->getSharingOptions(),
 			];
 
 			$this->fillPlaceHolders();
+		}
+
+		private function getSharingOptions()
+		{
+			$optionsStr = '';
+			$usernames = getenv('SHARING_USERNAMES');
+			if ($usernames) {
+				$usernames = explode(',', $usernames);
+				foreach ($usernames as $username) {
+					$optionsStr .= '<option value="' . $username . '">' . $username . '</option>';
+				}
+			}
+			return $optionsStr;
 		}
 	}

@@ -34,6 +34,8 @@
 
 		private $type = '';
 
+		private $errors = [];
+
 		public function __construct($entries, $type, $multiple = false)
 		{
 			$this->entries = $entries;
@@ -48,7 +50,11 @@
 			];
 
 			$this->fillPlaceHolders();
+		}
 
+		public function getErrors(): string
+		{
+			return implode(',', $this->errors);
 		}
 
 		public function getExportEntry()
@@ -59,8 +65,10 @@
 
 			if ($this->type === 'link') {
 				$this->entry = $entryRepository->find(Entry::class, $this->entries[0]);
-				return $this->getLinks();
+				$links = $this->getLinks($this->entry);
+				return $links;
 			}
+
 			if (($this->multiple || count($this->entries) > 1) && $this->type === 'entry') {
 					$entries = $entryRepository->findExportEntries($this->entries, $this->multiple);
 					$entries = array_reverse($entries);
@@ -73,6 +81,15 @@
 			/** @var Entry $entry */
 			foreach ($entries as $entry) {
 				$this->entry = $entry;
+				
+				if (! $entry->getSize()) {
+					$this->errors[] = 'Size not entered for entry ' . $entry->getId();
+				}
+
+				$links = $this->getExportLinks();
+				if ($links == '|-|') {
+					$this->errors[] = 'Links not entered for entry ' . $entry->getId();
+				}
 
 				$variables[] = 'id|!|' . saveForSql($entry->getId());
 				$variables[] = 'title|!|' . saveForSql($entry->getTitle());
@@ -90,7 +107,7 @@
 
 				$entryString .= $this->getExportDevelopers() ?: '';
 				$entryString .= $this->getExportCharacters() ?: '';
-				$entryString .= $this->getExportLinks() ?: '';
+				$entryString .= $links ?: '';
 				$entryString .= $this->getExportRelations() ?: '';
 
 				$entriesString[] = $entryString;
@@ -206,22 +223,26 @@
 			return implode('|?|', $variables);
 		}
 
-		private function getLinks()
+		private function getLinks($entry)
 		{
 			$links = [];
 			foreach (Host::HOSTS as $host) {
-				$links[] = $this->getLinksByHost($host);
+				$links[] = $this->getLinksByHost($host, $entry);
 			}
 
 			return implode('|?|', $links);
 		}
 
-		private function getLinksByHost($host)
+		private function getLinksByHost($host, $entry = null)
 		{
 			/** @var LinkRepository $linkRepository */
 			$linkRepository = app('em')->getRepository(Link::class);
 
-			$links = $linkRepository->findByEntryAndHost($this->entry, $host, $this->multiple);
+			if ($this->type === 'link') {
+				$links = $linkRepository->findLinksFromLast5Hours($host, $entry);
+			} else {
+				$links = $linkRepository->findByEntryAndHost($this->entry, $host, $this->multiple);
+			}
 
 			$linkData = [];
 			/** @var Link $link */

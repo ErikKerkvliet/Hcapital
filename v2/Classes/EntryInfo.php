@@ -11,7 +11,7 @@
 	use EntryNameResolver;
 use v2\Builders\Characters;
 use v2\Builders\Images;
-use v2\Builders\Links2;
+use v2\Builders\Links;
 use v2\Database\Entity\Entry;
 use v2\Database\Entity\EntryDeveloper;
 use v2\Database\Entity\Thread;
@@ -105,11 +105,14 @@ use v2\Traits\TextHandler;
 				'siteType'          => $this->getSiteType(),
 				'size'              => $this->getSize(),
 				'password'          => $this->getPassword(),
-				'vndb'				=> 'https://vndb.org/v' . $this->entry->getVndb(),
+				'site'				=> $this->getSite(),
+				'siteLabel'			=> $this->entry->getType() === 'ova' ? 'Anidb' : 'Vndb',
 				'images'            => $this->getImages(),
 				'characters'        => $this->getCharacters(),
 				'relations'         => $relationsHtml,
 				'links'             => $this->getLinks(),
+				'update'			=> $this->getSharingType(),
+				'threads'           => $this->getThreadCount(),
 			];
 
 			$this->ifs['single'] = $this->single;
@@ -183,6 +186,15 @@ use v2\Traits\TextHandler;
 				}
 				return false;
 			});
+		}
+
+		private function  getSite(): string
+		{
+			if ($this->entry->getVndb()) {
+				return ($this->entry->getType() === 'ova' ? 
+					'https://www.anidb.net/anime/' : 'https://www.vndb.org/v') . $this->entry->getVndb();
+			}
+			return '';
 		}
 
 		/**
@@ -275,7 +287,7 @@ use v2\Traits\TextHandler;
 			if ($this->entry->getType() == 'app') {
 				//return '';
 			}
-			$links = new Links2($this->entry);
+			$links = new Links($this->entry);
 
 			$linkBox = $links->createLinks();
 
@@ -291,19 +303,21 @@ use v2\Traits\TextHandler;
 			$entities = $threadRepository->findBy(['entry' => $this->entry->getId()]);
 
 			$threads = [];
-
+			$usernames = getenv('SHARING_USERNAMES');
+			
 			/** @var Thread $thread */
 			foreach ($entities as $nr => $thread) {
 				$url = $thread->getUrl();
 
+				
 				$key = 'sharing_url_' . $nr;
 				$threads[] = [
 					'id'        => $thread->getId(),
 					'entry-id'  => $this->entry->getId(),
-					'type'      => $this->entry->getType(),
-					'nr'        => $nr,
+					'nr'        => $thread->getNumber(),
 					'author'    => $thread->getAuthor(),
 					$key        => $url,
+					'options'    => $this->getSharingOptions(),
 				];
 			}
 
@@ -311,14 +325,40 @@ use v2\Traits\TextHandler;
 				$threads[] = [
 					'id'        => 0,
 					'entry-id'  => $this->entry->getId(),
-					'type'      => $this->entry->getType(),
 					'nr'        => 0,
-					'author'    => 'yuuichi_sagara',
+					'author'    => explode(',', $usernames)[0],
 					'sharing_url_0' => '',
+					'options'    => $this->getSharingOptions(),
 				];
 			}
-
 			return $threads;
+		}
+
+		private function getSharingType() {
+			if(count($this->fors['sharing_urls']) > 0 && $this->fors['sharing_urls'][0]['sharing_url_0']) {
+				return 'Update';
+			} else {
+				return 'Create';
+			}
+		}
+
+		private function getThreadCount() {
+			$threadRepository = app('em')->getRepository(Thread::class);
+			$entities = $threadRepository->findBy(['entry' => $this->entry->getId()]);
+			return count($entities);
+		}
+
+		private function getSharingOptions()
+		{
+			$optionsStr = '';
+			$usernames = getenv('SHARING_USERNAMES');
+			if ($usernames) {
+				$usernames = explode(',', $usernames);
+				foreach ($usernames as $username) {
+					$optionsStr .= '<option value="' . $username . '">' . $username . '</option>';
+				}
+			}
+			return $optionsStr;
 		}
 	}
 ?>

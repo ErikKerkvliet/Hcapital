@@ -3,6 +3,10 @@ let pageScrollTop = 250;
 let navigator = null;
 $(document).ready(function()
 {
+	if ($('#names')) {
+		$('#names').focus();
+	}
+	
 	$('.item_image').click(function(e){
 		var entry = "#" + $(this).attr('id');
 

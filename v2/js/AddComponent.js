@@ -117,9 +117,7 @@ function initialiseComponents() {
 				type: 'sharingUrl',
 				length: length,
 				entryId: $parent.find('.sharing-entry-id').first().val(),
-				entryType: $parent.find('.sharing-type').first().val(),
 				author: $parent.find('.sharing-author').first().val(),
-				threadId: $(this).attr('thread-id'),
 			},
 			dataType: "json",
 			success: function (response) {
@@ -129,7 +127,6 @@ function initialiseComponents() {
 					let newHtml = html + response.content;
 					$('#more-sharing-urls').html(newHtml);
 					initialiseComponents();
-					sharingUrlActions(length);
 				} else {
 					alert('loading component failed');
 				}
@@ -138,40 +135,71 @@ function initialiseComponents() {
 	});
 }
 
-function sharingUrlActions(componentCount)
-{
-	$('.save-sharing-url').click(() => {
-		var $parent = $(this).parent();
+document.addEventListener('click', function(event) {
+	let parts = event.target.id.split('-');
+	let nr = parts[parts.length - 1];
+	let entry = parseInt($('#info-title').attr('data-id'));
+    if (event.target.matches('.save-sharing-url')) {
 		$.ajax({
 			url: 'index.php',
 			type: 'POST',
 			data: {
 				v: 2,
 				EntryAction: 'updateSharingUrl',
-				entryId: $parent.find('.sharing-entry-id').first().val(),
-				type: $parent.find('.sharing-type').first().val(),
-				author: $parent.find('.sharing-author').first().val(),
-				url: $parent.find('.sharing-url').first().val(),
-				threadId: $(this).attr('thread-id'),
+				entry: entry,
+				number: nr,
+				author: $('#user-select-' + nr).first().val(),
+				url: $('#sharing-textarea-' + nr).val().trim(),
 			},
 			dataType: "json",
 		})
-		.done((response) => {
-			var $textarea = $parent.find('textarea').first();
+		.done(function(response) {
 			if (response.success === true) {
-				$textarea.css('background', '#93d798');
+				if (nr == 0) {
+					window.location.href = "/?v=2&id=" + (entry + 1);
+				}
+				event.target.style.backgroundColor = '#93d798';
 			} else {
-				$textarea.css('background', '#e35858');
+				event.target.style.backgroundColor = '#e35858';
 			}
-			var id = parseInt($('.sharing-entry-id').first().val()) + 1;
-			window.location.href = '/?v=2&id=' + id;
 		});
-	});
+    } else if (event.target.matches('.open-sharing-url')) {
+		var url = $('#sharing-textarea-' + nr).val();
+		window.open(url, '_blank');
+	} else if (event.target.matches('.update-sharing-url')) {
+		const type = event.target.textContent === 'Create' ? 'full' : 'update';
+		const username = document.querySelector(`#user-select-${nr}`).value;
 
-	$('.delete-sharing-url').click(() => {
-		let nr = $(this).attr('nr');
-		if (! $('#sharing-url-textarea-' + nr).val()) {
-			console.log('#sharing-url-' + nr)
+		$.ajax({
+			url: 'index.php',
+			type: 'POST',
+			data: {
+				v: 2,
+				action: 'getenv',
+				keys: ['PYTHON_PATH', 'APP_MAIN_PATH'],
+			},
+			dataType: "json",
+		})
+		.done(function(response) {
+			if (response.success === true) {
+				const pythonPath = response.envs.PYTHON_PATH;
+				const appMainPath = response.envs.APP_MAIN_PATH;
+				const command = [
+					pythonPath,
+					appMainPath,
+					type,
+					username,
+					entry,
+					'headless'
+				].join(' ');
+				
+				copyToClipboard(command);
+				highlightSuccess(event.target);
+			}
+		});
+	} else if (event.target.matches('.add-sharing-url')) {
+	} else if (event.target.matches('.delete-sharing-url')) {
+		if (! $('#sharing-textarea-' + nr).val()) {
 			$('#sharing-url-' + nr).remove();
 			return;
 		}
@@ -180,15 +208,40 @@ function sharingUrlActions(componentCount)
 			type: 'POST',
 			data: {
 				v: 2,
-				EntryAction: 'deleteSharingUrl',
-				threadId: $(this).attr('thread-id'),
+				action: 'delete',
+				entity: 'thread',
+				entry: entry,
+				number: nr
 			},
 			dataType: "json",
 		});
-		$('#sharing-url-' + nr).html('');
-	});
+		$('#sharing-url-form-' + nr).html('');
+	}
+});
 
-	$('#downloads-div').click(() => {
-		window.location.href = '/?v=2&action=di&entry=' + entryId;
-	});
+function colorTimer($element, color, time) {
+	$element.css('background', color);
+	if (time === 0) {
+		return;
+	}
+	setTimeout(colorTimer, time, $element, 'unset', 0);
+}
+
+function copyToClipboard(text) {
+    const tempElement = document.createElement('textarea');
+    tempElement.value = text;
+    tempElement.setAttribute('readonly', '');
+    tempElement.style.cssText = 'position: absolute; left: -9999px;';
+    
+    document.body.appendChild(tempElement);
+    tempElement.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempElement);
+}
+
+function highlightSuccess(element) {
+    const SUCCESS_COLOR = '#38a751';
+    const HIGHLIGHT_DURATION = 5000;
+    
+    colorTimer(element, SUCCESS_COLOR, HIGHLIGHT_DURATION);
 }

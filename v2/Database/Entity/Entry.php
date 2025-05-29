@@ -107,6 +107,16 @@
 		}
 
 		/**
+		 * @return Entry
+		 */
+		public function setId($id): Entry
+		{
+			$this->id = $id;
+
+			return $this;
+		}
+
+		/**
 		 * @return string
 		 */
 		public function getTitle(): string

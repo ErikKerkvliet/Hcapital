@@ -44,4 +44,18 @@
 				->limit($limit[0] , $limit[1])
 				->getResult();
 		}
+
+		public function insertThread(array $data)
+		{
+			$columns = array_keys($data);
+			$this->addRaw('INSERT INTO ' . $this->entity::TABLE . ' (entry_id, number)
+				SELECT 
+					:nieuwe_entry_id,
+					COALESCE(
+						(SELECT MAX(number) + 1
+						FROM ' . $this->entity::TABLE . '
+						WHERE entry_id = :nieuwe_entry_id),
+						0
+					) AS nieuwe_number;');
+		}
 	}

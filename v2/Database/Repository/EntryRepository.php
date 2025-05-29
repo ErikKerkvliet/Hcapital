@@ -40,7 +40,7 @@ class EntryRepository extends Repository
 		$this->entryColumns = [
 			'e.id', 'e.title', 'e.romanji',
 			'e.released', 'e.size', 'e.website', 'e.information', 'e.password', 'e.type', 'e.time_type',
-			'e.last_edited', 'e.created', 'e.downloads',
+			'e.last_edited', 'e.created_at', 'e.downloads',
 		];
 
 		$this->entryColumnsString = implode(',', $this->entryColumns);
@@ -379,12 +379,12 @@ class EntryRepository extends Repository
 		return $types;
 	}
 
-	public function findExportEntries($entries, $all = false)
+	public function findExportEntries($entries, $multiple = false)
 	{
 		$qb = $this->select()
 			->from(Entry::TABLE, 'e');
 
-		if ($all) {
+		if ($multiple) {
 			$id = $entries[0];
 			$qb->where('e.id', '>=', $id);
 		} else {
@@ -438,7 +438,7 @@ class EntryRepository extends Repository
 		}
 
 		$qb->andWhere('time_type', '=', '"new"')
-			->andWhere('created', '>', '"2019-09-01 00:00:00"')
+			->andWhere('created_at', '>', '"2019-09-01 00:00:00"')
 			->orderBy('last_edited', 'DESC')
 			->limit($limit[0], $limit[1]);
 
@@ -471,5 +471,11 @@ class EntryRepository extends Repository
 			->from(Entry::TABLE, 'e')
 			->where('e.last_edited', '>=', "'" . $lastEdited . "'")
 			->getResult();
+	}
+
+	public function updateId(int $id, int $newId) 
+	{
+		$query = 'UPDATE ' . Entry::TABLE . ' SET id = ' . $newId . ' WHERE id = ' . $id;
+		$this->runQuery(null, null, $query);
 	}
 }

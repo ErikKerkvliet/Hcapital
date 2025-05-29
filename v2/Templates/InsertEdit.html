@@ -7,6 +7,17 @@
     {/if}
         <div>
             <input id="entry-id" type="hidden" name="entry-id" entry-id="{{id}}">
+            <input id="app-id" type="hidden" name="app-id" value="browser">
+            {if insertEdit}
+                <div>
+                    <div class="description">
+                        Id:
+                    </div>
+                    <div class="data">
+                        <input type='text' id='new-id' name='new-id' value="{{id}}" size="4">
+                    </div>
+                </div>
+            {/if}
             <div class="row">
                 <div class="description">
                     Type:
@@ -118,7 +129,7 @@
             </div>
             <div>
                 <div class="description">
-                    Vndb:
+                    {{dbSite}}:
                 </div>
                 <div class="data">
                     <input type='text' id='vndb' name='vndb' value="{{fullVndb}}" size="40">
@@ -207,6 +218,17 @@
                     </div>
                 </div>
             {/if}
+            <div>
+                <div class="description">
+                     &nbsp;--------------------------
+                </div>
+                <div type="entry" action-type="permission" item-id={{id}} class="data item-button">
+                    <div>Set Permissions</div>
+                </div>
+                <div type="entry" action-type="folder" item-id={{id}} class="data item-button">
+                    <div>Folder command</div>
+                </div>
+            </div>
             <div>
                 <div class="submit">
                     <input id='submit' type='submit' value='Submit'>

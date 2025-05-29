@@ -22,7 +22,7 @@
 		}
 
 		public function manipulate($id, $images, $type)
-		{
+		{	
 			$this->outputDir .= '/' . (int) $id;
 			foreach ($images as $key => $files) {
 				if ($key == 'cover') {
@@ -35,8 +35,15 @@
 				foreach ($files as $file) {
 					$imagick = new \Imagick();
 
+					// Sanitize the file name to remove or replace special characters
+					if ($file['name'] != '__img.jpg') {
+						$sanitizedFileName = $this->sanitizeFileName($file['name']);
+					} else {
+						$sanitizedFileName = $file['name'];
+					}
+
 					if ($type == 'ova' && $key != 'cover') {
-						$output = $this->outputDir . '/' . $key . '/' . $file['name'];
+						$output = $this->outputDir . '/' . $key . '/' . $sanitizedFileName;
 
 						copy($file['tmp'], $output);
 						chmod($output, 0777);
@@ -55,19 +62,13 @@
 					}
 					$dimensions = $this->getImageDimensions($imagick, $key, $file['name']);
 
-//					$input = $file['tmp'];
-//					$output = $this->outputDir . '/' . $file['name'];
-
-//					shell_exec(sprintf('convert "%s" -crop %dx%d+0+0 "%s"',
-//						$input, $dimensions['width'], $dimensions['height'], $output));
-
 					$imagick->resizeImage($dimensions['width'], $dimensions['height'],
 						\Imagick::FILTER_LANCZOS, 1);
 
 					$imagick->setImageFormat('jpg');
 
-					$imageKey = $key == 'img' || $key == 'image' ? '' : $key . '/';
-					$output = $this->outputDir . '/' . $imageKey . $file['name'];
+					$imageKey = $key === 0 || $key == 'img' || $key == 'image' ? '' : $key . '/';
+					$output = $this->outputDir . '/' . $imageKey . $sanitizedFileName;
 
 					$imagick->writeImage($output);
 
@@ -78,6 +79,23 @@
 					$imagick->destroy();
 				}
 			}
+		}
+
+		/**
+		 * Sanitize the file name by removing or replacing special characters.
+		 *
+		 * @param string $fileName The original file name.
+		 * @return string The sanitized file name.
+		 */
+		private function sanitizeFileName($fileName)
+		{
+			// Replace special characters (e.g., #) with an underscore or remove them
+			$sanitized = preg_replace('/[#\?%]/', '_', $fileName);
+
+			// Optionally, you can remove multiple consecutive underscores
+			$sanitized = preg_replace('/_+/', '_', $sanitized);
+
+			return $sanitized;
 		}
 
 		public function getImageDimensions($image, $key, $name)

@@ -78,8 +78,17 @@
 			if ($this->entry) {
 				$downloads = $downloadRepository->findBy(['entry' => $this->entry], ['created' => 'DESC']);
 			} else {
-				$downloads = $downloadRepository->findAll(['created', 'DESC']);
+				$downloads = $downloadRepository->findAll(['created', 'DESC'], [0, 500]);
 			}
+
+			$keys = [];
+			$downloads = array_filter($downloads, function ($download) use (&$keys) {
+				$key = $download->getEntry(true) . '-' . $download->getLink(true) . '-' . $download->getIp();
+				if (!isset($keys[$key])) { 
+					$keys[$key] = true;
+					return true;
+				}
+			});
 
 			/** @var Download $download */
 			foreach($downloads as $download) {

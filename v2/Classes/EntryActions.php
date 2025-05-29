@@ -8,7 +8,12 @@
 
 	namespace v2\Classes;
 
+	use DeleteHandler;
 	use HostResolver;
+	use LinkResolver;
+	use v2\Database\Entity\Banned;
+	use v2\Database\Entity\Broken;
+	use v2\Database\Entity\Download;
 	use v2\Database\Entity\EntryCharacter;
 	use v2\Database\Entity\DeveloperRelation;
 	use v2\Database\Entity\Entry;
@@ -18,6 +23,7 @@
 	use v2\Database\Entity\EntryRelation;
 	use v2\Database\Entity\Host;
 	use v2\Database\Entity\Link;
+	use v2\Database\Entity\Thread;
 	use v2\Database\Repository\DeveloperRelationRepository;
 	use v2\Database\Repository\EntryDeveloperRepository;
 	use v2\Database\Repository\EntryRelationRepository;
@@ -27,10 +33,13 @@
 
 	class EntryActions
 	{
+		const RELATION_TYPE_SERIES = 'series';
+
 		private $imageHandler = null;
 
 		private $insert = false;
 		private $id = 0;
+		private $newId;
 		private $title;
 		private $romanji;
 		private $type;
@@ -38,12 +47,17 @@
 		private $released;
 		private $website;
 		private $information;
+		private $vndb = 0;
 		private $password;
 		private $size;
 		private $developers = [];
 		private $rapidgatorLinks = [];
 		private $mexashareLinks = [];
 		private $katfileLinks = [];
+		private $ddownloadLinks = [];
+		private $fikperLinks = [];
+		private $rosefileLinks = [];
+		private $linkResolver = null;
 		private $hostResolver;
 		private $imagePath;
 		private $outputDir;
@@ -52,14 +66,19 @@
 		private $images = [];
 		private $entryId = 0;
 
+		private $deleteHandler = null;
+		private $appId = null;
+
 		public function __construct($insert = false, $id = 0)
 		{
 			$this->imageHandler = new ImageHandler('entry');
 			$this->hostResolver = new HostResolver();
+			$this->linkResolver = new LinkResolver();
+			$this->deleteHandler = new DeleteHandler();
 			$this->insert = $insert;
 
 			$this->id = $id ?: (requestForSql('entry-id') ?: requestForSql('id'));
-
+			$this->newId = request('new-id', 0);
 			$this->title = request('title');
 			$this->romanji = request('romanji');
 			$this->type = request('type');
@@ -70,7 +89,8 @@
 			$this->information = request('information');
 			$this->vndb = $this->extractVndb(request('vndb'));
             $this->password = requestForSql('password');
-
+            $this->appId = requestForSql('app-id');
+			
 			foreach (Host::HOSTS as $host) {
 				$variable = $host . 'Links';
 				$this->{$variable} = requestForSql($host . '-links');
@@ -95,15 +115,13 @@
 				dd('Some query error.');
 			}
 
-			$this->makeDirectories();
-
 			$this->insertDevelopers();
 
 			$this->insertRelations();
 
 			$this->insertEditLinks();
 
-			if (AdminCheck::checkForLocal()) {
+			if (AdminCheck::checkForLocal() && requestForSql('id') == $this->newId) {
 				$this->setupFolders();
 
 				$this->insertEditImages();
@@ -120,6 +138,11 @@
 		{
 			$importText = request('importText');
 
+			if (substr($importText, 0, 4) === 'http') {
+				$this->importPureLinks($importText);
+				header('Location: /');
+				die();
+			}
 			if (substr($importText, 0, 5) === 'entry') {
 				$this->updateLinks($importText);
 				header('Location: /');
@@ -154,14 +177,6 @@
 			header('Location: /?v=2&id=' . $this->entryId);
 		}
 
-		public function delete($type = 'entry')
-		{
-			$function = 'delete' . ucfirst($type);
-			$this->{$function}();
-
-			header('Location: /');
-		}
-
 		private function insertEditEntry()
 		{
 			$date = date('Y-m-d H:i:s');
@@ -178,7 +193,14 @@
 				$entry->setLastEdit($date);
 			} else {
 				$entry = app('em')->find(Entry::class, $this->id);
-				$entry->setLastEdit($date);
+				if ($this->appId == 'browser') {
+					$entry->setLastEdit($date);
+				}
+				
+				if ($this->id !== $this->newId) {
+					// dd($this->id, $this->newId, $this->id == $this->newId);
+					// $this->updateId($entry);
+				}
 			}
 
 			$entry->setTitle($this->title);
@@ -347,12 +369,7 @@
 		public function insertEditLinks()
 		{
 			if (! $this->insert) {
-				$linkRepository = app('em')->getRepository(Link::class);
-				$links = $linkRepository->findBy(['entry' => $this->id]);
-
-				foreach ($links as $link) {
-					app('em')->delete($link);
-				}
+				$this->deleteHandler->deleteLinks($this->id);
 			}
 
 			$i = 0;
@@ -437,7 +454,6 @@
 					}
 					$this->images = array_merge(['cover' => $cover], $this->images);
 				}
-
 				$this->imageHandler->manipulate($this->id, $this->images, $this->type);
 			}
 		}
@@ -664,8 +680,9 @@
 				$exists = $entryRelationRepository->findBy(['entry' => $relationData['relation']]);
 
 				if (! $exists) {
-					$relationData['entry'] = $relationData['relation'];
-
+					if ($relationData['relation']['type'] == self::RELATION_TYPE_SERIES) {
+						$relationData['entry'] = $relationData['relation'];
+					}
 					$this->fillEntity($relationData, $entryRelation);
 				}
 			}
@@ -693,75 +710,6 @@
 		{
 			app('em')->persist($entity);
 			return app('em')->flush(null, true);
-		}
-
-		private function deleteEntry()
-		{
-			$entry = app('em')->find(Entry::class, $this->id);
-
-			app('em')->delete($entry);
-
-			if ($entry->getType() != 'ova' && $entry->getType() != '3d') {
-				/** @var EntryRelationRepository $entryRelationRepository */
-				$entryRelationRepository = app('em')->getRepository(EntryRelationRepository::class);
-				$relations = $entryRelationRepository->findByEntry($entry);
-
-				foreach ($relations as $relation) {
-					app('em')->delete($relation);
-				}
-			}
-
-			$this->deleteDevelopers();
-
-			$this->deleteCharacters();
-			$this->deleteLinks();
-		}
-
-		private function deleteDevelopers()
-		{
-			$entryDeveloperRepository = app('em')->getRepository(EntryDeveloper::class);
-			/** @var DeveloperRelationRepository $developerRelationRepository */
-			$developerRelationRepository = app('em')->getRepository(DeveloperRelation::class);
-
-			$entryDevelopers = $entryDeveloperRepository->findBy(['entry_id' => $this->id]);
-
-			foreach ($entryDevelopers as $entryDeveloper) {
-				$relations = $developerRelationRepository->findDeveloperByRelation($entryDeveloper->getDeveloper());
-				foreach ($relations as $relation) {
-					app('em')->delete($relation);
-				}
-
-				$entities = $entryDeveloperRepository->findBy(['developer_id' => $entryDeveloper->getDeveloper(true)]);
-				if (count($entities) === 1) {
-					app('em')->delete($entryDeveloper->getDeveloper());
-				}
-				app('em')->delete($entryDeveloper);
-			}
-		}
-
-		private function deleteCharacters()
-		{
-			$entryCharacterRepository = app('em')->getRepository(EntryCharacter::class);
-
-			$entryCharacters = $entryCharacterRepository->findBy(['entry_id' => $this->id]);
-
-			foreach ($entryCharacters as $entryCharacter) {
-				$entities = $entryCharacterRepository->findBy(['character_id' => $entryCharacter->getCharacter(true)]);
-				if (count($entities) === 1) {
-					app('em')->delete($entryCharacter->getCharacter());
-				}
-				app('em')->delete($entryCharacter);
-			}
-		}
-
-		private function deleteLinks() {
-			$linkRepository = app('em')->getRepository(Link::class);
-
-			$links = $linkRepository = $linkRepository->findBy(['entry_id' => $this->id]);
-
-			foreach ($links as $link) {
-				app('em')->delete($link);
-			}
 		}
 
 		private function makeDirectories()
@@ -808,22 +756,188 @@
 					$host = $this->hostResolver->byUrl($linksData);
 
 					if ($host == Host::HOST_MEXASHARE) {
-						$linkRepository->deleteByHost((int) $entryId, '//mexa');
-						$linkRepository->deleteByHost((int) $entryId, 'www.mexa');
-						$linkRepository->deleteByHost((int) $entryId, 'mx-sh');
+						$this->deleteHandler->deleteByEntyAndHost((int) $entryId, '//mexa');
+						$this->deleteHandler->deleteByEntyAndHost((int) $entryId, 'www.mexa');
+						$this->deleteHandler->deleteByEntyAndHost((int) $entryId, 'mx-sh');
 					} else {
-						$linkRepository->deleteByHost((int) $entryId, $host);
+						$this->deleteHandler->deleteByEntyAndHost((int) $entryId, $host);
 					}
 				}
 
+				$entryId = 0;
 				foreach ($links as $linkData) {
 					$link = new Link();
 					foreach ($linkData as $key => $value) {
 						$setFunction = 'set' . ucfirst($key);
 						$link->{$setFunction}($value);
+						$entryId = $key == 'entry' ? $value : $entryId;
 					}
-					app('em')->flush($link);
+					app('em')->persist($link);
+
+					$entry = app('em')->find(Entry::class, $entryId);
+					if ($entry) {
+						$entry->setLastEdit(date('Y-m-d H:i:s'));
+						app('em')->update($entry);
+					}
 				}
+			}
+			app('em')->flush();
+		}
+
+		private function updateId(Entry $entry) {
+			$entryRepository = app('em')->getRepository(Entry::class);
+			$entryRepository->updateId($this->id, $this->newId);
+
+			$classes = [
+				EntryCharacter::class,
+				EntryDeveloper::class,
+				EntryRelation::class,
+				Link::class,
+				Thread::class,
+				Banned::class,
+				Broken::class,
+				Download::class,
+			];
+			
+			foreach ($classes as $class) {
+				$repository = app('em')->getRepository($class);
+
+				$items = $repository->findBy(['entry' => $this->id]);
+				
+				foreach ($items as $item) {
+					$item->setEntry($this->newId);
+					app('em')->update($item);
+				}
+
+				if ($class == EntryRelation::class) {
+					$items = $repository->findBy(['relation' => $this->id]);
+					foreach ($items as $item) {
+						$item->setRelation($this->newId);
+						app('em')->update($item);
+					}
+				}
+			}
+			$this->id = $this->newId;
+
+			app('em')->flush();		
+		}
+
+		private function importPureLinks($data)
+		{
+			$linksData = explode('http', $data);
+			unset($linksData[0]);
+
+			$entryLinks = [];
+			foreach ($linksData as $link) {
+				$filename = basename(parse_url($link, PHP_URL_PATH));
+				if (preg_match('/^E(\d+)/', $filename, $matches)) {
+					if (! isset($entryLinks[$matches[1]])) {
+						$entryLinks[$matches[1]] = [];
+					}
+					$entryLinks[$matches[1]][] = 'http' . trim($link);
+				}
+			}
+
+			/** @var LinkRepository $linkRepository */
+			$linkRepository = app('em')->getRepository(Link::class);
+			$newLinks = [];
+			foreach ($entryLinks as $key => $entryLink) {
+				$entryId = (int) $key;
+
+				$links = $linkRepository->findBy(['entry' => $entryId]);
+				// foreach($links as $link) {
+				// 	app('em')->delete($link);
+				// }
+		
+				$deletedHosts = [];
+				foreach ($entryLink as $url) {
+					$link = $this->linkResolver->byLinksAndUrl($links, $url);
+					if ($link) {
+						$ids[] = $link->getId();
+						$link->setLink($url);
+						
+						$date = date('Y-m-d H:i:s');
+						$link->setCreated($date);
+
+						if (($comment = $link->getComment()) != '') {
+							if (strpos($comment, ':') === false) {
+								$comment .= ':';
+								$link->setComment($comment);
+							}
+						}
+						
+						app('em')->update($link);
+						app('em')->flush();
+						continue;
+					} else {
+						$host = $this->hostResolver->byUrl($url);
+						if (! isset($deletedHosts[$entryId])) {
+							$deletedHosts[$entryId] = [];
+						}
+						// if (! in_array($host, $deletedHosts[$entryId])) {
+						// 	$deletedHosts[$entryId][] = $host;
+
+						// 	if ($host == Host::HOST_MEXASHARE) {
+						// 		$this->deleteHandler->deleteByEntyAndHost((int) $entryId, '//mexa');
+						// 		$this->deleteHandler->deleteByEntyAndHost((int) $entryId, 'www.mexa');
+						// 		$this->deleteHandler->deleteByEntyAndHost((int) $entryId, 'mx-sh');
+						// 	} else {
+						// 		$this->deleteHandler->deleteByEntyAndHost((int) $entryId, $host);
+						// 	}
+						// }
+						
+						$newLink = new Link();
+						$newLink->setLink($url);
+
+						$parts = explode('.', $url);
+						$newLink->setEntry($entryId);
+
+						if (strpos($parts[1], '-') !== false) {
+							$nameParts = explode('-', $parts[1]);
+							$nameParts = str_replace('_', '', $nameParts);
+						} else {
+							$nameParts = explode('_', $parts[1]);
+							$nameParts = str_replace('-', '', $nameParts);
+						}
+						if (count(($nameParts)) > 1) {
+							unset($nameParts[0]);
+							$comment = trim(implode(' ', $nameParts)) . ':';
+
+							$first = substr($comment, 0, 1);
+							$rest = substr($comment, 1);
+							$comment = strtoupper($first) . $rest;
+							
+							$newLink->setComment($comment);
+						}
+						
+						$part = 0;
+						if ($parts[2] !== 'rar') {
+							$part = substr($parts[2], 4);
+						}
+						$newLink->setPart((int) $part);
+						
+						$date = date('Y-m-d H:i:s');
+						$newLink->setCreated($date);
+
+						$newLinks[] = $newLink;
+					}					
+				}
+				uasort($newLinks, function($a, $b) {
+					return $a->getPart() <=> $b->getPart();
+				});
+				foreach($newLinks as $link) {
+					app('em')->persist($link);
+					app('em')->flush();
+				}
+
+				$entry = app('em')->find(Entry::class, $entryId);
+
+				$date = date('Y-m-d H:i:s');
+				$entry->setLastEdit($date);
+				$entry->setTimeType('old');
+
+				app('em')->update($entry);
+				app('em')->flush();
 			}
 		}
 	}

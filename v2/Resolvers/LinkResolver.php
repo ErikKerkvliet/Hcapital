@@ -1,6 +1,8 @@
 <?php
 
+	use v2\Database\Entity\Entry;
 	use v2\Database\Entity\Host;
+	use v2\Database\Entity\Link;
 
 	/**
 	 * Class LinkResolver
@@ -21,6 +23,26 @@
 		 * @var HostResolver
 		 */
 		private $hostResolver;
+
+		public function byLinksAndUrl(array $links, string $url)
+		{
+			$this->hostResolver = new HostResolver();
+
+			$path = parse_url($url, PHP_URL_PATH);
+			$filenameWithHtml = basename($path);
+
+			// Remove the ".html" extension
+			$filename = preg_replace('/\.html$/', '', $filenameWithHtml);
+			$host = $this->hostResolver->byUrl($url);
+
+			$filtered = array_filter($links, function($link) use ($host, $filename) {
+				if ($host === $this->hostResolver->byUrl(($url = $link->getLink()))) {
+					return strpos($url, $filename) !== false;
+				}
+			});
+
+			return reset($filtered);
+		}
 
 		/**
 		 * Manipulate links before buttons are made
@@ -46,6 +68,11 @@
 				$host = $this->hostResolver->byUrl($link->getLink());
 				$this->links[$link->getComment()][$host][] = $link;
 			}, $links);
+			
+			unset($this->links[''][HOST::HOST_FIKPER]);
+			unset($this->links[''][HOST::HOST_DDOWNLOAD]);
+			unset($this->links[''][HOST::HOST_ROSEFILE]);
+
 			$this->setLinkParts();
 
 			$this->setMultipleZeroLinks();
@@ -113,6 +140,11 @@
 					}
 				}
 			}
+
+			if (! is_array($linkSet)) {
+				return ['' => [$linkSet]];
+			}
+			
 			$keySet = array_keys($linkSet);
 			if ($linkSet && $keySet[0] !== Host::HOST_RAPIDGATOR) {
 				return array_reverse($linkSet);

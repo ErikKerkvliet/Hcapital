@@ -1,14 +1,16 @@
 <div id="sharing-url-{{nr}}">
     <form id="sharing-url-form-{{nr}}">
-        <input type="hidden" class="sharing-type" value="{{type}}"/>
         <input type="hidden" class="sharing-entry-id" value="{{entry-id}}"/>
         <input type="hidden" class="sharing-author" value="{{author}}"/>
-        <textarea form="sharing-url-form-{{nr}}" name="sharing-url-{{nr}}" class="sharing-url" cols="145" rows="4">
+        <textarea form="sharing-url-form-{{nr}}" id="sharing-textarea-{{nr}}" name="sharing-url-{{nr}}" class="sharing-url" cols="145" rows="4">
         </textarea>
-        <div thread-id={{id}} class="admin-button save-sharing-url">Save</div>
-        <div class="admin-button open-sharing-url">Open</div>
-        <div thread-id={{id}} class="admin-button add-sharing-url">Add</div>
-        <div thread-id={{id}} class="admin-button" nr="{{nr}}">Update</div>
-        <div thread-id={{id}} class="admin-button delete-sharing-url" nr="{{nr}}">Delete</div>
+        <div id="save-{{nr}}" class="admin-button save-sharing-url">Save</div>
+        <div id="open-{{nr}}" class="admin-button open-sharing-url">Open</div>
+        <div id="add-sharing-{{nr}}" class="admin-button add-sharing-url">Add</div>
+        <div id="update-sharing-{{nr}}" class="admin-button update-sharing-url">{{update}}</div>
+        <select id="user-select-{{nr}}" class="admin-button user-select">
+            {{options}}
+        </select>
+        <div id="delete-{{nr}}" class="admin-button delete-sharing-url" nr="{{nr}}">Delete</div>
     </form>
 </div>

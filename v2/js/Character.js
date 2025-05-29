@@ -1,6 +1,6 @@
 $(document).ready(() => {
 	let characterId = $('#data').attr('data-character');
-
+	let entryId = $('')
 	$('.delete-char').click(() => {
 		if (! confirm('Are you sure you want to fully delete this character?')) {
 			return;
@@ -10,8 +10,9 @@ $(document).ready(() => {
 			type: 'POST',
 			data: {
 				v: 2,
-				action: 'deleteCharacter',
-				character: characterId,
+				action: 'delete',
+				entity: 'character',
+				characterId: characterId,
 			},
 			dataType: "json",
 		})

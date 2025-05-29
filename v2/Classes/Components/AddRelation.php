@@ -53,7 +53,7 @@ use v2\Traits\TextHandler;
 
 			$this->fors = [
 				'entries' => $this->entries,
-				'relationTypes'     => $this->relationTypes,
+				'relationTypes' => $this->relationTypes,
 			];
 
 			$this->fillPlaceHolders();

@@ -38,7 +38,7 @@
             /** @var LinkRepository $linkRepository */
             $linkRepository = app('em')->getRepository(Link::class);
 
-            $this->links = $linkRepository->findBy(['entry' => $entry]);
+            $this->links = $linkRepository->findBy(['entry' => $entry], ['part' => 'ASC']);
             $this->groupLinks();
         }
 

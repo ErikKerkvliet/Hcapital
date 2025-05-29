@@ -1,5 +1,7 @@
 <?php
 
+	namespace v2\Factories;
+
 	use v2\Database\Entity\Link;
 
 	/**

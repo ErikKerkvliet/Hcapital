@@ -9,6 +9,7 @@
 	namespace v2\Database\Repository;
 
 	use v2\Database\Entity\Character;
+	use v2\Database\Entity\EntryCharacter;
 
 	class CharacterRepository extends Repository
 	{
@@ -32,13 +33,23 @@
 //				$orderBy[0] = $orderBy[0] != 'gender' ? $orderBy[0] : 'gender';
 
 //				$orderBy[0] = $orderBy[0] != 'romanji'  ? $orderBy[0] : 'name_romanji';
-
-				$this->select()
+				$characters = $this->select()
 					->from(Character::TABLE, 'c')
 					->orderBy($orderBy[0], $orderBy[1])
-					->limit($limit[0], $limit[1]);
+					->limit($limit[0], $limit[1])
+					->getResult();
+				
+				$noKanji = [];
+				$kanji = [];
+				foreach ($characters as $character) {
+					if (($name = $character->getName()) == '' || $name == '？？') {
+						$noKanji[] = $character;
+					} else {
+						$kanji[] = $character;
+					}
+				}
 
-				return $this->getResult();
+				return array_merge($kanji, $noKanji);
 			}
 
 //			$search = $this->validateForQuery($search);
@@ -115,7 +126,6 @@
 				$condition = 'REGEXP';
 				$char = "[^A-Za-z]";
 			}
-
 			$this->select()
 				->from(Character::TABLE, 'c')
 				->where('LEFT(romanji, 1)', $condition, "'" . $char . "'")
@@ -123,5 +133,16 @@
 				->limit($limit[0], $limit[1]);
 
 			return $this->getResult();
+		}
+
+		public function findByEntry($entry)
+		{
+			$id = is_int($entry) ? $entry : $entry->getId();
+
+			return $this->select()
+				->from(Character::TABLE, 'c')
+				->leftJoin(EntryCharacter::TABLE, 'ec', 'ec.character_id', '=', 'c.id')
+				->where('ed.entry_id', '=', $id)
+				->getResult();
 		}
 	}

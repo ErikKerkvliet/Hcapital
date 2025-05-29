@@ -15,7 +15,7 @@ $(document).ready(function()
 			goToUrl(id, 2)
 		}
 	});
-
+	
 	$('.char-imgs img').each(function (e) {
 		if (this.height >= this.width) {
 			var width = this.width / this.height;
@@ -158,89 +158,6 @@ $(document).ready(function()
 			$(this).height(57 * height);
 		}
 	});
-
-	$('.char-edit').click(function() {
-		let charId = $(this).attr('char-id');
-
-		window.location.href = '/?v=2&id=' + entryId + '&_cid=' + charId;
-	});
-
-	$('.char-delete').click(function() {
-		let charId = $(this).attr('char-id');
-
-		$.ajax({
-			url: 'index.php',
-			type: 'POST',
-			data: {
-				v: 2,
-				action: 'deleteCharacter',
-				entry: entryId,
-				character: charId,
-			},
-			dataType: "json",
-		})
-		.done(function(response) {
-			if (response.success) {
-				$('div[character-box="' + charId + '"]').remove();
-			}
-		});
-	});
-
-	$('.save-sharing-url').click(function() {
-		var $parent = $(this).parent();
-		$.ajax({
-			url: 'index.php',
-			type: 'POST',
-			data: {
-				v: 2,
-				EntryAction: 'updateSharingUrl',
-				entryId: $parent.find('.sharing-entry-id').first().val(),
-				type: $parent.find('.sharing-type').first().val(),
-				author: $parent.find('.sharing-author').first().val(),
-				url: $parent.find('.sharing-url').first().val(),
-				threadId: $(this).attr('thread-id'),
-			},
-			dataType: "json",
-		})
-		.done(function(response) {
-			var $textarea = $parent.find('textarea').first();
-			if (response.success === true) {
-				$textarea.css('background', '#93d798');
-			} else {
-				$textarea.css('background', '#e35858');
-			}
-			var id = parseInt($('.sharing-entry-id').first().val()) + 1;
-			window.location.href = '/?v=2&id=' + id;
-		});
-	});
-
-	$('.open-sharing-url').click(function() {
-		var url = $(this).parent().find('.sharing-url').first().val();
-		window.open(url, '_blank');
-	});
-
-	$('.update-thread').click(function() {
-		updateThread($(this), $(this).attr('nr'));
-	});
-
-	$('.delete-sharing-url').click(function() {
-		var $button = $(this);
-		$.ajax({
-			url: 'index.php',
-			type: 'POST',
-			data: {
-				v: 2,
-				EntryAction: 'deleteSharingUrl',
-				threadId: $(this).attr('thread-id'),
-			},
-			dataType: "json",
-		});
-		$button.parent().find('.sharing-url').first().val('');
-	});
-
-	$('#downloads-div').click(() => {
-		window.location.href = '/?v=2&action=di&entry=' + entryId;
-	});
 });
 
 let topSpace = 0;
@@ -284,23 +201,6 @@ function goToUrl(id, mouseClickType)
 	});
 }
 
-function updateThread(parent, threadId = '')
-{
-	var entryId = $('#info-title').attr('data-id');
-
-	const el = document.createElement('textarea');
-	el.value = 'python /home/erik/PycharmProjects/CreateThread/source/Main.py update ' + entryId + ' ' + threadId;
-	el.setAttribute('readonly', '');
-	el.style.position = 'absolute';
-	el.style.left = '-9999px';
-	document.body.appendChild(el);
-	el.select();
-	document.execCommand('copy');
-	document.body.removeChild(el);
-
-	parent.css('background', '#38a751')
-}
-
 $(document).on("mousedown", function (e1) {
 	imageIsUp = false;
 	$(document).one("mouseup", function (e2) {
@@ -316,3 +216,5 @@ window.onscroll = function () {
 		addChar.css('position', 'fixed');
 	}
 };
+
+

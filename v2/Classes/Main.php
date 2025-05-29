@@ -8,11 +8,12 @@
 
 	namespace v2\Classes;
 
-	use v2\Database\Entity\Character;
+use v2\Database\Entity\Character;
     use v2\Database\Entity\Developer;
     use v2\Database\Entity\Entry;
     use v2\Database\Entity\Thread;
-    use v2\Manager;
+	use v2\Factories\ThreadFactory;
+	use v2\Manager;
     use v2\Traits\TextHandler;
 
     class Main
@@ -82,7 +83,7 @@
 				}
 			} else if (request('action') === 'exportAdvanced') {
 				if (AdminCheck::checkForAdmin()) {
-					$entryIds = explode(',', request('entryIds'));
+					$entryIds = explode(',', request('ids'));
 					$content = new ExportAdvanced($entryIds);
 				} else {
 					$content = new Home();
@@ -120,7 +121,6 @@
 					$content = new InsertEdit($entry);
 				} else if ($action == 'editCharacter') {
 					$entry = app('em')->find(Entry::class, request('entryId'));
-
 					$content = new InsertEditCharacter($entry, request('id'));
 				} else if ($action == 'insertCharacter') {
 					$content = new InsertEditCharacter(null, request('entryId'));
@@ -142,10 +142,6 @@
 					$entryAction = new EntryActions();
 					$entryAction->doAction('import');
 					return;
-				} else if ($action == 'delete') {
-					$entryAction = new EntryActions(false, request('entryId'));
-					$entryAction->doAction('delete');
-					return;
 				} else if ($action == 'moveTo') {
 					$entry = app('em')->find(Entry::class, (int)request('entryId'));
 
@@ -163,25 +159,30 @@
 					]);
 					die();
 				} else if ($action == 'updateSharingUrl') {
-					$thread = app('em')->find(Thread::class, (int)request('threadId'));
-					if (! $thread) {
-						$new = true;
-						$thread = new Thread();
+					$threadRepository = app('em')->getRepository(Thread::class);
+					$threadFactory = new ThreadFactory();
+
+					$thread = $threadRepository->findOneBy([
+						'entry' => request('entry', 0),
+						'number' => request('number', 0)]
+					);
+
+					$data = request('all');
+					$remove = ['v', 'EntryAction'];
+
+					foreach ($remove as $key) {
+						unset($data[$key]);
 					}
 
-					$thread->setEntry((int)request('entryId'));
-					$thread->setType(request('type'));
-					$thread->setConfirmed(true);
-					$thread->setAuthor(request('author'));
-					$thread->setUrl(trim(request('url')));
-
-					if ($new) {
-						app('em')->persist($thread);
-						app('em')->flush($thread);
-					} else {
+					if ($thread) {
+						$threadFactory->update($thread, $data);
 						app('em')->update($thread);
 						app('em')->flush();
+					} else {
+						$thread = $threadFactory->create($data);
+						app('em')->flush($thread);
 					}
+					
 					echo json_encode([
 						'success' => true,
 					]);
@@ -193,14 +194,6 @@
 						'success' => true,
 					]);
 					die();
-				} else if ($action == 'deleteSharingUrl') {
-					$thread = app('em')->find(Thread::class, (int) request('threadId'));
-					app('em')->delete($thread);
-					die();
-				} else if ($action == 'threads') {
-
-					$page = (int) request('page');
-					$content = new Threads($page);
 				}
 			} else {
 				return;
