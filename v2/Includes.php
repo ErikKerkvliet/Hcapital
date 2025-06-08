@@ -447,6 +447,13 @@
 			}
 		}
 	}
+
+	function watchIp($ipAddress, $developerId) {
+		$bannedRepo = app('em')->getRepository(\v2\Database\Entity\Banned::class);
+		$downloads = $bannedRepo->findByIpAndDeveloper($ipAddress, $developerId);
+
+		return count($downloads);
+	}
 ?>
 
 

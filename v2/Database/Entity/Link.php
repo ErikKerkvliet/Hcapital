@@ -16,7 +16,13 @@
 		const TABLE = 'entry_links';
 
 		/** @var string  */
-		const BANNED_URL = 'https://rapidgator.net/file/69c900ee31cd065086ab9adba656588c/E00105.rar.html';
+		const BANNED_RAPIDGATOR_URL = 'https://rapidgator.net/file/69c900ee31cd065086ab9adba656588c/E00105.rar.html';
+
+		/** @var string  */
+		const BANNED_MEXASHARE_URL = 'https://mexa.sh/2hyq4vb11r8o/G2504248.rar.html';
+
+		/** @var string  */
+		const BANNED_KATFILE_URL = 'https://katfile.com/k9t3sm6mnrpy/G2504248.rar.html';
 
 		/**
 		 * @var integer

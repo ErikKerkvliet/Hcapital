@@ -29,6 +29,7 @@
 	use v2\Database\Entity\EntryDeveloper;
 	use v2\Database\Entity\EntryRelation;
 	use v2\Database\Entity\Link;
+    use v2\Database\Entity\Host;
 	use v2\Database\Entity\Thread;
     use v2\Database\Repository\CharacterRepository;
     use v2\Database\Repository\DownloadRepository;
@@ -38,6 +39,7 @@
 	use v2\Database\Repository\EntryRepository;
 	use v2\Database\Repository\LinkRepository;
     use v2\Transformers\CharacterTransformer;
+	use v2\Resolvers\HostResolver;
 
 	require_once("RapidgatorClient.php");
 
@@ -511,13 +513,24 @@
 
                     $ipAddress = AdminCheck::get_ip_address();
                     $downloads = $downloadRepository->getDownloadsByIp($ipAddress, 1);
-                    if (AdminCheck::isBanned($entry)) {
-                        $comment = Banned::BANNED;
-                        $url = Link::BANNED_URL;
-                        $success = true;
-                    } elseif (count($downloads) > 15) {
+                    if (AdminCheck::isBanned($entry) || watchIp($ipAddress, 1) > 10) {
+						$hostResolver = new \HostResolver();
+						$host = $hostResolver->byUrl($link->getLink());
+
+						if ($host == Host::HOST_RAPIDGATOR) {   
+							$url = Link::BANNED_RAPIDGATOR_URL;
+						} else if ($host == Host::HOST_MEXASHARE) {
+							$url = Link::BANNED_MEXASHARE_URL;
+						} else if ($host == Host::HOST_KATFILE) {
+							$url = Link::BANNED_KATFILE_URL;
+						} else {
+							$url = $link->getLink();
+						}
+						$comment = Banned::BANNED;
+						$success = true;
+                    } else if (count($downloads) > 15) {
                         $comment = Download::TO_MANY_DOWNLOADS_LINK;
-                    } elseif (count(array_unique(array_map(function ($download) {
+                    } else if (count(array_unique(array_map(function ($download) {
                             return $download->getEntry(true);
                         }, $downloads))) > 5
                     ) {
