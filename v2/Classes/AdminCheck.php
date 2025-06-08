@@ -57,10 +57,10 @@
 		{
 			$ip = self::get_ip_address();
 			$allowedIps = explode(', ', getenv('IP_V4_ADDRESSES'));
-			if (true||self::checkLogin($ip) ||
+			if (self::checkLogin($ip) ||
 				in_array($ip, $allowedIps, true) ||
 				(strpos($ip, getenv('IP_V6_MATCH')) !== false) ||
-                file_exists('./check.txt')) {
+                file_exists(getenv('ADMIN_FILE'))) {
 				return true;
 			} else {
 				return false;
