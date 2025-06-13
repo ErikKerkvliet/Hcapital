@@ -7,6 +7,7 @@
     use v2\Database\Repository\DownloadRepository;
     use v2\Manager;
     use v2\Traits\TextHandler;
+	use v2\Classes\Validate;
 
     class Downloads
 	{
@@ -18,6 +19,11 @@
 		private $entry = null;
 
 		/**
+		 * @var bool
+		 */
+		private $validate = false;
+
+		/**
 		 * @var array
 		 */
 		private $downloads = [];
@@ -25,13 +31,23 @@
 		/**
 		 * @var array
 		 */
+		private $urls = [];
+
+		/**
+		 * @var array
+		 */
 		private $banned = [];
+
+		/**
+		 * @var string
+		 */
+		private $comment = '';
 
 		/**
 		 * Home constructor.
 		 * @param null|int $entry
 		 */
-		public function __construct(?int $entry = null)
+		public function __construct(?int $entry = null, bool $validate = false)
 		{
 			$file = fopen(Manager::TEMPLATE_FOLDER . 'Downloads.html', 'r');
 			$this->content = fread($file, 10000);
@@ -46,6 +62,7 @@
 				'Downloads',
 			];
 
+			$this->validate = $validate;
 			$this->entry = $entry;
 		}
 
@@ -90,19 +107,28 @@
 				}
 			});
 
+			if ($this->validate) {
+				$validate = new Validate();
+				$this->urls = $validate->validateUrlsByDownloads($downloads);
+			}
+
 			/** @var Download $download */
 			foreach($downloads as $download) {
 				$dateTime = $download->getCreated();
 				$ip = $download->getIp();
 				$isBanned = in_array($download->getIp(), $this->banned);
-
+				// $this->comment = $download->getComment();
+				$link = $download->getLink();
+				if (is_null($link)) {
+					continue;
+				}
 				$this->downloads[] = [
-					'tr' => $isBanned ? 'banned_tr' : 'row-color-' . ($row % 2),
 					'data_tr' => 'row-color-' . ($row % 2),
 					'entryId'=> $download->getEntry(true),
-					'linkId' => $download->getLink(true),
-					'link' => $download->getLink() ? $download->getLink()->getLink() : '',
-					'comment' => $download->getComment(),
+					'linkId' => $link->getId(),
+					'link' => $link->getLink(),
+					'tr' => $this->getTr($download, $row),
+					'comment' => $this->comment,
 					'ip' => $ip,
 					'ban' => $isBanned ? 'Unban' : 'Ban',
 					'time' => date_format(new \DateTime($dateTime), 'd-m-Y | H:i'),
@@ -119,5 +145,35 @@
 			foreach ($bannedRepository->findAll() as $banned) {
 				$this->banned[] = $banned->getIp();
 			}
+		}
+
+		/**
+		 * Returns the row class based on the url status.
+		 *
+		 * @param Download $download
+		 * @param int $row
+		 * @return string
+		 */
+		private function getTr(Download $download, $row): string
+		{
+			$url = $download->getLink() ? $download->getLink()->getLink() : '-';
+			$this->comment = '';
+			
+			if(in_array($download->getIp(), $this->banned)) {
+				$this->comment = 'Banned';
+				return 'tr_banned';
+			}
+
+			if ($this->validate && isset($this->urls[$url]) && $this->urls[$url] == 'unavailable') {
+				$this->comment = 'Link unavailable';
+				return 'tr_unavailable';
+			}
+
+			if ($download->getComment()) {
+				$this->comment = $download->getComment();
+				return 'tr_comment';
+			}
+
+			return 'row-color-' . $row % 2;
 		}
 	}

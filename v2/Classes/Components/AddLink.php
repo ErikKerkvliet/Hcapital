@@ -1,5 +1,7 @@
 <?php
 
+namespace v2\Classes\Components;
+
 use v2\Database\Entity\Host;
 use v2\Traits\TextHandler;
 

@@ -71,7 +71,8 @@ use v2\Database\Entity\Character;
 				$content = new ListMain();
 			} else if (request('action') == 'di') {
 				$entry = request('entry') ?: null;
-				$content = new Downloads($entry);
+				$validate = request('validate') ?: false;
+				$content = new Downloads($entry, $validate);
 			} else if (request('action') == 'lv') {
 				if (AdminCheck::checkForAdmin()) {
 					$from = (int)request('from');

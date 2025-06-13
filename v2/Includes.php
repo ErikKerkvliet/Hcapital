@@ -215,8 +215,8 @@
 			$str = buildArrayTable($data, $objectFunctions);
 		} elseif (is_array($data)) {
 			$str = buildArrayTable($data);
-		} elseif (is_resource($data)) {
-			while ($arr = mysql_fetch_array($data)) {
+		} elseif ($data instanceof \mysqli_result) {
+			while ($arr = mysqli_fetch_array($data)) {
 				$data_array[] = $arr;
 			}
 			$str = d($data_array);

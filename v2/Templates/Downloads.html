@@ -2,12 +2,16 @@
     <div id="clear-old" class="admin-button">
         Clear old
     </div>
+    <div id="validate-urls" class="admin-button">
+        Validate
+    </div>
     <table id="downloads-table" cellspacing="0" cellpadding="0">
         <tr id="downloads-header">
             <th class="downloads-header">Entry</th>
             <th class="downloads-header">Link</th>
             <th class="downloads-header" id="download-column-url">Url</th>
             <th class="downloads-header">Ip</th>
+            <th class="downloads-header">Comment</th>
             <th class="downloads-header">Time</th>
         </tr>
         {for downloads}
@@ -27,6 +31,9 @@
             </td>
             <td class="td_4" data-ip="{{ip}}">
                 {{ip}}
+            </td>
+            <td class="td_6">
+                <div>{{comment}}</div>
             </td>
             <td class="td_6">
                 <div>{{time}}</div>

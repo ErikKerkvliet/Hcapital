@@ -1,8 +1,9 @@
 <?php
 
-	use v2\Database\Entity\Entry;
+	namespace v2\Resolvers;
+
+	use v2\Resolvers\HostResolver;
 	use v2\Database\Entity\Host;
-	use v2\Database\Entity\Link;
 
 	/**
 	 * Class LinkResolver

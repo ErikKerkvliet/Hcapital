@@ -17,6 +17,10 @@ $(document).ready(function ()
 			});
 	});
 
+	$('#validate-urls').click(function (e) {
+		location.href = '?v=2&action=di&validate=true';
+	});
+
 	$('.ban-ip').click(function (e) {
 		var ip = $(this).attr('data-ip');
 		var action = $(this).attr('data-ban').toLowerCase();

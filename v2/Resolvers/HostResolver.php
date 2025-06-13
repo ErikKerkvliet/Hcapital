@@ -1,5 +1,7 @@
 <?php
 
+	namespace v2\Resolvers;
+	
 	use v2\Database\Entity\Host;
 
 	/**

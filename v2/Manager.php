@@ -20,6 +20,7 @@
 	use v2\Classes\ListMain;
 	use v2\Classes\Main;
 	use v2\Classes\RandomEntries;
+	use v2\Classes\Components\AddLink;
 	use v2\Database\Entity\Banned;
 	use v2\Database\Entity\Character;
 	use v2\Database\Entity\Developer;
@@ -140,6 +141,7 @@
 	require_once('Classes/EntryActions.php');
 	require_once('Classes/CharacterActions.php');
 	require_once('Classes/DeveloperActions.php');
+	require_once('Classes/Validate.php');
 	require_once('Classes/CreatePostData.php');
 	require_once('Resolvers/LinkResolver.php');
 	require_once('Resolvers/HostResolver.php');
@@ -219,7 +221,7 @@
 					$relation->buildContent();
 					$content = $relation->getContent();
 				} else if (request('type') == 'links') {
-					$links = new \AddLink($nr);
+					$links = new AddLink($nr);
 					$links->buildContent();
 					$content = $links->getContent();
 				} else if (request('type') == 'sharingUrl') {
@@ -514,7 +516,7 @@
                     $ipAddress = AdminCheck::get_ip_address();
                     $downloads = $downloadRepository->getDownloadsByIp($ipAddress, 1);
                     if (AdminCheck::isBanned($entry) || watchIp($ipAddress, 1) > 10) {
-						$hostResolver = new \HostResolver();
+						$hostResolver = new HostResolver();
 						$host = $hostResolver->byUrl($link->getLink());
 
 						if ($host == Host::HOST_RAPIDGATOR) {   
@@ -528,7 +530,7 @@
 						}
 						$comment = Banned::BANNED;
 						$success = true;
-                    } else if (count($downloads) > 15) {
+                    } else if (count($downloads) > 13) {
                         $comment = Download::TO_MANY_DOWNLOADS_LINK;
                     } else if (count(array_unique(array_map(function ($download) {
                             return $download->getEntry(true);

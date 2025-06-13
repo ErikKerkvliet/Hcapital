@@ -8,8 +8,8 @@
 
 	namespace v2\Classes;
 
-	use AddLink;
-    use HostResolver;
+	use v2\Classes\Components\AddLink;
+    use v2\Resolvers\HostResolver;
     use v2\Database\Entity\Developer;
     use v2\Database\Entity\Entry;
     use v2\Database\Entity\EntryDeveloper;
@@ -19,7 +19,6 @@
     use v2\Database\Repository\DeveloperRepository;
     use v2\Database\Repository\EntryDeveloperRepository;
     use v2\Database\Repository\EntryRelationRepository;
-	use v2\Database\Repository\HostRepository;
 	use v2\Database\Repository\LinkRepository;
     use v2\Manager;
     use v2\Traits\TextHandler;

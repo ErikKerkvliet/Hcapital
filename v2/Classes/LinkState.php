@@ -15,6 +15,7 @@
     use v2\Manager;
     use v2\RapidgatorClient;
     use v2\Traits\TextHandler;
+	use v2\Classes\Validate;
 
     class LinkState
 	{
@@ -28,6 +29,8 @@
 
 		private $linkString = '';
 
+		private $validate = null;
+
 		/**
 		 * LinkState constructor.
 		 * @param null|int $entry
@@ -37,6 +40,8 @@
 			$this->from = $from;
 
 			$this->to = $to;
+
+			$this->validate = new Validate();
 
 			$file = fopen(Manager::TEMPLATE_FOLDER . 'LinkState.html', 'r');
 			$this->content = fread($file, 10000);
@@ -82,6 +87,9 @@
 
 			$linkRepository = app('em')->getRepository(Link::class);
 			$links = $linkRepository->findBetweenEntry($this->from, $this->to);
+
+			// $urls = $this->validate->validateUrlsByLinks($links);
+
 			/** @var Link $link */
 			foreach($links as $link) {
 				$url = $link->getLink();
