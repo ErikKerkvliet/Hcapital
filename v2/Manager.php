@@ -41,6 +41,7 @@
 	use v2\Database\Repository\LinkRepository;
     use v2\Transformers\CharacterTransformer;
 	use v2\Resolvers\HostResolver;
+	use v2\Classes\Validator;
 
 	require_once("RapidgatorClient.php");
 
@@ -141,7 +142,7 @@
 	require_once('Classes/EntryActions.php');
 	require_once('Classes/CharacterActions.php');
 	require_once('Classes/DeveloperActions.php');
-	require_once('Classes/Validate.php');
+	require_once('Classes/Validator.php');
 	require_once('Classes/CreatePostData.php');
 	require_once('Resolvers/LinkResolver.php');
 	require_once('Resolvers/HostResolver.php');
@@ -450,22 +451,31 @@
 					$fileIds = explode(',', $fileIds);
 				}
 
-				$user = getenv('RAPIDGATOR_USERNAME');
-				$password = getenv('RAPIDGATOR_PASSWORD');
-				$client = new RapidgatorClient($user, $password, null);
-
-				$states = [];
-				foreach ($fileIds as $key => $id) {
-					if (! $id) {
-						$status = 'null';
+				// Handle link IDs - get links and validate them using Validate class
+				$linkRepository = app('em')->getRepository(Link::class);
+				$links = $linkRepository->findById(explode(',', $linkIds));
+				
+				// Create a mapping of link ID to URL for later reference
+				$linkIdToUrl = [];
+				foreach($links as $link) {
+					$linkIdToUrl[$link->getId()] = $link->getLink();
+				}
+				
+				$validator = new Validator();
+				// Use the Validate class to get validation results
+				$validatedUrls = $validator->validateUrlsByLinks($links);
+				
+				// Build states array with link ID and status
+				foreach($linkIdToUrl as $linkId => $url) {
+					if (isset($validatedUrls[$url])) {
+						// Convert validation result to expected format
+						$status = ($validatedUrls[$url] === 'available') ? 'success' : 'fail';
 					} else {
-						try {
-							$status = $client->getFileDetails($id)->status === 200 ? 'success' : 'fail';
-						} catch (ClientException $e) {
-							$status = 'null';
-						}
+						// URL not supported by validation
+						$status = 'null';
 					}
-					$states[] = $key . '-' . $status;
+					
+					$states[] = $linkId . '-' . $status;
 				}
 
 				echo json_encode($states);

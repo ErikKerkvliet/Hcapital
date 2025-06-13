@@ -10,10 +10,8 @@
 
 	loadEnv(str_replace('Classes', '', __DIR__) . '.env');
 
-	use v2\ClientException;
     use v2\Database\Entity\Link;
     use v2\Manager;
-    use v2\RapidgatorClient;
     use v2\Traits\TextHandler;
 	use v2\Classes\Validate;
 
@@ -29,7 +27,7 @@
 
 		private $linkString = '';
 
-		private $validate = null;
+		private $validator = null;
 
 		/**
 		 * LinkState constructor.
@@ -41,7 +39,7 @@
 
 			$this->to = $to;
 
-			$this->validate = new Validate();
+			$this->validator = new Validator();
 
 			$file = fopen(Manager::TEMPLATE_FOLDER . 'LinkState.html', 'r');
 			$this->content = fread($file, 10000);
@@ -83,32 +81,33 @@
 		private function getLinkData()
 		{
 			$fileStates = [];
-			$client = new RapidgatorClient(getenv('RAPIDGATOR_USERNAME'), getenv('RAPIDGATOR_PASSWORD'), null);
-
+			
 			$linkRepository = app('em')->getRepository(Link::class);
 			$links = $linkRepository->findBetweenEntry($this->from, $this->to);
 
-			// $urls = $this->validate->validateUrlsByLinks($links);
+			// Use the Validate class to get URL validation results
+			$validatedUrls = $this->validator->validateUrlsByLinks($links);
 
 			/** @var Link $link */
 			foreach($links as $link) {
 				$url = $link->getLink();
-				if (strpos($url,   '://rapidgator') !== false || strpos($url, '://rg.to') !== false) {
-					$fileId = explode('/', explode('file', $url)[1])[1];
-					try {
-						$response = $client->getFileDetails($fileId);
-					} catch (ClientException $e) {
-						dd($e);
-					}
-					if (request('state') == '1' && $response->status !== 200 
-						|| request('state') == '2' && $response->status === 200
+				
+				// Check if this URL was validated by the Validate class
+				if (isset($validatedUrls[$url])) {
+					// Convert the validation result to our expected format
+					$status = ($validatedUrls[$url] === 'available') ? 'success' : 'fail';
+					
+					// Apply the same state filtering logic as before
+					if (request('state') == '1' && $status === 'success' 
+						|| request('state') == '2' && $status === 'fail'
 					) {
 						continue;
 					}
+					
 					$fileStates[$url] = [
 						'linkId' => $link->getId(),
 						'entryId' => $link->getEntry(true),
-						'status' => ($response->status === 200 ? 'success' : 'fail'),
+						'status' => $status,
 					];
 				}
 			}
@@ -125,7 +124,7 @@
 					'status' => $state['status'],
 				];
 				$row++;
-			};
+			}
 			$stateIds = array_unique($stateIds);
 			$this->linkString = implode(',', $stateIds);
 		}

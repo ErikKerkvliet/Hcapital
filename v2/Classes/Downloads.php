@@ -7,7 +7,7 @@
     use v2\Database\Repository\DownloadRepository;
     use v2\Manager;
     use v2\Traits\TextHandler;
-	use v2\Classes\Validate;
+	use v2\Classes\Validator;
 
     class Downloads
 	{
@@ -108,8 +108,8 @@
 			});
 
 			if ($this->validate) {
-				$validate = new Validate();
-				$this->urls = $validate->validateUrlsByDownloads($downloads);
+				$validator = new Validator();
+				$this->urls = $validator->validateUrlsByDownloads($downloads);
 			}
 
 			/** @var Download $download */
