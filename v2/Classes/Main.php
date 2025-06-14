@@ -8,7 +8,7 @@
 
 	namespace v2\Classes;
 
-use v2\Database\Entity\Character;
+	use v2\Database\Entity\Character;
     use v2\Database\Entity\Developer;
     use v2\Database\Entity\Entry;
     use v2\Database\Entity\Thread;
@@ -75,10 +75,11 @@ use v2\Database\Entity\Character;
 				$content = new Downloads($entry, $validate);
 			} else if (request('action') == 'lv') {
 				if (AdminCheck::checkForAdmin()) {
+					$hosts = request('hosts');
+					$hostArray = explode(',', $hosts);
 					$from = (int)request('from');
 					$to = (int)request('to');
-
-					$content = new LinkState($from, $to);
+					$content = new LinkState($from, $to, $hostArray);
 				} else {
 					$content = new Home();
 				}

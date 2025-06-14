@@ -8,7 +8,7 @@
 
 	namespace v2;
 
-	use DeleteHandler;
+	use v2\Classes\DeleteHandler;
 	use v2\Classes\AdminCheck;
 	use v2\Classes\CharacterActions;
 	use v2\Classes\DeveloperActions;
@@ -44,6 +44,10 @@
 	use v2\Classes\Validator;
 
 	require_once("RapidgatorClient.php");
+
+	require_once('Resolvers/LinkResolver.php');
+	require_once('Resolvers/HostResolver.php');
+	require_once('Resolvers/EntryNameResolver.php');
 
 	require_once('Database/QueryHandler.php');
 	require_once('Database/QueryBuilder.php');
@@ -91,10 +95,10 @@
 	require_once('Classes/AdminCheck.php');
 
 	require_once('Traits/TextHandler.php');
+	require_once('Interfaces/ValidatorInterface.php');
+
 	require_once('Classes/Borders.php');
-
 	require_once('Classes/Relations.php');
-
 	require_once('Classes/EntryInfo.php');
 	require_once('Classes/GameList.php');
 	require_once('Classes/OvaList.php');
@@ -143,10 +147,10 @@
 	require_once('Classes/CharacterActions.php');
 	require_once('Classes/DeveloperActions.php');
 	require_once('Classes/Validator.php');
+	require_once('Classes/ValidatorLocal.php');
+	require_once('Classes/ValidatorRemote.php');
 	require_once('Classes/CreatePostData.php');
-	require_once('Resolvers/LinkResolver.php');
-	require_once('Resolvers/HostResolver.php');
-	require_once('Resolvers/EntryNameResolver.php');
+
 	require_once('Factories/ThreadFactory.php');
 	require_once('Factories/LinkFactory.php');
     require_once('Transformers/CharacterTransformer.php');
@@ -461,9 +465,9 @@
 					$linkIdToUrl[$link->getId()] = $link->getLink();
 				}
 				
-				$validator = new Validator();
+				$validator = Validator::getValidator();
 				// Use the Validate class to get validation results
-				$validatedUrls = $validator->validateUrlsByLinks($links);
+				$validatedUrls = $validator->validateUrlsByLinks($links, Host::HOSTS);
 				
 				// Build states array with link ID and status
 				foreach($linkIdToUrl as $linkId => $url) {

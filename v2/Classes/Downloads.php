@@ -8,6 +8,7 @@
     use v2\Manager;
     use v2\Traits\TextHandler;
 	use v2\Classes\Validator;
+	use v2\Database\Entity\Host;
 
     class Downloads
 	{
@@ -108,8 +109,8 @@
 			});
 
 			if ($this->validate) {
-				$validator = new Validator();
-				$this->urls = $validator->validateUrlsByDownloads($downloads);
+				$validator = Validator::getValidator();
+				$this->urls = $validator->validateUrlsByDownloads($downloads, Host::HOSTS);
 			}
 
 			/** @var Download $download */

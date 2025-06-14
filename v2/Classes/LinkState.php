@@ -29,17 +29,20 @@
 
 		private $validator = null;
 
+		private $hosts = [];
+
 		/**
 		 * LinkState constructor.
 		 * @param null|int $entry
 		 */
-		public function __construct($from, $to)
+		public function __construct($from, $to, array $hosts = [])
 		{
+			$this->hosts = $hosts;
 			$this->from = $from;
 
 			$this->to = $to;
 
-			$this->validator = new Validator();
+			$this->validator = Validator::getValidator();
 
 			$file = fopen(Manager::TEMPLATE_FOLDER . 'LinkState.html', 'r');
 			$this->content = fread($file, 10000);
@@ -86,8 +89,7 @@
 			$links = $linkRepository->findBetweenEntry($this->from, $this->to);
 
 			// Use the Validate class to get URL validation results
-			$validatedUrls = $this->validator->validateUrlsByLinks($links);
-
+			$validatedUrls = $this->validator->validateUrlsByLinks($links, $this->hosts);
 			/** @var Link $link */
 			foreach($links as $link) {
 				$url = $link->getLink();
@@ -96,10 +98,9 @@
 				if (isset($validatedUrls[$url])) {
 					// Convert the validation result to our expected format
 					$status = ($validatedUrls[$url] === 'available') ? 'success' : 'fail';
-					
 					// Apply the same state filtering logic as before
-					if (request('state') == '1' && $status === 'success' 
-						|| request('state') == '2' && $status === 'fail'
+					if (request('state') == '2' && $status === 'success' 
+						|| request('state') == '1' && $status === 'fail'
 					) {
 						continue;
 					}

@@ -8,9 +8,9 @@
 
 	namespace v2\Classes;
 
-	use DeleteHandler;
-	use HostResolver;
-	use LinkResolver;
+	use v2\Classes\DeleteHandler;
+	use v2\Resolvers\HostResolver;
+	use v2\Resolvers\LinkResolver;
 	use v2\Database\Entity\Banned;
 	use v2\Database\Entity\Broken;
 	use v2\Database\Entity\Download;

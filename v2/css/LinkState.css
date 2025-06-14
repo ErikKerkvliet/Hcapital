@@ -1,18 +1,19 @@
 
 #link-state-page {
 	max-width: 1240px;
-	overflow: hidden;
 	display: inline-table;
 }
 
 .success {
 	background: #598d59;
 	border-bottom: 1px solid #3e5565;
+	margin-left: 8px;
 }
 
 .fail {
 	background: #b75555;
 	border-bottom: 1px solid #3e5565;
+	margin-left: 17px;
 }
 
 .admin-button {
@@ -46,7 +47,7 @@ label {
 
 #entries {
 	margin-top: 20px;
-	width: 240px;
+	width: 314px;;
 	margin-left: calc(50% - 160px);
 }
 
@@ -74,4 +75,9 @@ label {
 
 #link-states {
 	margin-top: 5px;
+}
+
+#link-status-form {
+	text-align: left;
+	margin-left:12px;
 }

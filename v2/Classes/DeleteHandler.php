@@ -1,5 +1,7 @@
 <?php
 
+namespace v2\Classes;
+
 use v2\Database\Entity\Banned;
 use v2\Database\Entity\Download;
 use v2\Database\Entity\EntryCharacter;

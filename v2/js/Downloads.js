@@ -18,7 +18,11 @@ $(document).ready(function ()
 	});
 
 	$('#validate-urls').click(function (e) {
-		location.href = '?v=2&action=di&validate=true';
+		url = '?v=2&action=di&validate=true';
+		if (location.href.includes('entry')) {
+			url += '&entry=' + $('#entry-id').html().trim();
+		}
+		location.href = url;
 	});
 
 	$('.ban-ip').click(function (e) {
