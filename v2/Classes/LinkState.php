@@ -12,6 +12,7 @@
 
     use v2\Database\Entity\Link;
     use v2\Manager;
+	use v2\Database\Entity\Host;
     use v2\Traits\TextHandler;
 	use v2\Classes\Validate;
 
@@ -26,6 +27,10 @@
 		private $links = [];
 
 		private $linkString = '';
+
+		private $stateData = [];
+
+		private $hostData = [];
 
 		private $validator = null;
 
@@ -54,6 +59,9 @@
 			$this->jsFiles = [
 				'LinkState'
 			];
+
+			$this->setStateData(request('state'));
+			$this->setHostData();
 		}
 
 		public function buildContent()
@@ -71,11 +79,19 @@
 
 			$this->placeHolders = [
 				'linkString' => $this->linkString,
+				'from'		 => $this->from,
+				'to'		 => $this->to,
 			];
 
 			$this->fors = [
-				'links' => $this->links,
+				'links'  => $this->links,
+				'states' => $this->stateData,
+				'hosts'  => $this->hostData,
 			];
+			if (! request('state')) {
+				$this->fors['states'][1]['checked'] = 'checked';
+				$this->fors['hosts'][0]['checked'] = 'checked';
+			}
 			$this->fillIfs();
 			$this->fillFors();
 			$this->fillPlaceHolders();
@@ -128,5 +144,27 @@
 			}
 			$stateIds = array_unique($stateIds);
 			$this->linkString = implode(',', $stateIds);
+		}
+
+		private function setStateData($requestState) {
+			foreach(['success', 'fail'] as $key => $state) {
+				$value = (string) $key + 1;
+				$this->stateData[] = [
+					'state' => $state,
+					'value' => $value,
+					'checked' => in_array($requestState, [$value, '3']) ? 'checked' : '',
+					'label' => ucfirst($state),
+				];
+			}
+		}
+
+		private function setHostData() {
+			foreach(Host::HOSTS as $host) {
+				$this->hostData[] = [
+					'name' => $host,
+					'label' => ucfirst($host),
+					'checked' => in_array($host, $this->hosts) ? 'checked' : '',
+				];
+			}
 		}
 	}

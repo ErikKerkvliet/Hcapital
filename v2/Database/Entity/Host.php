@@ -55,8 +55,8 @@
 		 */
 		const HOSTS = [
 			self::HOST_RAPIDGATOR,
-			self::HOST_MEXASHARE,
 			self::HOST_KATFILE,
+			self::HOST_MEXASHARE,
 			// self::HOST_DDOWNLOAD,
 			// self::HOST_FIKPER,
 			// self::HOST_ROSEFILE,

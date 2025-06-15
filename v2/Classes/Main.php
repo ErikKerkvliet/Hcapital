@@ -77,8 +77,8 @@
 				if (AdminCheck::checkForAdmin()) {
 					$hosts = request('hosts');
 					$hostArray = explode(',', $hosts);
-					$from = (int)request('from');
-					$to = (int)request('to');
+					$from = (int)request('from') ?: '';
+					$to = (int)request('to') ?: '';
 					$content = new LinkState($from, $to, $hostArray);
 				} else {
 					$content = new Home();

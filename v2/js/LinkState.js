@@ -1,8 +1,4 @@
 $(document).ready(function() {
-	$('.link-state.fail').attr('checked', true);
-	$('.host-checkbox.rapidgator').attr('checked', true);
-
-
 	$('#validate-links').click(function() {
 		$('#spinner').css('display', 'unset');
 		let state = 0

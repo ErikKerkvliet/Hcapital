@@ -4,23 +4,24 @@
             <label>From entry:</label>
             <input type="hidden" name="v" value="2"/>
             <input type="hidden" name="action" value="lv"/>
-            <input type="text" name="from" id="from"/>
+            <input type="text" name="from" id="from" value="{{from}}"/>
             <label>To entry:</label>
-            <input type="text" name="to" id="to"/>
+            <input type="text" name="to" id="to" value="{{to}}"/>
             <div class="admin-button" id="validate-links">Validate</div>
             <span><img src="../../images/spinner.gif" id="spinner" style="display:none;"/></span>
 
             <div id="link-states">
-                 <label>State:</label>
-                <input type="checkbox" value="1" class="link-state success">Success</input>
-                <input type="checkbox" value="2" class="link-state fail">Fail</input>
+                <label>State:</label>
+                {for states}
+                    <input type="checkbox" value="{{value}}" class="link-state {{state}}" {{checked}}>{{label}}</input>
+                {/for}
             </div>
 
             <div id="host-checkboxes">
                 <label>Hosts:</label>
-                <input type="checkbox" value="rapidgator" class="host-checkbox rapidgator">Rapidgator</input>
-                <input type="checkbox" value="katfile" class="host-checkbox katfile">Katfile</input>
-                <input type="checkbox" value="mexashare" class="host-checkbox mexashare">Mexashare</input>
+                {for hosts}
+                    <input type="checkbox" value="{{name}}" class="host-checkbox {{name}}" {{checked}}>{{label}}</input>
+                {/for}
             </div>
         </form>
         <br>
