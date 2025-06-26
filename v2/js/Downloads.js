@@ -54,18 +54,44 @@ $(document).ready(function ()
 	});
 
 	$('#manual-ban-ip').click(function (e) {
+		var ip = $('#ip').val();
+		var entry = $('#entry').val();
+		var location = $('#location').val();
+
+		if (entry && ip === '' && location === '') {
+			alert('Combination with only entry is not possible.');
+			return;
+		}
+		if (location && ip === '' && entry === '') {
+			alert('Combination with only location is not possible.');
+			return;
+		}
+
 		$.ajax({
 			url: 'index.php',
 			type: 'POST',
 			data: {
 				v: 2,
 				action: 'ban',
-				ip: $('#manual_ip').val(),
+				ip: ip,
+				entry: entry,
+				location: location,
 			},
 			dataType: "json",
 		})
 		.done(response => {
-			$('#manual_ip').val('');
+			if (response.success === false) {
+				if (response.exists) {
+					alert('ip, entry, location combination already exist in database');
+					return;
+				} else {
+					alert('an error occured while saving');
+					return;
+				}
+			}
+			$('#ip').val('');
+			$('#entry').val('');
+			$('#location').val('');
 		});
 	});
 

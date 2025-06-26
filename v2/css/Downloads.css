@@ -7,11 +7,12 @@
 #downloads-table {
 	margin-top: 10px;
 	border: 2px solid #6c7f8c;
+	border-bottom: none;
 	padding: 1px 0;
 }
 
 .downloads-header {
-	padding-left:5px;
+	padding-left:10px;
 }
 
 .td_1 {
@@ -68,8 +69,16 @@
 	background: #ff4141;
 }
 
-.manual_td {
-	border-top: 2px solid #6c7f8c;
+#ban-table {
+	width: 100%;
+}
+
+#ban-data-td {
+	text-align: right;
+}
+
+#clear-downloads-td {
+	padding-left: 75px;
 }
 
 #date-input {

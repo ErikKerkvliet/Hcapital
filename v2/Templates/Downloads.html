@@ -47,9 +47,11 @@
             </td>
         </tr>
         {/for}
+    </table>
+
+    <table id="ban-table">
         <tr>
-            <td colspan="2"  class="manual_td"></td>
-            <td class="manual_td">
+            <td id="clear-downloads-td">
                 <div id="date-input">
                     <input type="date" id="download-date"/>
                     &nbsp; All <input type="checkbox" id="delete-all">
@@ -63,10 +65,14 @@
                     </a>
                 </div>
             </td>
-            <td class="manual_td" colspan="2">
-                <input name="manual_ip" id="manual_ip">
+            <td colspan="3" id="ban-data-td">
+                <input id="ip" placeholder="ip">
+
+                <input id="entry" placeholder="entry">
+
+                <input id="location" placeholder="location">
             </td>
-            <td class="td_7 manual_td">
+            <td class="td_7">
                 <a>
                     <div id="manual-ban-ip" class="admin-button" data-ban="{{ban}}" data-ip="{{ip}}">
                         Ban ip

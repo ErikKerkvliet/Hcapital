@@ -42,6 +42,8 @@
     use v2\Transformers\CharacterTransformer;
 	use v2\Resolvers\HostResolver;
 	use v2\Classes\Validator;
+	use v2\Database\Repository\BannedRepository;
+	use v2\Factories\BannedFactory;
 
 	require_once("RapidgatorClient.php");
 
@@ -151,8 +153,10 @@
 	require_once('Classes/ValidatorRemote.php');
 	require_once('Classes/CreatePostData.php');
 
+	require_once('Factories/FactoryAbstract.php');
 	require_once('Factories/ThreadFactory.php');
 	require_once('Factories/LinkFactory.php');
+	require_once('Factories/BannedFactory.php');
     require_once('Transformers/CharacterTransformer.php');
     require_once('Transformers/EntryTransformer.php');
 
@@ -367,14 +371,48 @@
 				echo json_encode(['success' => true]);
 				die();
 			}
-			if (request('action') === 'ban' && ($ip = request('ip'))) {
-				$ban = new Banned();
-				$ban->setIp($ip);
+			if (request('action') === 'ban') {
+				$findBy = [];
+				if (($ip = request('ip'))) {
+					$findBy['ip'] = $ip;
+				}
+				if (($entry = request('entry'))) {
+					$findBy['entry'] = $entry;
+				}
+				if (($location = request('location'))) {
+					$findBy['location'] = $location;
+				}
 
-				app('em')->flush($ban);
-				echo json_encode([
-					'success' => true,
-				]);
+				if (! $ip && ! $entry && ! $location) {
+					echo json_encode([
+						'exists' => false,
+						'success' => false,
+					]);
+					die();
+				}
+
+				$bannedRepository = app('em')->getRepository(Banned::class);
+				$banned = $bannedRepository->findBy($findBy);
+
+				$response = [];
+				if ($banned) {
+					$response['exists'] = true;
+					$response['success'] = false;
+				} else {
+					$bannedFactory = new BannedFactory();
+					$data = [
+						'ip' => $ip ?: '',
+						'location' => $location ?: '',
+					];
+					if ($entry) {
+						$data['entry'] = $entry;
+					}
+
+					$entity = $bannedFactory->create($data, true);
+					
+					$response['success'] = true;
+				}
+				echo json_encode($response);
 				die();
 			}
 			if (request('action') == 'random') {

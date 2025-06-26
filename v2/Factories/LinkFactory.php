@@ -2,8 +2,8 @@
 
 	namespace v2\Factories;
 
-	use v2\Database\Entity\Link;
-
+	use v2\Factories\FactoryAbstract;
+	
 	/**
 	 * Created by PhpStorm.
 	 * User: erik
@@ -11,21 +11,12 @@
 	 * Time: 21:14
 	 */
 
-	class LinkFactory
+	class LinkFactory extends FactoryAbstract
 	{
-		public function create($data)
-		{
-			$thread = new Link();
-			foreach ($data as $key => $value) {
-				$function = 'set' . ucfirst($key);
+		protected $entity = \v2\Database\Entity\Link::class;
 
-				$thread->{$function}($value);
-			}
-
-			app('em')->persist($thread);
-
-			app('em')->flush($thread);
-
-			return $thread;
-		}
+        public function __construct()
+        {
+            // 
+        }
 	}
