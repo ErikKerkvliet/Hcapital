@@ -142,6 +142,7 @@
 	require_once('Classes/ExportAdvanced.php');
 	require_once('Classes/Import.php');
 	require_once('Classes/Downloads.php');
+	require_once('Classes/Banned.php');
 	require_once('Classes/LinkState.php');
 	require_once('Classes/ImageHandler.php');
 	require_once('Classes/DeleteHandler.php');
@@ -166,7 +167,7 @@
 	{
 		CONST TEST = false;
 
-		CONST CSS_JS_VERSION = 2.39;
+		CONST CSS_JS_VERSION = 2.40;
 
 		CONST TEMPLATE_FOLDER = 'v2/Templates/';
 		CONST COMPONENT_FOLDER = 'v2/Templates/Components/';
@@ -358,9 +359,15 @@
 						}
 						break;
 					case 'banned':
-						if (($ip = request('ip'))) {
-							$deleteHandler->deleteBanned($ip);
+						$by = array_intersect_key($_POST, array_flip(['id', 'ip', 'entry', 'location']));
+
+						if (! $by) {
+							echo json_encode([
+								'success' => false,
+							]);
+							die();
 						}
+						$deleteHandler->deleteBanned($by);
 						break;
 					case 'download':
 						$entry = request('entry');

@@ -1,61 +1,74 @@
-$(document).ready(function ()
-{
-	$('#clear-old').click(function (e) {
-		$.ajax({
-			url: 'index.php',
-			type: 'POST',
-			data: {
-				v: 2,
-				action: 'removeOldDownloads',
-			},
-			dataType: "json",
-		})
-			.done(response => {
-				if (response.success) {
-					alert('success');
-				}
-			});
-	});
+$(document).ready(function() {
+    $('.unban').click(function (e) {
+        var id = $(this).attr('data-id');
+        $.ajax({
+            url: 'index.php',
+            type: 'POST',
+            data: {
+                v: 2,
+                action: 'delete',
+                entity: 'banned',
+                id: id,
+            },
+            dataType: "json",
+        })
+        .done(response => {
+            if (response.success === true) {
+                $(this).closest('tr').remove();
+            }
+        });
+    });
 
-	$('#validate-urls').click(function (e) {
-		url = '?v=2&action=di&validate=true';
-		if (location.href.includes('entry')) {
-			url += '&entry=' + $('#entry-id').html().trim();
+    $('#ban').click(function (e) {
+		var ip = $('#ip').val();
+		var entry = $('#entry').val();
+		var location = $('#location').val();
+
+		if (entry && ip === '' && location === '') {
+			alert('Combination with only entry is not possible.');
+			return;
 		}
-		location.href = url;
-	});
+		if (location && ip === '' && entry === '') {
+			alert('Combination with only location is not possible.');
+			return;
+		}
 
-	$('.ban-ip').click(function (e) {
-		var ip = $(this).attr('data-ip');
-		var action = $(this).attr('data-ban').toLowerCase();
-		action = action === 'unban' ? 'delete' : action;
 		$.ajax({
 			url: 'index.php',
 			type: 'POST',
 			data: {
 				v: 2,
-				action: action,
-				entity: 'banned',
+				action: 'ban',
 				ip: ip,
+				entry: entry,
+				location: location,
 			},
 			dataType: "json",
 		})
 		.done(response => {
-			$(this).html(action === 'ban' ? 'Unban ip' : 'Ban ip');
-			$(this).attr('data-ban', (action === 'ban' ? 'unban' : 'ban'));
-
-			$parent = $(this).parent().parent().parent();
-			if (action === 'delete') {
-				$parent.attr('class', $parent.attr('data-tr'))
-			} else {
-				$parent.attr('class', 'banned_tr')
+			if (response.success === false) {
+				if (response.exists) {
+					alert('ip, entry, location combination already exist in database');
+					return;
+				} else {
+					alert('an error occured while saving');
+					return;
+				}
 			}
+			$('#ip').val('');
+			$('#entry').val('');
+			$('#location').val('');
+
+            window.location.href = '?v=2&action=b';
 		});
 	});
 
-	var ip = ''
-	$('.td_4').click(function(e) {
+    var ip = '';
+    $('.ip').click(function(e) {
 		ip = $(this).attr('data-ip');
+        if (ip == '') {
+            return;
+        }
 		var url = 'https://ipapi.co/' + ip + '/json';
 		let x = event.pageX - 30;
 		let y = event.pageY + 25;
@@ -84,6 +97,7 @@ $(document).ready(function ()
 
 			$('#ip-model').css('left', x + 'px');
 			$('#ip-model').css('top', y + 'px');
+
 			$('#ip-model').css({
 				"-webkit-transform": 'translate(0%, -100%)',
 				"-ms-transform": 'translate(0%, -100%)',
@@ -92,7 +106,7 @@ $(document).ready(function ()
 		});
 	});
 
-	$('#ip-model').on({
+    $('#ip-model').on({
 		mousemove: function (event) {
 			$(this).show();
 
@@ -126,4 +140,5 @@ $(document).ready(function ()
 			$(this).hide();
 		}
 	});
+
 });

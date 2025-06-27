@@ -234,10 +234,13 @@ class DeleteHandler
         $this->deleteEntity($entryDevelopers);
     }
 
-    public function deleteBanned($ip)
+    /**
+     * Delete a single banned.
+     */
+    public function deleteBanned(array $by)
     {
         $bannedRepository = app('em')->getRepository(Banned::class);
-        $entities = $bannedRepository->findBy(['ip' => $ip]);
+        $entities = $bannedRepository->findBy($by);
 
         foreach($entities as $entity) {
             app('em')->delete($entity);

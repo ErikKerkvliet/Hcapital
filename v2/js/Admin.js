@@ -95,6 +95,10 @@ function adminInitialise(reInitialize = false) {
 		window.location.href = '?v=2&action=di';
 	});
 
+	$('#banned').click(function () {
+		window.location.href = '?v=2&action=b';
+	});
+
 	$('#validate').click(function() {
 		window.location.href = '?v=2&action=lv'
 	});

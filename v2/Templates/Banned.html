@@ -1,0 +1,50 @@
+<div id="banned-page">
+    <table id="banned-table" cellspacing="0" cellpadding="0">
+        <tr>
+            <th class="banned-th">Ip</th>
+            <th class="banned-th">Entry</th>
+            <th class="banned-th">Location</th>
+            <th class="banned-th"></th>
+        </tr>
+        {for banned}
+        <tr class="{{tr}}">
+            <td class="ip" data-ip="{{ip}}">
+                {{ip}}
+            </td>
+            <td>
+                <a href="?v=2&id={{entry}}">{{entry}}</a>
+            </td>
+            <td data-ip="{{location}}">
+                {{location}}
+            </td>
+            <td>
+                <a>
+                    <div id="unban" class="unban admin-button" data-id="{{id}}">
+                        Unban
+                    </div>
+                </a>
+            </td>
+        </tr>
+        {/for}
+    </table>
+
+    <table id="ban-table">
+        <tr>
+            <td colspan="3" id="ban-data-td">
+                <input id="ip" placeholder="ip">
+
+                <input id="entry" placeholder="entry">
+
+                <input id="location" placeholder="location">
+            </td>
+            <td>
+                <a>
+                    <div id="ban" class="admin-button"">
+                        Ban
+                    </div>
+                </a>
+            </td>
+        </tr>
+    </table>
+    <div id="ip-model" style="display: none;"></div>
+</div>

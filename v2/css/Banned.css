@@ -1,0 +1,68 @@
+#banned-page {
+	max-width: 1240px;
+	overflow: hidden;
+	display: inline-table;
+}
+
+.admin-button {
+	background: #788c9a;
+}
+
+td {
+	padding: 0 15px;
+}
+
+.banned-th {
+	padding-left: 5px;
+	font-size: 14px;
+	border-bottom: 1px solid #3e5565;
+	background: #326e9f;
+}
+
+#ban-table {
+    margin-top: 10px;
+    border: 1px solid #3e5565;
+    padding: 1px 0;
+}
+
+#banned-table {
+	margin-top: 20px;
+	border: 2px solid #6c7f8c;
+	padding: 1px 0;
+}
+
+table {
+	text-align: left;
+    margin: auto;
+	border: 2px solid #6c7f8c;
+}
+
+#ip-model {
+	position: fixed;
+	z-index: 9999;
+	top: 644px;
+	background-color: #788c9a;
+    margin-top: 0px;
+    padding-top: 0px;
+    cursor: pointer;
+	border: 1px solid #000;
+	font-weight: bold;
+	border-radius: 5px;
+	box-shadow: 2px 2px 3px #000;
+}
+
+.ip {
+	cursor: pointer;
+}
+
+#ip {
+    width: 275px;
+}
+
+#entry {
+    width: 50px;
+}
+
+#location {
+    width: 150px;
+}
