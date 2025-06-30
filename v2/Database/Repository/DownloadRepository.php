@@ -42,7 +42,7 @@
 
         public function getDownloadsByIp(string $ip, int $intervalInDays = 0): array
         {
-            $query = sprintf("SELECT * FROM downloads WHERE ip = '%s' AND created >= DATE_SUB(NOW(), INTERVAL %d day);",
+            $query = sprintf("SELECT DISTINCT id FROM downloads WHERE ip = '%s' AND created >= DATE_SUB(NOW(), INTERVAL %d day);",
                 $ip,
                 $intervalInDays
             );

@@ -47,6 +47,7 @@
 
 			$this->jsFiles = [
 				'Home',
+				'EntryAction',
 			];
 		}
 

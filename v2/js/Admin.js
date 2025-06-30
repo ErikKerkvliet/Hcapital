@@ -421,7 +421,7 @@ $(document).ready(function () {
 	$('.item-button').click(function (event) {
 		const button = event.currentTarget;
 
-		if (location.href.includes('_id')) {
+		if (location.href.includes('_id') || location.href.includes('_cid')) {
 			$.ajax({
 				url: 'index.php',
 				type: 'POST',

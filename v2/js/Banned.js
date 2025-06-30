@@ -20,9 +20,9 @@ $(document).ready(function() {
     });
 
     $('#ban').click(function (e) {
-		var ip = $('#ip').val();
-		var entry = $('#entry').val();
-		var location = $('#location').val();
+		var ip = $('#ip').val().trim();
+		var entry = $('#entry').val().trim();
+		var location = $('#location').val().trim();
 
 		if (entry && ip === '' && location === '') {
 			alert('Combination with only entry is not possible.');
