@@ -115,6 +115,7 @@
 						implode('splitter', $this->links['Katfile']['Katfile'])
 						: '',
 					'extraLinks' => $this->getExtraLinks(),
+					'lastUpdated' => $this->entry->getLastEdit(),
 				];
 				foreach (Host::HOSTS as $host) {
 					$this->placeHolders[$host] = isset($this->links[$host])
@@ -138,6 +139,7 @@
 					'mexashare' => '',
 					'katfile' => '',
 					'extraLinks' => '',
+					'lastUpdated' => '',
 				];
 			}
 

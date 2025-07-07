@@ -30,6 +30,9 @@
 	use v2\Database\Repository\EntryRepository;
 	use v2\Database\Repository\LinkRepository;
 	use v2\Manager;
+	use Exception;
+	use DateTimeImmutable;
+	use DateTimeZone;
 
 	class EntryActions
 	{
@@ -932,9 +935,39 @@
 
 				$entry = app('em')->find(Entry::class, $entryId);
 
-				$date = date('Y-m-d H:i:s');
-				$entry->setLastEdit($date);
-				$entry->setTimeType('old');
+				try {
+					// 1. Establish a single, immutable "now" object.
+					$now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
+
+					// 2. Get the last edit date string from the entry.
+					$lastEditString = $entry->getLastEdit(); // e.g., "2023-10-15 12:00:00"
+
+					// Handle the case where the entry might be brand new and has no last edit date.
+					if ($lastEditString) {
+						// 3. Create a DateTime object from the last edit string.
+						$lastEditDate = new DateTimeImmutable($lastEditString, new DateTimeZone('UTC'));
+
+						// 4. Create a "one month ago" reference point from "now".
+						$oneMonthAgo = $now->modify('-1 month');
+
+						// 5. Compare the objects directly. This is safer than string comparison.
+						$timeType = $lastEditDate > $oneMonthAgo ? 'new' : 'old';
+
+					} else {
+						// If there's no last edit date, it's definitely 'new'.
+						$timeType = 'new';
+					}
+
+					// 6. Update the entry with the formatted "now" string.
+					$entry->setLastEdit($now->format('Y-m-d H:i:s'));
+
+				} catch (Exception $e) {
+					// Handle potential errors, e.g., if the date format from getLastEdit() is invalid.
+					error_log('Error processing entry date: ' . $e->getMessage());
+					// Assign a default status or handle the error gracefully.
+					$timeType = 'old'; // Fallback to 'old' if there's an error.
+				}
+				$entry->setTimeType($timeType);
 
 				app('em')->update($entry);
 				app('em')->flush();

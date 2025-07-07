@@ -215,3 +215,10 @@
 #developer-actions {
 	display: inline-flex;
 }
+
+#last-updated {
+	float: right;
+	position: relative;
+	margin-right: -175px;
+	opacity: 0.5;
+}
