@@ -108,6 +108,18 @@
 			return $this;
 		}
 
+
+		/**
+		 * @param string $query
+		 * @return $this
+		 */
+		public function whereQuery($type, $query)
+		{
+			$this->query .= $type . ' ' . $query . ' ';
+
+			return $this;
+		}
+
 		/**
 		 * @param $value1
 		 * @param $condition
@@ -151,6 +163,17 @@
 		public function leftJoin($table, $alias, $value1, $condition, $value2)
 		{
 			$this->query .= ' LEFT JOIN ' . $table . ' ' . $alias . ' ON ' . $value1 . ' ' . $condition . ' ' . $value2 . ' ';
+
+			return $this;
+		}
+
+		/*
+		* @param string $query
+		 * @return $this	
+		*/
+		public function innerJoinQuery(string $query)
+		{
+			$this->query .= ' INNER JOIN ' . $query . ' ';
 
 			return $this;
 		}

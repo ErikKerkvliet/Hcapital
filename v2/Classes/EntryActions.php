@@ -773,15 +773,8 @@
 					foreach ($linkData as $key => $value) {
 						$setFunction = 'set' . ucfirst($key);
 						$link->{$setFunction}($value);
-						$entryId = $key == 'entry' ? $value : $entryId;
 					}
 					app('em')->persist($link);
-
-					$entry = app('em')->find(Entry::class, $entryId);
-					if ($entry) {
-						$entry->setLastEdit(date('Y-m-d H:i:s'));
-						app('em')->update($entry);
-					}
 				}
 			}
 			app('em')->flush();
@@ -959,7 +952,7 @@
 					}
 
 					// 6. Update the entry with the formatted "now" string.
-					$entry->setLastEdit($now->format('Y-m-d H:i:s'));
+					// $entry->setLastEdit($now->format('Y-m-d H:i:s'));
 
 				} catch (Exception $e) {
 					// Handle potential errors, e.g., if the date format from getLastEdit() is invalid.

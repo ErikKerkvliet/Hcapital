@@ -216,9 +216,17 @@
 	display: inline-flex;
 }
 
-#last-updated {
+#entry-last-updated {
 	float: right;
 	position: relative;
 	margin-right: -175px;
+	opacity: 0.5;
+}
+
+#links-last-updated {
+	float: right;
+	position: relative;
+	margin-top:20px;
+	margin-right: -215px;
 	opacity: 0.5;
 }

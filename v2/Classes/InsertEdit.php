@@ -115,7 +115,8 @@
 						implode('splitter', $this->links['Katfile']['Katfile'])
 						: '',
 					'extraLinks' => $this->getExtraLinks(),
-					'lastUpdated' => $this->entry->getLastEdit(),
+					'entryLastUpdated' => $this->entry->getLastEdit(),
+					'linksLastUpdated' => $this->getLinkLastUpdated(),
 				];
 				foreach (Host::HOSTS as $host) {
 					$this->placeHolders[$host] = isset($this->links[$host])
@@ -139,7 +140,8 @@
 					'mexashare' => '',
 					'katfile' => '',
 					'extraLinks' => '',
-					'lastUpdated' => '',
+					'entryLastUpdated' => '',
+					'linksLastUpdated' => '',
 				];
 			}
 
@@ -386,5 +388,26 @@
 		private function getSelectedTime($timeType)
 		{
 			return $timeType == $this->timeType ? 'selected' : '';
+		}
+
+		private function getLinkLastUpdated()
+		{
+			if (! $this->insert) {
+				$links = app('em')->getRepository(Link::class)
+					->findBy(['entry' => $this->entry->getId()]);
+
+				if (! $links) {
+					return '';
+				}
+
+				$lastUpdated = '';
+				foreach ($links as $link) {
+					if (! $lastUpdated || $link->getCreated() > $lastUpdated) {
+						$lastUpdated = $link->getCreated();
+					}
+				}
+				return $lastUpdated;
+			}
+			return '';
 		}
 	}

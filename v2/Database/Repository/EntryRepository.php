@@ -478,4 +478,16 @@ class EntryRepository extends Repository
 		$query = 'UPDATE ' . Entry::TABLE . ' SET id = ' . $newId . ' WHERE id = ' . $id;
 		$this->runQuery(null, null, $query);
 	}
+
+	public function findLastAddedByType($type, $page) 
+	{
+		$joinSql = "(SELECT entry_id, MAX(created_at) as max_created FROM entry_links GROUP BY entry_id ORDER BY max_created DESC LIMIT " . $page * 5 . ", 5) latest_links ON e.id = latest_links.entry_id";
+		return $this->select($this->entryColumnsString)
+			->from(Entry::TABLE, 'e')
+			->innerJoinQuery($joinSql)
+			->where('e.type', '=', '"' . $type . '"')
+			->andWhere('e.time_type', '=', '"old"')
+			->orderBy('latest_links.max_created', 'DESC')
+			->getResult();
+	}
 }

@@ -1,8 +1,11 @@
 <div class="edit">
     {if isUpdate}
-        <span id="last-updated">
-            Last updated: {{lastUpdated}}
-        </span>
+        <div id="entry-last-updated">
+            Entry last updated: {{entryLastUpdated}}
+        </div>
+        <div id="links-last-updated">
+            Links last updated: {{linksLastUpdated}}
+        </div>
     {/if}
     {if getPost}
         <form id='form' name='form' enctype='multipart/form-data' action='?v=2&getPost={{id}}' accept-charset='UTF-8' method='POST'>
