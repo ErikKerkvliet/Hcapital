@@ -837,9 +837,18 @@
 			/** @var LinkRepository $linkRepository */
 			$linkRepository = app('em')->getRepository(Link::class);
 			$newLinks = [];
+			$entryId = 0;
+			
 			foreach ($entryLinks as $key => $entryLink) {
-				$entryId = (int) $key;
-
+				if ($entryId != (int) $key) {
+					$entryId = (int) $key;
+					$entry = app('em')->find(Entry::class, $entryId);
+					$lastEditString = $entry->getLastEdit();
+				}
+				if (! $entry) {
+					continue;
+				}
+	
 				$links = $linkRepository->findBy(['entry' => $entryId]);
 				// foreach($links as $link) {
 				// 	app('em')->delete($link);
@@ -912,8 +921,8 @@
 						}
 						$newLink->setPart((int) $part);
 						
-						$date = date('Y-m-d H:i:s');
-						$newLink->setCreated($date);
+						$date = new DateTimeImmutable('now', new DateTimeZone('UTC'));
+						$newLink->setCreated($date->modify('2 hour')->format('Y-m-d H:i:s'));
 
 						$newLinks[] = $newLink;
 					}					
@@ -926,14 +935,9 @@
 					app('em')->flush();
 				}
 
-				$entry = app('em')->find(Entry::class, $entryId);
-
 				try {
 					// 1. Establish a single, immutable "now" object.
 					$now = new DateTimeImmutable('now', new DateTimeZone('UTC'));
-
-					// 2. Get the last edit date string from the entry.
-					$lastEditString = $entry->getLastEdit(); // e.g., "2023-10-15 12:00:00"
 
 					// Handle the case where the entry might be brand new and has no last edit date.
 					if ($lastEditString) {
@@ -945,14 +949,13 @@
 
 						// 5. Compare the objects directly. This is safer than string comparison.
 						$timeType = $lastEditDate > $oneMonthAgo ? 'new' : 'old';
-
 					} else {
 						// If there's no last edit date, it's definitely 'new'.
 						$timeType = 'new';
 					}
 
 					// 6. Update the entry with the formatted "now" string.
-					// $entry->setLastEdit($now->format('Y-m-d H:i:s'));
+					$entry->setLastEdit($now->modify('2 hour')->format('Y-m-d H:i:s'));
 
 				} catch (Exception $e) {
 					// Handle potential errors, e.g., if the date format from getLastEdit() is invalid.

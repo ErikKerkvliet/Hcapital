@@ -487,7 +487,7 @@ class EntryRepository extends Repository
 			->innerJoinQuery($joinSql)
 			->where('e.type', '=', '"' . $type . '"')
 			->andWhere('e.time_type', '=', '"old"')
-			->orderBy('latest_links.max_created', 'DESC')
+			->orderBy('latest_links.max_created desc, e.last_edited', 'DESC')
 			->getResult();
 	}
 }

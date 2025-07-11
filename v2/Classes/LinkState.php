@@ -132,7 +132,10 @@
 			$row = 0;
 			$stateIds = [];
 			foreach($fileStates as $key => $state) {
-				$stateIds[] = $state['entryId'];
+				if ($state['status'] == 'fail') {
+					$stateIds[] = $state['entryId'];				
+				}
+				
 				$this->links[] = [
 					'tr' => 'row-color-' . ($row % 2),
 					'link' => $state['linkId'],

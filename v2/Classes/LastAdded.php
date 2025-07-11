@@ -9,6 +9,7 @@
 	namespace v2\Classes;
 
 	use v2\Database\Entity\Entry;
+	use v2\Database\Entity\Link;
     use v2\Manager;
     use v2\Traits\TextHandler;
 
@@ -50,8 +51,11 @@
 			$orderBy = ['last_edited' => 'desc'];
 			$limit = [$this->page * 5, 5];
 
-			$entities = $entryRepository->findBy($search, $orderBy, $limit);
-
+			// if (AdminCheck::checkForAdmin()) {
+			// 	$entities = $entryRepository->findLastAddedByType($this->type, $this->page);
+			// } else {
+				$entities = $entryRepository->findBy($search, $orderBy, $limit);
+			// }
 			$entries = [];
 			foreach($entities as $entry) {
 				$entries[] = [
