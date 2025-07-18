@@ -39,6 +39,10 @@
 			$relationRepository = app('em')->getRepository(EntryRelation::class);
 			$this->relations = $relationRepository->findEntryByRelatedEntry($entry);
 
+			if ($entry->getType() == 'ova' && count($this->relations) < 2) {
+				return;
+			}
+
 			if ($this->relations) {
 				$file = fopen(Manager::TEMPLATE_FOLDER . 'Relations.html', 'r');
 				$this->content = fread($file, 10000);

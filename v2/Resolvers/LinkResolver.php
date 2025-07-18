@@ -34,14 +34,20 @@
 
 			// Remove the ".html" extension
 			$filename = preg_replace('/\.html$/', '', $filenameWithHtml);
+
+			$chars_to_remove = [' ', '-', '_'];
+			$filename = str_replace($chars_to_remove, '', $filename);
+
 			$host = $this->hostResolver->byUrl($url);
 
-			$filtered = array_filter($links, function($link) use ($host, $filename) {
+			$filtered = array_filter($links, function($link) use ($host, $filename, $chars_to_remove) {
 				if ($host === $this->hostResolver->byUrl(($url = $link->getLink()))) {
+					$url = str_replace($chars_to_remove, '', $url);
 					return strpos($url, $filename) !== false;
 				}
 			});
 
+			natsort($filtered);
 			return reset($filtered);
 		}
 

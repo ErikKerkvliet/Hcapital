@@ -843,6 +843,7 @@
 				if ($entryId != (int) $key) {
 					$entryId = (int) $key;
 					$entry = app('em')->find(Entry::class, $entryId);
+					$released = $entry->getReleased();
 					$lastEditString = $entry->getLastEdit();
 				}
 				if (! $entry) {
@@ -941,20 +942,19 @@
 
 					// Handle the case where the entry might be brand new and has no last edit date.
 					if ($lastEditString) {
-						// 3. Create a DateTime object from the last edit string.
 						$lastEditDate = new DateTimeImmutable($lastEditString, new DateTimeZone('UTC'));
+						$released = new DateTimeImmutable($released, new DateTimeZone('UTC'));
 
-						// 4. Create a "one month ago" reference point from "now".
 						$oneMonthAgo = $now->modify('-1 month');
+						$sixMonthAgo = $now->modify('-6 month');
 
-						// 5. Compare the objects directly. This is safer than string comparison.
-						$timeType = $lastEditDate > $oneMonthAgo ? 'new' : 'old';
+						$timeType = $lastEditDate > $oneMonthAgo && $released > $sixMonthAgo ? 
+							'new' : 'old';
 					} else {
 						// If there's no last edit date, it's definitely 'new'.
 						$timeType = 'new';
 					}
 
-					// 6. Update the entry with the formatted "now" string.
 					$entry->setLastEdit($now->modify('2 hour')->format('Y-m-d H:i:s'));
 
 				} catch (Exception $e) {
