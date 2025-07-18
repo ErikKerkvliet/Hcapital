@@ -81,3 +81,7 @@ label {
 	text-align: left;
 	margin-left:12px;
 }
+
+.table-hide {
+	display: none;
+}

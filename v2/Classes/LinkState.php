@@ -81,6 +81,7 @@
 				'linkString' => $this->linkString,
 				'from'		 => $this->from,
 				'to'		 => $this->to,
+				'tableClass' => $this->to ? '' : 'table-hide',
 			];
 
 			$this->fors = [

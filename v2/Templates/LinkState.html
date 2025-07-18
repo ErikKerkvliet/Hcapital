@@ -24,12 +24,14 @@
                 {/for}
             </div>
         </form>
+        {if local}
         <br>
         <b style="color: red;">Only on hcapital.tk (For latest links)</b>
         <br>
+        {/if}
         <span>{{linkString}}</span>
     </div>
-    <table id="downloads-table" cellspacing="0" cellpadding="0">
+    <table id="downloads-table" cellspacing="0" cellpadding="0" class="{{tableClass}}">
         <tr id="downloads-header">
             <th class="downloads-header">Id</th>
             <th class="downloads-header">Link</th>
