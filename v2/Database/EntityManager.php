@@ -164,16 +164,18 @@
 			$this->queries[] = $query;
 		}
 
-		public function update(Object $entity)
+		public function update(Object $entity): bool
 		{
+			$update = false;
 			$functions = $this->getFunctions($entity, true);
 			$sets = [];
-			array_filter(array_map(function ($function) use ($entity, &$sets){
+			array_filter(array_map(function ($function) use ($entity, &$sets, &$update){
 				$functionName = 'get' . $function;
 		        $value = $entity->{$functionName}(true);
 
 				$function = lcfirst($function);
 				if ($value !== $entity->getOriginalValues()[$function]) {
+					$update = true;
 			        $columnName = $this->reverseMapFunctionName($function);
 			        $sets[] = $columnName . ' = "' . $value . '"';
 		        }
@@ -184,10 +186,11 @@
 				$query .= 'WHERE id = ' . $entity->getId();
 				$this->queries[] = $query;
 			}
+			return $update;
 		}
 
 		/**
-		 * @param int|Object $entity
+		 * @param int|array|Object $entity
 		 */
 		public function delete($entity)
 		{
@@ -228,9 +231,6 @@
 			}
 
 		    $query = 'DELETE FROM ' . $table . ' WHERE ' . $where;
-
-			$this->queries = [];
-		    $this->queries[] = $query;
 
 		    $this->runQuery(null, null, $query);
 

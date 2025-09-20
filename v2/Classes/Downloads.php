@@ -96,7 +96,7 @@
 			if ($this->entry) {
 				$downloads = $downloadRepository->findBy(['entry' => $this->entry], ['created' => 'DESC']);
 			} else {
-				$downloads = $downloadRepository->findAll(['created', 'DESC'], [0, 500]);
+				$downloads = $downloadRepository->findAll(['created', 'DESC'], [0, 1000]);
 			}
 
 			$keys = [];

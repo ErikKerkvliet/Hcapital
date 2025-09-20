@@ -153,6 +153,7 @@
 	require_once('Classes/ValidatorLocal.php');
 	require_once('Classes/ValidatorRemote.php');
 	require_once('Classes/CreatePostData.php');
+	require_once('Classes/LinkManager.php');
 
 	require_once('Factories/FactoryAbstract.php');
 	require_once('Factories/ThreadFactory.php');
@@ -589,13 +590,13 @@
 						}
 						$comment = Banned::BANNED;
 						$success = true;
-                    } else if (count($downloads) > 13) {
-                        $comment = Download::TO_MANY_DOWNLOADS_LINK;
+                    } else if (count($downloads) > 30) {
+                        $comment = Download::TOO_MANY_DOWNLOADS_LINK;
                     } else if (count(array_unique(array_map(function ($download) {
                             return $download->getEntry(true);
                         }, $downloads))) > 5
                     ) {
-                        $comment = Download::TO_MANY_DOWNLOADS_ENTRY;
+                        $comment = Download::TOO_MANY_DOWNLOADS_ENTRY;
                     } else {
                         $url = $link->getLink();
                         $success = true;

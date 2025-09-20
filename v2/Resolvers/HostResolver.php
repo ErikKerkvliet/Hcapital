@@ -28,6 +28,7 @@
 			],
 			Host::HOST_KATFILE => [
 				'katfile.com',
+				'katfile.cloud'
 			],
 			Host::HOST_ROSEFILE => [
 				'rosefile.net',

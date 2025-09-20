@@ -287,7 +287,7 @@ class ValidatorLocal
 
         foreach ($originalUrls as $url => $originalValue) {
             $processedUrls[$url] = $url; // Default to url=>url if not processed or filtered
-            if (preg_match('#katfile\.com/([^/]+)/#', $url, $matches)) {
+            if (preg_match('#katfile\.com/([^/]+)/#', $url, $matches) || preg_match('#katfile\.cloud/([^/]+)/#', $url, $matches)) {
                 $filecode = $matches[1];
                 $fileIds[] = $filecode;
                 $filecodeToUrl[$filecode] = $url;
@@ -312,7 +312,7 @@ class ValidatorLocal
             return;
         }
         
-        $curlUrl = "https://katfile.com/api/file/info?key=" . $apiKey . "&file_code=" . $ids;
+        $curlUrl = "https://katfile.cloud/api/file/info?key=" . $apiKey . "&file_code=" . $ids;
         $ch = curl_init($curlUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);

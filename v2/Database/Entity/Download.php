@@ -20,12 +20,12 @@
         /**
          * @var string
          */
-        const TO_MANY_DOWNLOADS_LINK = 'To many links downloaded';
+        const TOO_MANY_DOWNLOADS_LINK = 'Too many links downloaded';
 
         /**
          * @var string
          */
-        const TO_MANY_DOWNLOADS_ENTRY = 'To many entries downloaded';
+        const TOO_MANY_DOWNLOADS_ENTRY = 'Too many entries downloaded';
 
 		/**
 		 * @var integer

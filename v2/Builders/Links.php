@@ -72,6 +72,9 @@
 		{
 			$this->html .= '<div class="link-box">';
 			foreach ($linksByHost as $links) {
+				if (! is_array($links)) {
+					continue;
+				}
 				$host = $this->hostResolver->byUrl($links[0]->getLink());
 				$this->single = count($links) == 1;
 

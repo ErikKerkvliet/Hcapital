@@ -9,6 +9,7 @@
 	namespace v2\Classes;
 
 	use v2\Classes\DeleteHandler;
+	use v2\Classes\LinkManager;	
 	use v2\Resolvers\HostResolver;
 	use v2\Resolvers\LinkResolver;
 	use v2\Database\Entity\Banned;
@@ -29,7 +30,6 @@
 	use v2\Database\Repository\EntryRelationRepository;
 	use v2\Database\Repository\EntryRepository;
 	use v2\Database\Repository\LinkRepository;
-	use v2\Manager;
 	use Exception;
 	use DateTimeImmutable;
 	use DateTimeZone;
@@ -70,6 +70,7 @@
 		private $entryId = 0;
 
 		private $deleteHandler = null;
+		private $linkManager = null;
 		private $appId = null;
 
 		public function __construct($insert = false, $id = 0)
@@ -78,6 +79,7 @@
 			$this->hostResolver = new HostResolver();
 			$this->linkResolver = new LinkResolver();
 			$this->deleteHandler = new DeleteHandler();
+			$this->linkManager = new LinkManager();
 			$this->insert = $insert;
 
 			$this->id = $id ?: (requestForSql('entry-id') ?: requestForSql('id'));
@@ -195,11 +197,7 @@
 				$entry->setCreated($date);
 				$entry->setLastEdit($date);
 			} else {
-				$entry = app('em')->find(Entry::class, $this->id);
-				if ($this->appId == 'browser') {
-					$entry->setLastEdit($date);
-				}
-				
+				$entry = app('em')->find(Entry::class, $this->id);			
 				if ($this->id !== $this->newId) {
 					// dd($this->id, $this->newId, $this->id == $this->newId);
 					// $this->updateId($entry);
@@ -224,8 +222,14 @@
 			if ($this->insert) {
 				$this->id = app('em')->flush($entry, true);
 			} else {
-				app('em')->update($entry);
-				app('em')->flush();
+				$doUpdate = app('em')->update($entry);
+
+				if ($doUpdate) {
+					if ($this->appId == 'browser') {
+						$entry->setLastEdit($date);
+					}
+					app('em')->flush();
+				}	
 			}
 		}
 
@@ -412,6 +416,41 @@
 				}
 			}
 		}
+
+		// public function insertEditLinks()
+		// {
+		// 	$structuredLinks = [];
+		// 	$i = 0;
+		// 	$j = 0;
+		// 	while (isset($_POST['links-' . $i . '-links'])) {
+		// 		$linkString = trim(request('links-' . $i . '-links'), '\r\n');
+		// 		$comment = request('links-' . $j . '-comment') ?: '';
+
+		// 		if (! empty($linkString)) {
+		// 			$links = preg_split('/\r\n|[\r\n]/', $linkString);
+		// 			$links = array_filter($links); // Remove empty lines
+
+		// 			foreach ($links as $url) {
+		// 				if (substr($url, -3) == '.ra') {
+		// 					$url .= 'r';
+		// 				}
+		// 				$structuredLinks[] = [
+		// 					'url' => trim($url),
+		// 					'comment' => $comment,
+		// 				];
+		// 			}
+		// 		}
+
+		// 		$i++;
+		// 		// This logic for incrementing the comment index seems specific, keeping it as is.
+		// 		if ($i % count(Host::HOSTS) == 0) {
+		// 			$j++;
+		// 		}
+		// 	}
+
+		// 	// 2. Delegate the entire synchronization process to the LinkManager.
+		// 	$this->linkManager->synchronizeLinks($this->id, $structuredLinks);
+		// }
 
 		private function insertEditImages()
 		{

@@ -239,12 +239,13 @@ class DeleteHandler
      */
     public function deleteBanned(array $by)
     {
-        $bannedRepository = app('em')->getRepository(Banned::class);
+        $bannedRepository = $this->em->getRepository(Banned::class);
         $entities = $bannedRepository->findBy($by);
 
         foreach($entities as $entity) {
-            app('em')->delete($entity);
+            $this->em->delete($entity);
         }
+        $this->em->flush();
     }
 
     public function deleteDownloads($entry, $date)
@@ -260,5 +261,6 @@ class DeleteHandler
     {
         // dc($entity);
         $this->em->delete($entity);
+        $this->em->flush();
     }
 }

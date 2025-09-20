@@ -127,7 +127,7 @@
 
             // Extract filecodes and build mapping
             foreach ($this->katfileUrls as $url) {
-                if (preg_match('#katfile\.com/([^/]+)/#', $url, $matches)) {
+                if (preg_match('#katfile\.com/([^/]+)/#', $url, $matches) || preg_match('#katfile\.cloud/([^/]+)/#', $url, $matches)) {
                     $filecode = $matches[1];
                     $fileIds[] = $filecode;
                     $filecodeToUrl[$filecode] = $url; // map filecode to full URL
@@ -139,7 +139,7 @@
             }
 
             $ids = implode(',', $fileIds);
-            $ch = curl_init("https://katfile.com/api/file/info?key=" . getenv('KATFILE_API_KEY') . "&file_code=" . $ids);
+            $ch = curl_init("https://katfile.cloud/api/file/info?key=" . getenv('KATFILE_API_KEY') . "&file_code=" . $ids);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response = curl_exec($ch);
             curl_close($ch);
