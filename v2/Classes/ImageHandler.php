@@ -149,7 +149,7 @@
 						echo 'Error: Could not write image to: ' . $outputFilePath;
 					}
 
-					sleep(0.2); // Original sleep call
+					usleep(200000); // Pause for 200,000 microseconds (which is 0.2 seconds)
 					$imagick->destroy();
 				}
 			}
