@@ -17,7 +17,7 @@
 		public function __construct($ipData)
 		{
 			$this->ipData = $ipData;
-
+			
 			$file = fopen(\v2\Manager::COMPONENT_FOLDER . 'IpData.html', 'r');
 			$this->content = fread($file, 100000);
 		}
@@ -35,7 +35,7 @@
 		{
 			$data = [];
 			$row = 0;
-			$showData = ['ip', 'country_name', 'region', 'city', 'postal', 'org'];
+			$showData = ['ip', 'country', 'region', 'city', 'postal', 'org'];
 			foreach ($this->ipData as $key => $value) {
 				if (! in_array($key, $showData)) {
 					continue;

@@ -56,7 +56,7 @@ $(document).ready(function ()
 	var ip = ''
 	$('.td_4').click(function(e) {
 		ip = $(this).attr('data-ip');
-		var url = 'https://ipapi.co/' + ip + '/json';
+		var url = 'https://ipinfo.io/' + ip + '/json';
 		let x = event.pageX - 30;
 		let y = event.pageY + 25;
 		y -= window.scrollY;
@@ -116,7 +116,7 @@ $(document).ready(function ()
 					$(this).hide();
 					break;
 				case 3:
-					var url = 'https://ipapi.co/' + ip + '/json';
+					var url = 'https://ipinfo.io/' + ip + '/json';
 					window.open(url, '_blank');
 					break;
 			}

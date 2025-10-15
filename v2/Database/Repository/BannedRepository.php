@@ -25,18 +25,26 @@
 		 * @param Entry $entry
 		 * @param $ip
 		 * @param $location
+		 * @param $postal
 		 * @return array
 		 */
-		public function findByIpOrEntryAndLocation($entry, $ip, $location)
+		public function findByIpOrEntryAndLocation($entry, $ip, $location, $postal = null)
 		{
 			$entry = is_int($entry) ? $entry : $entry->getId();
 
-			return $this->select()
+			$query = $this->select()
 				->from(Banned::TABLE, 'b')
-				->where('ip', 'IN', '(' . $ip .')')
-				->orWhere('entry_id', '=', $entry, '(')
-				->andWhere('location', '=', $location, '', ')')
-				->getResult();
+				->where('ip', 'IN', '(' . $ip .')');
+
+			if ($postal !== null) {
+				$query->orWhere('postal', '=', $postal, '(');
+			} else {
+				$query->orWhere('entry_id', '=', $entry, '(');
+			}			
+
+			$query->andWhere('location', '=', $location, '', ')');
+
+			return $query->getResult();
 		}
 
 		public function findByIpAndDeveloper($ip, $developer)

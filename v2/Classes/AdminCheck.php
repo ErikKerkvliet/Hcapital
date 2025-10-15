@@ -87,7 +87,7 @@
 			}
 
 			$ip = self::get_ip_address();
-
+			
 			/** @var BannedRepository $bannedRepository */
 			$bannedRepository = app('em')->getRepository(Banned::class);
 			if ($bannedRepository->findBy(['ip' => $ip])) {
@@ -101,23 +101,41 @@
 					],
 				]);
 
-				$location = json_decode(file_get_contents("http://ipinfo.io/{$ip}/json", false, $ctx));
-				if (isset($location->city)) {
-					$location = $location->city;
-				} else {
-					$ctx2 = stream_context_create(['http' => [
-						'timeout' => 2,  //2 Seconds
-					],
-					]);
+				// Initialize location variables
+				$location = null;
+				$postal = null;
 
-					$location = json_decode(file_get_contents("http://freegeoip.net/json/{$ip}", false, $ctx2));
+				// Primary API call to ipinfo.io
+				$locationData = json_decode(@file_get_contents("https://ipinfo.io/{$ip}/json", false, $ctx));
 
-					if (isset($location->city)) {
-						$location = $location->region_name;
+				if (is_object($locationData)) {
+					if (isset($locationData->city)) {
+						$location = $locationData->city;
+					}
+					if (isset($locationData->postal)) {
+						$postal = $locationData->postal;
 					}
 				}
+				// Fallback API call if city was not found
+				if (empty($location)) {
+					$ctx2 = stream_context_create(['http' => [
+						'timeout' => 2,  //2 Seconds
+					]]);
 
-				$banned = $bannedRepository->findByIpOrEntryAndLocation($entry, $ip, $location);
+					$locationData2 = json_decode(file_get_contents("http://freegeoip.net/json/{$ip}", false, $ctx2));
+
+					if (is_object($locationData2)) {
+						// Using region_name as per original logic
+						if (isset($locationData2->city)) {
+							$location = $locationData2->region_name;
+						}
+						// freegeoip.net often used 'zip_code' for the postal code
+						if (isset($locationData2->zip_code)) {
+							$postal = $locationData2->zip_code;
+						}
+					}
+				}
+				$banned = $bannedRepository->findByIpOrEntryAndLocation($entry, $ip, $location, $postal);			
 			}
 
 			if (isset($banned) && count($banned) > 0) {

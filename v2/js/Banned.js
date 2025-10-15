@@ -23,12 +23,13 @@ $(document).ready(function() {
 		var ip = $('#ip').val().trim();
 		var entry = $('#entry').val().trim();
 		var location = $('#location').val().trim();
+		var postal = $('#postal').val().trim();
 
-		if (entry && ip === '' && location === '') {
+		if (entry && ip === '' && location === '' && postal === '') {
 			alert('Combination with only entry is not possible.');
 			return;
 		}
-		if (location && ip === '' && entry === '') {
+		if (location && ip === '' && entry === '' && postal === '') {
 			alert('Combination with only location is not possible.');
 			return;
 		}
@@ -42,6 +43,7 @@ $(document).ready(function() {
 				ip: ip,
 				entry: entry,
 				location: location,
+				postal: postal
 			},
 			dataType: "json",
 		})
@@ -69,7 +71,7 @@ $(document).ready(function() {
         if (ip == '') {
             return;
         }
-		var url = 'https://ipapi.co/' + ip + '/json';
+		var url = 'https://ipinfo.io/' + ip + '/json';
 		let x = event.pageX - 30;
 		let y = event.pageY + 25;
 		y -= window.scrollY;
@@ -130,7 +132,7 @@ $(document).ready(function() {
 					$(this).hide();
 					break;
 				case 3:
-					var url = 'https://ipapi.co/' + ip + '/json';
+					var url = 'https://ipinfo.io/' + ip + '/json';
 					window.open(url, '_blank');
 					break;
 			}

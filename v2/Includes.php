@@ -229,8 +229,17 @@
 		return $str;
 	}
 
-	function dnl($data, $var2 = 'NULL', $var3 = 'NULL', $var4 = 'NULL')
+	function dnl($data, $var2 = 'NULL', $var3 = 'NULL', $var4 = 'NULL', $var5 = 'NULL', $var6 = 'NULL')
 	{
+		if (! empty($GLOBALS['dd']) && $GLOBALS['dd'] === false || ! \v2\Classes\AdminCheck::checkForAdmin()) {
+			return;
+		}
+		if (is_string($data)) {
+			$data = (string) $data;
+		} elseif (is_null($data)) {
+			$data = '_null_';
+		}
+
 		echo d($data) . "<br>\n";
 
 		if ($var2 !== 'NULL') {
@@ -242,9 +251,15 @@
 		if ($var4 !== 'NULL') {
 			echo d($var4) . "<br>\n";
 		}
+		if ($var5 !== 'NULL') {
+			echo d($var5) . "<br>\n";
+		}
+		if ($var6 !== 'NULL') {
+			echo d($var6) . "<br>\n";
+		}
 	}
 
-	function dd($data = null, $var2 = 'NULL', $var3 = 'NULL', $var4 = 'NULL')
+	function dd($data = null, $var2 = 'NULL', $var3 = 'NULL', $var4 = 'NULL', $var5 = 'NULL', $var6 = 'NULL')
 	{
 		if (! empty($GLOBALS['dd']) && $GLOBALS['dd'] === false || ! \v2\Classes\AdminCheck::checkForAdmin()) {
 			return;
@@ -255,7 +270,7 @@
 			$data = '_null_';
 		}
 
-		echo dnl($data, $var2, $var3, $var4);
+		echo dnl($data, $var2, $var3, $var4, $var5, $var6);
 		exit;
 	}
 

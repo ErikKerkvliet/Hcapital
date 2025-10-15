@@ -62,6 +62,7 @@
                     'ip' => $item->getIp(),
 					'entry' => $item->getEntry(true) ?: '',
 					'location' => $item->getLocation(),
+					'postal' => $item->getPostal() ?: '',
 				];
 				$row++;
 			}

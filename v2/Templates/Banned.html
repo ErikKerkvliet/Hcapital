@@ -4,6 +4,7 @@
             <th class="banned-th">Ip</th>
             <th class="banned-th">Entry</th>
             <th class="banned-th">Location</th>
+            <th class="banned-th">Postal</th>
             <th class="banned-th"></th>
         </tr>
         {for banned}
@@ -16,6 +17,9 @@
             </td>
             <td data-ip="{{location}}">
                 {{location}}
+            </td>
+            <td>
+                {{postal}}
             </td>
             <td>
                 <a>
@@ -36,6 +40,8 @@
                 <input id="entry" placeholder="entry">
 
                 <input id="location" placeholder="location">
+
+                <input id="postal" placeholder="postal">
             </td>
             <td>
                 <a>

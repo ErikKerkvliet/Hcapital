@@ -390,8 +390,11 @@
 				if (($location = request('location'))) {
 					$findBy['location'] = $location;
 				}
+				if (($postal = request('postal'))) {
+					$findBy['postal'] = $postal;
+				}
 
-				if (! $ip && ! $entry && ! $location) {
+				if (! $ip && ! $entry && ! $location && ! $postal) {
 					echo json_encode([
 						'exists' => false,
 						'success' => false,
@@ -411,6 +414,7 @@
 					$data = [
 						'ip' => $ip ?: '',
 						'location' => $location ?: '',
+						'postal' => $postal ?: '',
 					];
 					if ($entry) {
 						$data['entry'] = $entry;

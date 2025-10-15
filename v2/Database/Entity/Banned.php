@@ -41,6 +41,11 @@
 		private $location = null;
 
 		/**
+		 * @var string
+		 */
+		private $postal = null;
+
+		/**
 		 * @return int|null
 		 */
 		public function getId()
@@ -104,6 +109,25 @@
 		{
 			$this->location = $location;
 
+			return $this;
+		}
+
+		/**
+		 * @return null|string
+		 */
+		public function getPostal(): ?string
+		{
+			return $this->postal;
+		}
+		
+		/**
+		 * @param null|string $postal
+		 * @return Banned
+		 */
+		public function setPostal(?string $postal): Banned
+		{
+			$this->postal = $postal;
+		
 			return $this;
 		}
 	}
