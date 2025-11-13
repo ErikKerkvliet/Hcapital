@@ -41,7 +41,7 @@
 			$host = $this->hostResolver->byUrl($url);
 
 			$filtered = array_filter($links, function($link) use ($host, $filename, $chars_to_remove) {
-				if ($host === $this->hostResolver->byUrl(($url = $link->getLink()))) {
+				if ($host === $this->hostResolver->byUrl(($url = $link->getUrl()))) {
 					$url = str_replace($chars_to_remove, '', $url);
 					return strpos($url, $filename) !== false;
 				}
@@ -61,7 +61,7 @@
 		{
 			$this->hostResolver = new HostResolver();
 			$links = array_filter($links, function($link) {
-				if ($link->getLink() == '-' || $link->getComment() == '-') {
+				if ($link->getUrl() == '-' || $link->getComment() == '-') {
 					return false;
 				}
 				return true;
@@ -72,7 +72,7 @@
 					$this->links['text'][] = $link;
 					return;
 				}
-				$host = $this->hostResolver->byUrl($link->getLink());
+				$host = $this->hostResolver->byUrl($link->getUrl());
 				$this->links[$link->getComment()][$host][] = $link;
 			}, $links);
 			
@@ -111,7 +111,7 @@
 		private function setParts(array $links)
 		{
 			array_map(function($link) use ($links) {
-				if (strpos($link->getLink(), '.part') == false && count($links) <= 2) {
+				if (strpos($link->getUrl(), '.part') == false && count($links) <= 2) {
 					return;
 				}
 				$link->setPart($this->linkCount);

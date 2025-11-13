@@ -396,6 +396,8 @@
 					return 'created_at';
 				case 'vndb':
 					return 'vndb_id';
+				case 'link':
+					return 'link_id';
 				default:
 					return $name;
 			}

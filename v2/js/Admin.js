@@ -35,6 +35,10 @@ function adminInitialise(reInitialize = false) {
 		post('?v=2', object)
 	});
 
+	$('#invalid-links').on('click', function() {
+        window.location.href = '?v=2&action=il';
+    });
+
 	$('#edit').click(function () {
 		let id = window.location.href.split('=').pop();
 		let object = {

@@ -79,7 +79,7 @@
         {
             foreach ($this->links as $link) {
                 $key = ($comment = $link->getComment()) ? $comment : self::NO_COMMENT;
-                $host = $this->hostResolver->byUrl($link->getLink());
+                $host = $this->hostResolver->byUrl($link->getUrl());
                 $this->groupedLinks[$key][$host][] = $link;
             }
         }

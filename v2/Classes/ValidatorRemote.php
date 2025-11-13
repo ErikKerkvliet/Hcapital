@@ -8,6 +8,8 @@
 	use v2\RapidgatorClient;
 	use v2\ClientException;
     use v2\Interfaces\ValidatorInterface;
+    use v2\Database\Entity\InvalidLink;
+    use v2\Factories\InvalidLinkFactory;
 
     /**
      * Validate class to check the availability of download links.
@@ -37,6 +39,11 @@
         /**
          * @var array
          */
+        private $urlToLinkData = [];
+
+        /**
+         * @var array
+         */
         private $hosts = [];
 
         public function __construct()
@@ -53,11 +60,16 @@
         public function validateUrlsByDownloads(array $downloads, array $hosts = [HOST::HOST_RAPIDGATOR]): array
         {
             $this->hosts = $hosts;
+            $this->urlToLinkData = [];
 
             foreach ($downloads as $download) {
                 $linkEntity = $download->getLink();
-                if ($linkEntity && ($url = $linkEntity->getLink()) && is_string($url)) {
+                if ($linkEntity && ($url = $linkEntity->getUrl()) && is_string($url)) {
                     $this->filterUrls($url);
+                    $this->urlToLinkData[$url] = [
+                        'link_id' => $linkEntity->getId(),
+                        'entry_id' => $linkEntity->getEntry(true),
+                    ];
                 }
             }
 
@@ -65,7 +77,6 @@
 
             return $this->getResponse();
         }
-
         /**
 		 * Validates if the links urls are available.
 		 *
@@ -75,10 +86,15 @@
         public function validateUrlsByLinks(array $links, array $hosts = [HOST::HOST_RAPIDGATOR]): array
         {
             $this->hosts = $hosts;
+            $this->urlToLinkData = [];
 
             foreach ($links as $linkEntity) {
-                if (($url = $linkEntity->getLink()) && is_string($url)) {
+                if (($url = $linkEntity->getUrl()) && is_string($url)) {
                     $this->filterUrls($url);
+                    $this->urlToLinkData[$url] = [
+                        'link_id' => $linkEntity->getId(),
+                        'entry_id' => $linkEntity->getEntry(true),
+                    ];
                 }
             }
 
@@ -93,22 +109,52 @@
          */
         private function validateRapidgator(): void
         {
-            $urlChunks = array_chunk($this->rapidgatorUrls, 24);
+            $urlChunks = array_chunk($this->rapidgatorUrls, 1000, true); // [MODIFIED: Batch size 1000]
 
             try {
                 $client = new RapidgatorClient(getenv('RAPIDGATOR_USERNAME'), getenv('RAPIDGATOR_PASSWORD'), null);
+                $invalidLinksToPersist = [];
+
+                $invalidLinkRepository = app('em')->getRepository(InvalidLink::class);
+                $invalidLinkFactory = new InvalidLinkFactory();
+
                 foreach ($urlChunks as $currentChunk) {
                     // Call the checkLink method with the current, smaller chunk of URLs.
-                    $response = $client->checkLink($currentChunk);
+                    $response = $client->checkLink(array_keys($currentChunk));
                     
                     foreach ($response as $item) {
-                        // Note: We use object property access (->) because the client decodes JSON into objects.
                         $url = $item->url;
                         $status = $item->status;
                         
-                        $this->rapidgatorUrls[$url] = $status === 'ACCESS' ? 'available' : 'unavailable';
+                        $resultStatus = $status === 'ACCESS' ? 'available' : 'unavailable';
+                        $this->rapidgatorUrls[$url] = $resultStatus;
+                        
+                        // [NEW: Persistence logic for invalid links]
+                        if ($resultStatus === 'unavailable' && isset($this->urlToLinkData[$url])) {
+                            $linkData = $this->urlToLinkData[$url];
+                            
+                            $existingInvalidLink = $invalidLinkRepository->findOneBy([
+                                'link' => $linkData['link_id'],
+                            ]);
+                            
+                            if (!$existingInvalidLink) {
+                                $invalidLink = $invalidLinkFactory->create([
+                                    'entry' => $linkData['entry_id'],
+                                    'link' => $linkData['link_id'],
+                                ]);
+                                $invalidLinksToPersist[] = $invalidLink;
+                            }
+                        }
                     }
                 }
+
+                if (!empty($invalidLinksToPersist)) {
+                    foreach($invalidLinksToPersist as $linkEntity) {
+                         app('em')->persist($linkEntity);
+                    }
+                    app('em')->flush();
+                }
+
             } catch (ClientException $e) {
                 throw new \Exception("Rapidgator API Error: " . $e->getMessage());
             }

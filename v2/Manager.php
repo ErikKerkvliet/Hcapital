@@ -71,6 +71,7 @@
 	require_once('Database/Entity/EntryDeveloper.php');
 	require_once('Database/Entity/Thread.php');
 	require_once('Database/Entity/Host.php');
+	require_once('Database/Entity/InvalidLink.php');
 
 	require_once('Database/Repository/Repository.php');
 	require_once('Database/Repository/BannedRepository.php');
@@ -87,6 +88,7 @@
 	require_once('Database/Repository/EntryDeveloperRepository.php');
 	require_once('Database/Repository/ThreadRepository.php');
 	require_once('Database/Repository/HostRepository.php');
+	require_once('Database/Repository/InvalidLinkRepository.php');
 
 	require_once('Traits/Builder.php');
 	require_once('Builders/Images.php');
@@ -144,6 +146,7 @@
 	require_once('Classes/Downloads.php');
 	require_once('Classes/Banned.php');
 	require_once('Classes/LinkState.php');
+	require_once('Classes/InvalidLinks.php');
 	require_once('Classes/ImageHandler.php');
 	require_once('Classes/DeleteHandler.php');
 	require_once('Classes/EntryActions.php');
@@ -159,6 +162,8 @@
 	require_once('Factories/ThreadFactory.php');
 	require_once('Factories/LinkFactory.php');
 	require_once('Factories/BannedFactory.php');
+	require_once('Factories/InvalidLinkFactory.php');
+
     require_once('Transformers/CharacterTransformer.php');
     require_once('Transformers/EntryTransformer.php');
 
@@ -186,7 +191,7 @@
 //					$count = 0;
 //					$links = $repoLink->findBy(['entry' => $i]);
 //					foreach ($links as $link) {
-//						if (strpos($link->getLink(), 'E0') !== false) {
+//						if (strpos($link->getUrl(), 'E0') !== false) {
 //							$count++;
 //						}
 //					}
@@ -492,7 +497,7 @@
 					$linkRepository = app('em')->getRepository(Link::class);
 					$links = $linkRepository->findById(explode(',', $linkIds));
 					foreach($links as $link) {
-						$url = $link->getLink();
+						$url = $link->getUrl();
 						if (strpos($url, 'rapidgator') !== false
 							|| strpos($url, 'rg.to') !== false )
 						{
@@ -512,7 +517,7 @@
 				// Create a mapping of link ID to URL for later reference
 				$linkIdToUrl = [];
 				foreach($links as $link) {
-					$linkIdToUrl[$link->getId()] = $link->getLink();
+					$linkIdToUrl[$link->getId()] = $link->getUrl();
 				}
 				
 				$validator = Validator::getValidator();
@@ -572,7 +577,7 @@
 
                 $download = new Download();
                 if (AdminCheck::checkForAdmin()) {
-                    $url = $link->getLink();
+                    $url = $link->getUrl();
                     $success = true;
                 } else {
                     $downloadRepository = app('em')->getRepository(Download::class);
@@ -581,7 +586,7 @@
                     $downloads = $downloadRepository->getDownloadsByIp($ipAddress, 1);
                     if (AdminCheck::isBanned($entry) || watchIp($ipAddress, 1) > 10) {
 						$hostResolver = new HostResolver();
-						$host = $hostResolver->byUrl($link->getLink());
+						$host = $hostResolver->byUrl($link->getUrl());
 
 						if ($host == Host::HOST_RAPIDGATOR) {   
 							$url = Link::BANNED_RAPIDGATOR_URL;
@@ -590,7 +595,7 @@
 						} else if ($host == Host::HOST_KATFILE) {
 							$url = Link::BANNED_KATFILE_URL;
 						} else {
-							$url = $link->getLink();
+							$url = $link->getUrl();
 						}
 						$comment = Banned::BANNED;
 						$success = true;
@@ -602,7 +607,7 @@
                     ) {
                         $comment = Download::TOO_MANY_DOWNLOADS_ENTRY;
                     } else {
-                        $url = $link->getLink();
+                        $url = $link->getUrl();
                         $success = true;
                     }
                     $download->setComment($comment);

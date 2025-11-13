@@ -249,7 +249,7 @@
 			foreach ($links as $link) {
 				$data = [];
 				$data[] = 'entry|!|' . $link->getEntry(true);
-				$data[] = 'link|!|' . $link->getLink();
+				$data[] = 'link|!|' . $link->getUrl();
 				$data[] = 'part|!|' . $link->getPart();
 				$data[] = 'comment|!|' . $link->getComment();
 

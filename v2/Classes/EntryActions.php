@@ -400,7 +400,7 @@
 					if (substr($string, -3) == '.ra') {
 						$string .= 'r';
 					}
-					$link->setLink($string);
+					$link->setUrl($string);
 					$link->setComment($comment);
 
 					$part = $this->getPart($string);
@@ -899,7 +899,7 @@
 					$link = $this->linkResolver->byLinksAndUrl($links, $url);
 					if ($link) {
 						$ids[] = $link->getId();
-						$link->setLink($url);
+						$link->setUrl($url);
 						
 						$date = date('Y-m-d H:i:s');
 						$link->setCreated($date);
@@ -932,7 +932,7 @@
 						// }
 						
 						$newLink = new Link();
-						$newLink->setLink($url);
+						$newLink->setUrl($url);
 
 						$parts = explode('.', $url);
 						$newLink->setEntry($entryId);

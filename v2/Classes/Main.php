@@ -75,6 +75,8 @@
 				$content = new Downloads($entry, $validate);
 			} else if (request('action') == 'b') {
 				$content = new Banned();
+			} else if (request('action') == 'il' && AdminCheck::checkForAdmin()) {
+				$content = new InvalidLinks();
 			} else if (request('action') == 'lv') {
 				if (AdminCheck::checkForAdmin()) {
 					$hosts = request('hosts');

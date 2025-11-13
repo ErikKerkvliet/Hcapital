@@ -138,13 +138,13 @@
 			$links = $linkRepository->findBy(['entry' => $this->entry->getId()]);
 
 			array_map(function ($link) {
-				if ($link->getLink() == '-') {
+				if ($link->getUrl() == '-') {
 					return;
 				}
 
-				$host = ucfirst($this->hostResolver->byUrl($link->getLink()));
+				$host = ucfirst($this->hostResolver->byUrl($link->getUrl()));
 				$comment = $link->getComment() ?: $host;
-				$link = $link->getLink();
+				$link = $link->getUrl();
 
 				$this->links[$comment][$host][] = $link;
 

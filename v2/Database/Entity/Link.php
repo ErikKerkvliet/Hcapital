@@ -37,7 +37,7 @@
 		/**
 		 * @var string
 		 */
-		private $link;
+		private $url;
 
 		/**
 		 * @var int|null
@@ -87,18 +87,18 @@
 		/**
 		 * @return string
 		 */
-		public function getLink():? string
+		public function getUrl():? string
 		{
-			return $this->link;
+			return $this->url;
 		}
 
 		/**
-		 * @param null|string $link
+		 * @param null|string $url
 		 * @return Link
 		 */
-		public function setLink(string $link): Link
+		public function setUrl(string $url): Link
 		{
-			$this->link = $link;
+			$this->url = $url;
 
 			return $this;
 		}

@@ -1,0 +1,26 @@
+<div id="invalid-links-page">
+    <table id="invalid-links-table" cellspacing="0" cellpadding="0">
+        <tr>
+            <th class="invalid-links-th">Entry ID</th>
+            <th class="invalid-links-th">Link ID</th>
+            <th class="invalid-links-th"></th>
+        </tr>
+        {for invalid_links}
+        <tr class="{{tr}}">
+            <td>
+                <a href="?v=2&id={{entry_id}}">{{entry_id}}</a>
+            </td>
+            <td>
+                {{link_id}}
+            </td>
+            <td>
+                <a>
+                    <div class="delete-invalid-link admin-button" data-id="{{id}}">
+                        Delete
+                    </div>
+                </a>
+            </td>
+        </tr>
+        {/for}
+    </table>
+</div>

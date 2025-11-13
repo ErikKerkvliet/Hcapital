@@ -109,7 +109,7 @@
 			$validatedUrls = $this->validator->validateUrlsByLinks($links, $this->hosts);
 			/** @var Link $link */
 			foreach($links as $link) {
-				$url = $link->getLink();
+				$url = $link->getUrl();
 				
 				// Check if this URL was validated by the Validate class
 				if (isset($validatedUrls[$url])) {

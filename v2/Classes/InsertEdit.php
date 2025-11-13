@@ -327,15 +327,15 @@
 
 			$hostResolver = new HostResolver();
 			foreach ($links as $link) {
-				if ($link->getLink() == '-') {
+				if ($link->getUrl() == '-') {
 					continue;
 				}
 
 				$host = substr($link->getComment(), 0, 2) != '<<' ?
-					$hostResolver->byUrl($link->getLink()) : Host::HOST_RAPIDGATOR;
+					$hostResolver->byUrl($link->getUrl()) : Host::HOST_RAPIDGATOR;
 
 				$comment = $link->getComment() ?: '';
-				$link = $link->getLink();
+				$link = $link->getUrl();
 
 				$this->links[$comment][$host][] = $link;
 			}

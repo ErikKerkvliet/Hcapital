@@ -127,7 +127,7 @@
 					'data_tr' => 'row-color-' . ($row % 2),
 					'entryId'=> $download->getEntry(true),
 					'linkId' => $link->getId(),
-					'link' => $link->getLink(),
+					'link' => $link->getUrl(),
 					'tr' => $this->getTr($download, $row),
 					'comment' => $this->comment,
 					'ip' => $ip,
@@ -157,7 +157,7 @@
 		 */
 		private function getTr(Download $download, $row): string
 		{
-			$url = $download->getLink() ? $download->getLink()->getLink() : '-';
+			$url = $download->getLink() ? $download->getLink()->getUrl() : '-';
 			$this->comment = '';
 			
 			if(in_array($download->getIp(), $this->banned)) {

@@ -37,7 +37,7 @@ class LinkManager
         $existingLinks = $this->linkRepository->findBy(['entry' => $entryId]);
         $existingLinksByUrl = [];
         foreach ($existingLinks as $link) {
-            $existingLinksByUrl[$link->getLink()] = $link;
+            $existingLinksByUrl[$link->getUrl()] = $link;
         }
 
         // 2. Iterate through submitted links to find what's new or what has stayed.
@@ -49,7 +49,7 @@ class LinkManager
             if (isset($existingLinksByUrl[$url])) {
                 // The link exists. We can potentially update its comment if it has changed.
                 $existingLink = $existingLinksByUrl[$url];
-                if ($existingLink->getLink() !== $url && $existingLink->getPart() !== $this->getPart($url)) {
+                if ($existingLink->getUrl() !== $url && $existingLink->getPart() !== $this->getPart($url)) {
                     $existingLink->setComment($comment);
                     $existingLink->setCreated(date('Y-m-d H:i:s'));
                     app('em')->update($existingLink);
@@ -63,7 +63,7 @@ class LinkManager
                 // The link is new. Create and persist a new Link entity.
                 $newLink = new Link();
                 $newLink->setEntry($entryId);
-                $newLink->setLink($url);
+                $newLink->setUrl($url);
                 $newLink->setComment($comment);
                 $newLink->setPart($this->getPart($url));
                 $newLink->setCreated(date('Y-m-d H:i:s'));

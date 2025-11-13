@@ -75,7 +75,7 @@
 				if (! is_array($links)) {
 					continue;
 				}
-				$host = $this->hostResolver->byUrl($links[0]->getLink());
+				$host = $this->hostResolver->byUrl($links[0]->getUrl());
 				$this->single = count($links) == 1;
 
 				if ($host && ! $this->single) {
@@ -109,7 +109,7 @@
 			$this->html .= '<div id="text-comment">' . $this->links['text'][0]->getComment() . '</div>';
 
 			array_map(function ($link) {
-				$this->html .= '<div class="text-link">' . $link->getLink() . '</div>';
+				$this->html .= '<div class="text-link">' . $link->getUrl() . '</div>';
 			}, $this->links['text']);
 
 			$this->html .= '</div>';
@@ -123,11 +123,11 @@
 			$id = $link->getId();
 			$part = $this->getPart($link);
 
-			$host = $this->hostResolver->byUrl($link->getLink());
+			$host = $this->hostResolver->byUrl($link->getUrl());
 
 			$text = ! $part ? ucfirst($host) : 'part ' . $part;
 			$download = $part ? 'link-button link-button-download' : 'link-button';
-			$url = $link->getLink();
+			$url = $link->getUrl();
 			if ($this->checkIfLink($url)) {
 				$this->html .= '<div class="' . $download . '" data-link-id="' . $id . '">' . $text . '</div>';
 			} else {
@@ -153,7 +153,7 @@
         private function getPart($link)
         {
             $pattern="/.part\K.\*+?(?=.)/";
-            $success = preg_match($pattern, $link->getLink(), $match);
+            $success = preg_match($pattern, $link->getUrl(), $match);
 
             if ($success) {
                 return $match[0];

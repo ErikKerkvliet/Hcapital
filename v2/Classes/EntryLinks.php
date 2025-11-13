@@ -66,7 +66,7 @@
 
 				$this->comments[$comment] += 1;
 
-				$this->links[] = $link->getLink();
+				$this->links[] = $link->getUrl();
 			}
 		}
 

@@ -8,7 +8,7 @@
 
 	namespace v2\Database\Repository;
 
-	use HostResolver;
+	use v2\Resolvers\HostResolver;
 	use v2\Database\Entity\Entry;
 	use v2\Database\Entity\Host;
 	use v2\Database\Entity\Link;
@@ -49,7 +49,7 @@
 				$this->andWhere('t.author', '=', '"' . $author . '"');
 			}
 
-			$this->groupBy('l.link');
+			$this->groupBy('l.url');
 
 			$result = $this->getResult(false);
 
@@ -57,13 +57,13 @@
 			while ($row = mysqli_fetch_assoc($result)) {
 				if (! $row['comment']) {
 					foreach (Host::HOSTS as $host) {
-						if (strpos($row['link'], $host) !== false) {
-							$data[] = $host . '|!|' . $row['link'];
+						if (strpos($row['url'], $host) !== false) {
+							$data[] = $host . '|!|' . $row['url'];
 						}
 					}
 					continue;
 				}
-				$data[] = $row['comment'] . '|!|' . $row['link'];
+				$data[] = $row['comment'] . '|!|' . $row['url'];
 			}
 
 			return implode(',|,', $data);
@@ -73,7 +73,7 @@
 		{
 			return $this->select()
 				->from(Link::TABLE, 'l')
-				->where('l.link', 'REGEXP', '"' . $text . '"')
+				->where('l.url', 'REGEXP', '"' . $text . '"')
 				->getResult();
 		}
 
@@ -85,20 +85,20 @@
 			foreach (HostResolver::REGEXP_PATTERNS[$host] as $key => $pattern) {
 				if ($conditionCount > 1) {
 					if (! $key) {
-						$this->andWhere('l.link', 'REGEXP', '"' . $pattern . '"', '(');
+						$this->andWhere('l.url', 'REGEXP', '"' . $pattern . '"', '(');
 					} else if ($key == $conditionCount - 1) {
 						$this->orWhere(
-							'l.link',
+							'l.url',
 							'REGEXP',
 							'"' . $pattern . '"',
 							'',
 							')'
 						);
 					} else {
-						$this->orWhere('l.link', 'REGEXP', '"' . $pattern . '"');
+						$this->orWhere('l.url', 'REGEXP', '"' . $pattern . '"');
 					}
 				} else {
-					$this->andWhere('l.link', 'REGEXP', '"' . $pattern . '"');
+					$this->andWhere('l.url', 'REGEXP', '"' . $pattern . '"');
 				}
 			}
 			$this->limit(0, 20);
@@ -111,7 +111,7 @@
 			$this->select()
 				->from(Link::TABLE, 'l')
 				->where('l.entry_id', '=', $entry->getId())
-				->andWhere('l.link', 'REGEXP', '"' . $host . '"');
+				->andWhere('l.url', 'REGEXP', '"' . $host . '"');
 
 			if ($part) {
 				$this->andWhere('l.part', '=', $part);
@@ -132,7 +132,7 @@
 
 			// Voeg een WHERE-clausule toe om alleen links van het laatste uur op te halen
 			$this->where('l.created_at', '>=', '"' . $dayAgo . '"');
-			$this->andWhere('l.link', 'REGEXP', '"' . $host . '"');
+			$this->andWhere('l.url', 'REGEXP', '"' . $host . '"');
 			if ($entry) {
 				$this->andWhere('l.entry_id', '>=', $entry->getId());
 			}
@@ -145,7 +145,7 @@
 		public function deleteByHost($entryId, string $host, $parts = [])
 		{
 			$query = 'DELETE FROM entry_links WHERE entry_id = ' . $entryId;
-			$query .= ' AND link REGEXP "' . $host . '"';
+			$query .= ' AND `url` REGEXP "' . $host . '"';
 			if ($parts) {
 				$query .= ' AND part IN (' . implode(',', $parts) . ')';
 			}
