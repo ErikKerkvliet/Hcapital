@@ -45,179 +45,19 @@ class ValidatorLocal
         $this->hostResolver = new HostResolver();
     }
 
-    /**
-     * Executes the validation tasks for different hosts concurrently using pcntl_fork.
-    // ... existing executeValidationTasks function ...
-    // NOTE: For brevity, the full `executeValidationTasks` function logic is omitted here, but the changes
-    // in `validateRapidgator` rely on the fork being successful and execution inside the child.
-    // The child process would need to receive the `$this->urlToLinkData` correctly.
-    // Assuming `executeValidationTasks` correctly handles the serialization/unserialization of the new property 
-    // `$this->urlToLinkData` across the fork, and that the child process then calls `validateRapidgator`.
-    */
-
-    /**
-     * Executes the validation tasks for different hosts concurrently using pcntl_fork.
-     * Modifies $this->rapidgatorUrls, $this->katfileUrls, $this->mexashareUrls with results.
-     */
     private function executeValidationTasks(): void
     {
-        if (!function_exists('pcntl_fork')) {
-            error_log("Validator: pcntl_fork not available. Running validation sequentially.");
-            if (!empty($this->rapidgatorUrls)) $this->validateRapidgator();
-            if (!empty($this->katfileUrls))    $this->validateKatfile();
-            if (!empty($this->mexashareUrls))  $this->validateMexashare();
-            return;
-        }
-
-        $pipes = [];
-        $childPids = [];
-
-        $tasks = [];
+        // Running validation sequentially to prevent race conditions and duplicate key errors.
         if (!empty($this->rapidgatorUrls)) {
-            $tasks['rapidgator'] = ['method' => 'validateRapidgator', 'urls' => $this->rapidgatorUrls];
+            $this->validateRapidgator();
         }
         if (!empty($this->katfileUrls)) {
-            $tasks['katfile'] = ['method' => 'validateKatfile', 'urls' => $this->katfileUrls];
+            $this->validateKatfile();
         }
         if (!empty($this->mexashareUrls)) {
-            $tasks['mexashare'] = ['method' => 'validateMexashare', 'urls' => $this->mexashareUrls];
-        }
-
-        if (empty($tasks)) {
-            return; // No URLs to validate
-        }
-
-        foreach ($tasks as $host => $taskInfo) {
-            $pipe_fds = @stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
-            if (!$pipe_fds) {
-                error_log("Validator: Failed to create stream_socket_pair for $host validation. This host's URLs will be marked as 'pipe_creation_error'.");
-                // Mark these URLs as an error and skip forking for this task
-                $this->{$host . 'Urls'} = array_fill_keys(array_keys($taskInfo['urls']), 'pipe_creation_error');
-                unset($tasks[$host]); // Remove from tasks to process
-                continue;
-            }
-
-            $pid = pcntl_fork();
-
-            if ($pid == -1) {
-                error_log("Validator: pcntl_fork failed for $host validation. This host's URLs will be marked as 'fork_error'.");
-                fclose($pipe_fds[0]);
-                fclose($pipe_fds[1]);
-                $this->{$host . 'Urls'} = array_fill_keys(array_keys($taskInfo['urls']), 'fork_error');
-                unset($tasks[$host]); // Remove from tasks to process
-            } else if ($pid) {
-                // Parent process
-                $childPids[$pid] = $host;
-                fclose($pipe_fds[1]); // Close write end in parent
-                $pipes[$pid] = $pipe_fds[0]; // Keep read end
-                stream_set_blocking($pipes[$pid], false); // Non-blocking read
-            } else {
-                // Child process
-                fclose($pipe_fds[0]); // Close read end in child
-
-                // Re-initialize dependencies if they might have state or issues with fork
-                // $this->hostResolver = new HostResolver(); // Example if HostResolver had state
-
-                // Set the specific URLs for this child's task on its copy of $this
-                $this->rapidgatorUrls = ($host === 'rapidgator') ? $taskInfo['urls'] : [];
-                $this->katfileUrls    = ($host === 'katfile')    ? $taskInfo['urls'] : [];
-                $this->mexashareUrls  = ($host === 'mexashare')  ? $taskInfo['urls'] : [];
-                
-                // Call the original validation method (e.g., $this->validateRapidgator())
-                // This modifies the corresponding $this->[host]Urls property in the child's memory.
-                $this->{$taskInfo['method']}();
-
-                // Get the result from the modified property
-                $result = $this->{$host . 'Urls'}; // e.g., $this->rapidgatorUrls
-
-                $serializedResult = @serialize($result);
-                if ($serializedResult === false) {
-                    // This should ideally not happen with simple arrays of strings
-                    // Log error and exit child gracefully if possible
-                    error_log("Child process for $host: Failed to serialize results.");
-                    // Consider writing an error marker or empty string to pipe if serialization fails.
-                    // For now, an empty write will be handled by parent as "no_data_error".
-                    fwrite($pipe_fds[1], serialize(['error' => 'child_serialization_failed']));
-                } else {
-                    fwrite($pipe_fds[1], $serializedResult);
-                }
-                
-                fclose($pipe_fds[1]);
-                exit(0); // Child exits successfully
-            }
-        }
-
-        // Parent process: collect results
-        $resultsFromChildren = [];
-        foreach (array_keys($tasks) as $host) { // Only for tasks that were attempted to be forked
-            $resultsFromChildren[$host] = null; 
-        }
-
-        $activePids = $childPids;
-        while (count($activePids) > 0) {
-            foreach ($activePids as $pid => $hostKey) {
-                $status = null;
-                $res = pcntl_waitpid($pid, $status, WNOHANG);
-
-                if ($res == -1 || $res > 0) { // Child exited or error
-                    unset($activePids[$pid]); // Remove from active list
-                    if (isset($pipes[$pid]) && is_resource($pipes[$pid])) {
-                        $pipeContent = '';
-                        while (!feof($pipes[$pid])) { // Read until EOF
-                            $readChunk = fread($pipes[$pid], 8192);
-                            if ($readChunk === false || $readChunk === '') break;
-                            $pipeContent .= $readChunk;
-                        }
-                        fclose($pipes[$pid]);
-
-                        if (!empty($pipeContent)) {
-                            $data = @unserialize($pipeContent);
-                            if ($data !== false) {
-                                $resultsFromChildren[$hostKey] = $data;
-                            } else {
-                                error_log("Validator: Failed to unserialize data from child PID $pid for host $hostKey.");
-                                $resultsFromChildren[$hostKey] = 'unserialize_error';
-                            }
-                        } else {
-                             error_log("Validator: No data received from child PID $pid for host $hostKey.");
-                             $resultsFromChildren[$hostKey] = 'no_data_error';
-                        }
-                    } else {
-                        error_log("Validator: Pipe for PID $pid (host $hostKey) was not available for reading.");
-                        $resultsFromChildren[$hostKey] = 'pipe_read_error';
-                    }
-                }
-            }
-            if (empty($activePids)) break;
-            usleep(50000); // 50ms sleep to prevent busy-looping
-        }
-        
-        // Final cleanup for any PIDs that were missed (should be rare with WNOHANG loop)
-        foreach ($activePids as $pid => $hostKey) {
-            pcntl_waitpid($pid, $status); // Blocking wait
-            if (isset($pipes[$pid]) && is_resource($pipes[$pid])) fclose($pipes[$pid]);
-            if ($resultsFromChildren[$hostKey] === null) {
-                error_log("Validator: Child PID $pid (host $hostKey) results not collected, marking as error.");
-                $resultsFromChildren[$hostKey] = 'collection_error';
-            }
-        }
-
-        // Update the main object's properties with results
-        foreach ($tasks as $host => $taskInfo) { // Iterate over tasks that were supposed to run
-            $originalUrlsForHost = $taskInfo['urls'];
-            if (isset($resultsFromChildren[$host]) && is_array($resultsFromChildren[$host])) {
-                $this->{$host . 'Urls'} = $resultsFromChildren[$host];
-            } else {
-                // An error occurred, or fork/pipe failed for this host.
-                // If it was already set due to pre-fork error (e.g. pipe_creation_error), don't overwrite.
-                if (empty($this->{$host . 'Urls'}) || $this->{$host . 'Urls'} === $originalUrlsForHost) {
-                     $errorStatus = $resultsFromChildren[$host] ?: 'processing_error'; // general error if null
-                     $this->{$host . 'Urls'} = array_fill_keys(array_keys($originalUrlsForHost), (string)$errorStatus);
-                }
-            }
+            $this->validateMexashare();
         }
     }
-
 
     /**
 	 * Validates if the download urls are available.
@@ -278,35 +118,35 @@ class ValidatorLocal
 	 */
     private function validateRapidgator(): void
     {
-        $urlChunks = array_chunk($this->rapidgatorUrls, 24);
+        $urlChunks = array_chunk($this->rapidgatorUrls, 24, true); // Keep keys
 
         try {
-			$client = new RapidgatorClient(getenv('RAPIDGATOR_USERNAME'), getenv('RAPIDGATOR_PASSWORD'), null);
+            $client = new RapidgatorClient(getenv('RAPIDGATOR_USERNAME'), getenv('RAPIDGATOR_PASSWORD'), null);
             $invalidLinksToPersist = [];
+            $validLinksToRemove = []; // [NEW] List for links that are now valid
 
             $invalidLinkRepository = app('em')->getRepository(InvalidLink::class);
             $invalidLinkFactory = new InvalidLinkFactory();
 
             foreach ($urlChunks as $currentChunk) {
                 // Call the checkLink method with the current, smaller chunk of URLs.
-                $response = $client->checkLink(array_values($currentChunk));
+                $response = $client->checkLink(array_keys($currentChunk));
                 
                 foreach ($response as $item) {
-                    // Note: We use object property access (->) because the client decodes JSON into objects.
                     $url = $item->url;
                     $status = $item->status;
                     $resultStatus = $status === 'ACCESS' ? 'available' : 'unavailable';
                     $this->rapidgatorUrls[$url] = $resultStatus;
                     
-                    if ($resultStatus === 'unavailable' && isset($this->urlToLinkData[$url])) {
+                    if (isset($this->urlToLinkData[$url])) {
                         $linkData = $this->urlToLinkData[$url];
-                        
-                        // Check if already marked as invalid to prevent duplicates
-                        $existingInvalidLink = $invalidLinkRepository->findOneBy([
-                            'link' => $linkData['link_id'],
-                        ]);
-                        
-                        if (!$existingInvalidLink) {
+                        $existingInvalidLink = $invalidLinkRepository->findOneBy(['link' => $linkData['link_id']]);
+
+                        if ($resultStatus === 'available' && $existingInvalidLink) {
+                            // [NEW] Link is valid and exists in invalid_links, so we should remove it.
+                            $validLinksToRemove[] = $existingInvalidLink;
+                        } elseif ($resultStatus === 'unavailable' && !$existingInvalidLink) {
+                            // [MODIFIED] Link is invalid and does NOT exist in invalid_links, so add it.
                             $invalidLink = $invalidLinkFactory->create([
                                 'entry' => $linkData['entry_id'],
                                 'link' => $linkData['link_id'],
@@ -317,17 +157,29 @@ class ValidatorLocal
                 }
             }
 
-            if (! empty($invalidLinksToPersist)) {
-                foreach($invalidLinksToPersist as $linkEntity) {
-                     app('em')->persist($linkEntity);
+            // [NEW] Batch process deletions
+            if (!empty($validLinksToRemove)) {
+                foreach ($validLinksToRemove as $linkEntity) {
+                    app('em')->delete($linkEntity);
                 }
+            }
+
+            // [NEW] Batch process insertions
+            if (!empty($invalidLinksToPersist)) {
+                foreach ($invalidLinksToPersist as $linkEntity) {
+                    app('em')->persist($linkEntity);
+                }
+            }
+            
+            // [NEW] Flush all changes at once
+            if (!empty($validLinksToRemove) || !empty($invalidLinksToPersist)) {
                 app('em')->flush();
             }
 
         } catch (ClientException $e) {
             throw new \Exception("Rapidgator API Error: " . $e->getMessage());
         }
-	}
+    }
 
     /**
      * Validates if the katfile links are available.
@@ -336,6 +188,12 @@ class ValidatorLocal
     private function validateKatfile(): void
     {
         if (empty($this->katfileUrls)) return;
+
+        // [NEW] Initialize lists for DB operations and repositories
+        $invalidLinksToPersist = [];
+        $validLinksToRemove = [];
+        $invalidLinkRepository = app('em')->getRepository(InvalidLink::class);
+        $invalidLinkFactory = new InvalidLinkFactory();
 
         $fileIds = [];
         $filecodeToUrl = [];
@@ -412,30 +270,63 @@ class ValidatorLocal
                     continue;
                 }
 
-                $isAvailable = ($status == 200); // Assuming 200 means available
-                $stateFilter = request('state');
-
-                if (($stateFilter === '1' && !$isAvailable) || ($stateFilter === '2' && $isAvailable)) {
-                    // $processedUrls[$url] remains $url (already set as default)
-                    continue;
-                }
+                $isAvailable = ($status == 200);
                 $processedUrls[$url] = $isAvailable ? 'available' : 'unavailable';
+                
+                // [NEW] Synchronization logic
+                if (isset($this->urlToLinkData[$url])) {
+                    $linkData = $this->urlToLinkData[$url];
+                    $existingInvalidLink = $invalidLinkRepository->findOneBy(['link' => $linkData['link_id']]);
+
+                    if ($isAvailable && $existingInvalidLink) {
+                        $validLinksToRemove[] = $existingInvalidLink;
+                    } elseif (!$isAvailable && !$existingInvalidLink) {
+                        $invalidLink = $invalidLinkFactory->create([
+                            'entry' => $linkData['entry_id'],
+                            'link' => $linkData['link_id'],
+                        ]);
+                        $invalidLinksToPersist[] = $invalidLink;
+                    }
+                }
             }
         }
         
-        // For filecodes sent but not in API response (Katfile might ignore invalid ones)
+        // [NEW] Handle filecodes that were not in the API response (implying they are unavailable)
         foreach ($filecodeToUrl as $filecode => $url) {
             if (!isset($respondedFilecodes[$filecode])) {
-                // Not in response -> treat as unavailable unless filtered out by 'want available'
-                $stateFilter = request('state');
-                if ($stateFilter === '1') { // Want available, this one is not. Keep $url=>$url
-                    // $processedUrls[$url] remains $url
-                } else { // No filter, or want unavailable (state 2). This one is unavailable.
-                    $processedUrls[$url] = 'unavailable';
+                $processedUrls[$url] = 'unavailable';
+                if (isset($this->urlToLinkData[$url])) {
+                    $linkData = $this->urlToLinkData[$url];
+                    $existingInvalidLink = $invalidLinkRepository->findOneBy(['link' => $linkData['link_id']]);
+                    if (!$existingInvalidLink) {
+                        $invalidLink = $invalidLinkFactory->create([
+                            'entry' => $linkData['entry_id'],
+                            'link' => $linkData['link_id'],
+                        ]);
+                        $invalidLinksToPersist[] = $invalidLink;
+                    }
                 }
             }
         }
+        
         $this->katfileUrls = $processedUrls;
+
+        // [NEW] Batch process all DB changes at the end
+        if (!empty($validLinksToRemove)) {
+            foreach ($validLinksToRemove as $linkEntity) {
+                app('em')->delete($linkEntity);
+            }
+        }
+
+        if (!empty($invalidLinksToPersist)) {
+            foreach ($invalidLinksToPersist as $linkEntity) {
+                app('em')->persist($linkEntity);
+            }
+        }
+        
+        if (!empty($validLinksToRemove) || !empty($invalidLinksToPersist)) {
+            app('em')->flush();
+        }
     }
 
     /**

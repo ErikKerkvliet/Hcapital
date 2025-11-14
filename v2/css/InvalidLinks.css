@@ -9,20 +9,42 @@
     margin-top: 20px;
     border: 2px solid #6c7f8c;
     padding: 1px 0;
-    width: 600px;
+    width: 1000px;
     margin-left: auto;
     margin-right: auto;
+    border-collapse: collapse;
 }
 
-#invalid-links-table td {
+#invalid-links-table td, #invalid-links-table th {
     padding: 5px 15px;
-    text-align: center;
+    text-align: left;
+    vertical-align: top;
 }
 
-.invalid-links-th {
+#invalid-links-table td a[href*="?v=2&id="] {
+    font-weight: bold;
+}
+
+#invalid-links-table td a {
+    word-break: break-all;
+}
+
+#downloads-header th {
     padding: 5px 15px;
     font-size: 14px;
     border-bottom: 1px solid #3e5565;
     background: #326e9f;
-    color: white;
+    color: black;
+}
+
+#invalid-links-table tr:not(:first-child) {
+    border-bottom: 1px solid #3e5565;
+}
+
+.parent-row {
+    cursor: pointer;
+}
+
+.parent-row:hover {
+    background-color: #5d7e96;
 }

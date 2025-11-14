@@ -114,12 +114,12 @@
             try {
                 $client = new RapidgatorClient(getenv('RAPIDGATOR_USERNAME'), getenv('RAPIDGATOR_PASSWORD'), null);
                 $invalidLinksToPersist = [];
+                $validLinksToRemove = []; // List for links that are now valid
 
                 $invalidLinkRepository = app('em')->getRepository(InvalidLink::class);
                 $invalidLinkFactory = new InvalidLinkFactory();
 
                 foreach ($urlChunks as $currentChunk) {
-                    // Call the checkLink method with the current, smaller chunk of URLs.
                     $response = $client->checkLink(array_keys($currentChunk));
                     
                     foreach ($response as $item) {
@@ -129,15 +129,15 @@
                         $resultStatus = $status === 'ACCESS' ? 'available' : 'unavailable';
                         $this->rapidgatorUrls[$url] = $resultStatus;
                         
-                        // [NEW: Persistence logic for invalid links]
-                        if ($resultStatus === 'unavailable' && isset($this->urlToLinkData[$url])) {
+                        if (isset($this->urlToLinkData[$url])) {
                             $linkData = $this->urlToLinkData[$url];
-                            
-                            $existingInvalidLink = $invalidLinkRepository->findOneBy([
-                                'link' => $linkData['link_id'],
-                            ]);
-                            
-                            if (!$existingInvalidLink) {
+                            $existingInvalidLink = $invalidLinkRepository->findOneBy(['link' => $linkData['link_id']]);
+
+                            if ($resultStatus === 'available' && $existingInvalidLink) {
+                                // Link is valid and exists in invalid_links, so remove it.
+                                $validLinksToRemove[] = $existingInvalidLink;
+                            } elseif ($resultStatus === 'unavailable' && !$existingInvalidLink) {
+                                // Link is invalid and does NOT exist in invalid_links, so add it.
                                 $invalidLink = $invalidLinkFactory->create([
                                     'entry' => $linkData['entry_id'],
                                     'link' => $linkData['link_id'],
@@ -148,10 +148,22 @@
                     }
                 }
 
+                // Batch process deletions
+                if (!empty($validLinksToRemove)) {
+                    foreach ($validLinksToRemove as $linkEntity) {
+                        app('em')->delete($linkEntity);
+                    }
+                }
+
+                // Batch process insertions
                 if (!empty($invalidLinksToPersist)) {
                     foreach($invalidLinksToPersist as $linkEntity) {
-                         app('em')->persist($linkEntity);
+                        app('em')->persist($linkEntity);
                     }
+                }
+
+                // Flush all changes at once
+                if (!empty($validLinksToRemove) || !empty($invalidLinksToPersist)) {
                     app('em')->flush();
                 }
 
@@ -166,23 +178,31 @@
          * @param Download[] $downloads
          * @return array
          */
-        private function validateKatfile(): array
+        private function validateKatfile(): void
         {
+            if (empty($this->katfileUrls)) return;
+
             $fileIds = [];
             $filecodeToUrl = [];
+            
+            // Initialize lists for DB operations
+            $invalidLinksToPersist = [];
+            $validLinksToRemove = [];
+            $invalidLinkRepository = app('em')->getRepository(InvalidLink::class);
+            $invalidLinkFactory = new InvalidLinkFactory();
 
             // Extract filecodes and build mapping
-            foreach ($this->katfileUrls as $url) {
+            foreach ($this->katfileUrls as $url => $value) {
                 if (preg_match('#katfile\.com/([^/]+)/#', $url, $matches) || preg_match('#katfile\.cloud/([^/]+)/#', $url, $matches)) {
                     $filecode = $matches[1];
                     $fileIds[] = $filecode;
-                    $filecodeToUrl[$filecode] = $url; // map filecode to full URL
+                    $filecodeToUrl[$filecode] = $url;
+                } else {
+                    $this->katfileUrls[$url] = 'error_invalid_url_format';
                 }
             }
 
-            if (empty($fileIds)) {
-                return [];
-            }
+            if (empty($fileIds)) return;
 
             $ids = implode(',', $fileIds);
             $ch = curl_init("https://katfile.cloud/api/file/info?key=" . getenv('KATFILE_API_KEY') . "&file_code=" . $ids);
@@ -193,27 +213,64 @@
             $data = json_decode($response, true);
 
             if (!isset($data['result']) || !is_array($data['result'])) {
-                return [];
+                foreach($filecodeToUrl as $url) $this->katfileUrls[$url] = 'error_api_bad_response';
+                return;
             }
 
+            $respondedFilecodes = [];
             foreach ($data['result'] as $item) {
                 $filecode = $item['filecode'] ?? null;
                 $status = $item['status'] ?? 0;
 
                 if ($filecode && isset($filecodeToUrl[$filecode])) {
                     $url = $filecodeToUrl[$filecode];
+                    $respondedFilecodes[$filecode] = true;
 
-                    if (
-                        request('state') == '1' && $status !== 200 ||
-                        request('state') == '2' && $status === 200
-                    ) {
-                        continue;
+                    $isAvailable = ($status === 200);
+                    $this->katfileUrls[$url] = $isAvailable ? 'available' : 'unavailable';
+
+                    if (isset($this->urlToLinkData[$url])) {
+                        $linkData = $this->urlToLinkData[$url];
+                        $existingInvalidLink = $invalidLinkRepository->findOneBy(['link' => $linkData['link_id']]);
+
+                        if ($isAvailable && $existingInvalidLink) {
+                            $validLinksToRemove[] = $existingInvalidLink;
+                        } elseif (!$isAvailable && !$existingInvalidLink) {
+                            $invalidLink = $invalidLinkFactory->create([
+                                'entry' => $linkData['entry_id'],
+                                'link' => $linkData['link_id'],
+                            ]);
+                            $invalidLinksToPersist[] = $invalidLink;
+                        }
                     }
-
-                    $this->katfileUrls[$url] = $status === 200 ? 'available' : 'unavailable';
                 }
             }
-            return $this->katfileUrls;
+            
+            // Handle URLs not in the API response (implying they are invalid)
+            foreach ($filecodeToUrl as $filecode => $url) {
+                if (!isset($respondedFilecodes[$filecode])) {
+                    $this->katfileUrls[$url] = 'unavailable';
+                    if (isset($this->urlToLinkData[$url])) {
+                        $linkData = $this->urlToLinkData[$url];
+                        if (!$invalidLinkRepository->findOneBy(['link' => $linkData['link_id']])) {
+                            $invalidLinksToPersist[] = $invalidLinkFactory->create([
+                                'entry' => $linkData['entry_id'], 'link' => $linkData['link_id']
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            // Batch process all DB changes
+            if (!empty($validLinksToRemove)) {
+                foreach ($validLinksToRemove as $linkEntity) app('em')->delete($linkEntity);
+            }
+            if (!empty($invalidLinksToPersist)) {
+                foreach ($invalidLinksToPersist as $linkEntity) app('em')->persist($linkEntity);
+            }
+            if (!empty($validLinksToRemove) || !empty($invalidLinksToPersist)) {
+                app('em')->flush();
+            }
         }
 
         /**

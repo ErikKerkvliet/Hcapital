@@ -1,30 +1,14 @@
 $(document).ready(function() {
-    $('.delete-invalid-link').on('click', function() {
-        var invalidLinkId = $(this).data('id');
-        var row = $(this).closest('tr');
+    // Toggles the visibility of child rows (links) for an entry
+    $('#invalid-links-table').on('click', '.parent-row', function() {
+        const entryId = $(this).data('entry-id');
+        $('.child-of-' + entryId).slideToggle('fast');
+    });
 
-        if (confirm('Are you sure you want to delete this record?')) {
-            $.ajax({
-                url: '?action=delete',
-                type: 'POST',
-                data: {
-                    entity: 'invalidLink',
-                    id: invalidLinkId
-                },
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        row.fadeOut(500, function() {
-                            $(this).remove();
-                        });
-                    } else {
-                        alert('Failed to delete the record.');
-                    }
-                },
-                error: function() {
-                    alert('An error occurred while trying to delete the record.');
-                }
-            });
-        }
+    // Toggles the visibility of the IP address list for a single link
+    $('#invalid-links-table').on('click', '.ip-count-toggle', function(e) {
+        e.stopPropagation(); // Prevents the parent row's click event from firing
+        const targetId = $(this).data('target');
+        $(targetId).slideToggle('fast');
     });
 });

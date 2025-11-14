@@ -50,4 +50,24 @@
             return $this->addRaw($query)
                 ->getResult();
         }
+
+		public function findIpsByLinkInLastDays(int $linkId, int $days = 30): array
+		{
+			$query = sprintf("SELECT DISTINCT ip FROM downloads WHERE link_id = %d AND created >= DATE_SUB(NOW(), INTERVAL %d DAY);",
+				$linkId,
+				$days
+			);
+
+			$result = $this->runQuery(null, null, $query);
+
+			if ($result === false) {
+				return [];
+			}
+
+			$ips = [];
+			while ($row = mysqli_fetch_assoc($result)) {
+				$ips[] = $row['ip'];
+			}
+			return $ips;
+		}
 	}

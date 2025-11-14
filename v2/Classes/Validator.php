@@ -9,6 +9,6 @@ class Validator
 {
     public static function getValidator()
     {
-        return AdminCheck::checkForLocal() ? new ValidatorLocal() : new ValidatorRemote();
+        return AdminCheck::checkForLocal() ? new ValidatorLocal() : new ValidatorLocal();
     }
 }
