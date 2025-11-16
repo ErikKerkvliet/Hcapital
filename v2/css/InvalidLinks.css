@@ -51,10 +51,14 @@
 
 .ip-row-color-1 {
 	background: #6c7f8c;
+    padding-top: 1px;
+    padding-bottom: 1px;
 }
 
 .ip-row-color-0 {
 	background: #788c9a;
+    padding-top: 1px;
+    padding-bottom: 1px;
 }
 
 .ip-list {
