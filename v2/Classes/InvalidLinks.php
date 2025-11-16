@@ -52,8 +52,7 @@
 				$html .= '</tr>';
 
 				// Child Rows
-				foreach ($data['links'] as $index => $link) {
-					$ipListId = "ips-list-{$entryId}-{$index}";
+				foreach ($data['links'] as $link) {
 					$html .= sprintf(
 						'<tr class="child-row child-of-%d %s" style="display: none;">',
 						$entryId,
@@ -62,9 +61,17 @@
 					$html .= '<td></td>'; // Empty cell for Entry ID
 					$html .= sprintf('<td><a href="%s" target="_blank">%s</a></td>', $link['url'], $link['url']);
 					
-					// Clickable IP Count Cell
+					// Clickable IP Count Cell with alternating IP rows
 					$html .= '<td>';
-					$html .= sprintf('<div id="%s" class="ip-list">%s</div>', $ipListId, $link['ip_string']);
+					$ipHtml = '<div class="ip-list">';
+					$ipRow = 0;
+					foreach ($link['ips'] as $ip) {
+						$ipRowColorClass = 'ip-row-color-' . ($ipRow % 2);
+						$ipHtml .= sprintf('<div class="%s">⠀%s</div>', $ipRowColorClass, $ip);
+						$ipRow++;
+					}
+					$ipHtml .= '</div>';
+					$html .= $ipHtml;
 					$html .= '</td>';
 					
 					$html .= '</tr>';
@@ -95,8 +102,7 @@
 
 				$groupedLinks[$entryId]['links'][] = [
 					'url' => $link->getUrl(),
-					'ip_count' => count($uniqueIps),
-					'ip_string' => implode('<br>', $uniqueIps),
+					'ips' => $uniqueIps, // Return array of IPs instead of string
 				];
 				$groupedLinks[$entryId]['all_ips'] = array_merge($groupedLinks[$entryId]['all_ips'], $uniqueIps);
 			}
