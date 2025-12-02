@@ -95,8 +95,9 @@ class InvalidLinks
 					);
 
 					$ipHtml .= sprintf(
-						'<div class="%s">⠀<span class="ip-text">%s</span><span class="banned-indicator">%s</span>%s</div>',
+						'<div class="%s">⠀<span class="ip-text ip-click" data-ip="%s" style="cursor: pointer;">%s</span><span class="banned-indicator">%s</span>%s</div>',
 						$ipRowColorClass,
+						$ip,
 						$ip,
 						$bannedIndicator,
 						$actionButtons
