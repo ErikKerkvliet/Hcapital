@@ -127,13 +127,47 @@ $(document).ready(function () {
                     break;
                 case 3:
                     var url = 'https://ipinfo.io/' + ipAddress + '/json';
-					window.open(url, '_blank');
-					break;
+                    window.open(url, '_blank');
+                    break;
             }
         },
 
         mouseleave: function () {
             $(this).hide();
         }
+    });
+
+    // Host Filter Logic
+    $('#filter-btn').on('click', function () {
+        const selectedHosts = [];
+        $('.host-checkbox:checked').each(function () {
+            selectedHosts.push($(this).val());
+        });
+
+        const showAll = selectedHosts.length === 0;
+
+        if (showAll) {
+            $('.parent-row').show();
+            $('.child-row').hide();
+            return;
+        }
+
+        // Hide all parents initially, we will show them if they have matching children
+        $('.parent-row').hide();
+
+        // Iterate over all child rows
+        $('.child-row').each(function () {
+            const row = $(this);
+            const host = row.data('host');
+
+            if (selectedHosts.includes(host)) {
+                row.show();
+                // Show parent
+                const entryId = row.attr('class').match(/child-of-(\d+)/)[1];
+                $('.parent-row[data-entry-id="' + entryId + '"]').show();
+            } else {
+                row.hide();
+            }
+        });
     });
 });

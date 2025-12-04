@@ -66,10 +66,21 @@ class InvalidLinks
 
 			// Child Rows
 			foreach ($data['links'] as $link) {
+				$host = parse_url($link['url'], PHP_URL_HOST);
+				$hostName = '';
+				if (strpos($host, 'rapidgator') !== false) {
+					$hostName = 'rapidgator';
+				} elseif (strpos($host, 'mexashare') !== false) {
+					$hostName = 'mexashare';
+				} elseif (strpos($host, 'katfile') !== false) {
+					$hostName = 'katfile';
+				}
+
 				$html .= sprintf(
-					'<tr class="child-row child-of-%d %s" style="display: none;">',
+					'<tr class="child-row child-of-%d %s" style="display: none;" data-host="%s">',
 					$entryId,
-					$rowColorClass
+					$rowColorClass,
+					$hostName
 				);
 				$html .= '<td></td>'; // Empty cell for Entry ID
 				$html .= sprintf('<td><a href="%s" target="_blank">%s</a></td>', $link['url'], $link['url']);

@@ -85,3 +85,8 @@ label {
 .table-hide {
 	display: none;
 }
+
+#copy-link-string {
+    display: block;
+    margin-left: 120px;
+}

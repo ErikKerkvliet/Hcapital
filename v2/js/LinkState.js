@@ -1,15 +1,14 @@
-$(document).ready(function()
-{
-	$('#validate-links').click(function() {
+$(document).ready(function () {
+	$('#validate-links').click(function () {
 		let state = 0
-		$('.link-state').each(function() {
+		$('.link-state').each(function () {
 			if ($(this).is(':checked')) {
 				state += parseInt($(this).val());
 			}
 		});
 
 		let hosts = [];
-		$('.host-checkbox').each(function() {
+		$('.host-checkbox').each(function () {
 			if ($(this).is(':checked')) {
 				hosts.push($(this).val());
 			}
@@ -33,14 +32,27 @@ $(document).ready(function()
 			from: fromNum,
 			to: toNum,
 			state: state,
-			hosts: (hosts || []).join(','), 
+			hosts: (hosts || []).join(','),
 		});
 
 		$('#spinner').css('display', 'unset');
-		window.location.href = `/?${params.toString()}`;	
+		window.location.href = `/?${params.toString()}`;
 	});
 
-	$('#link-status-form').submit(function() {
+	$('#link-status-form').submit(function () {
 		$('#spinner').css('display', 'unset');
+	});
+
+	$('#copy-link-string').click(function () {
+		$('#link-string-value').val().trim();
+		const el = document.createElement('textarea');
+		el.value = $('#link-string-value').val().trim();
+		el.setAttribute('readonly', '');
+		el.style.position = 'absolute';
+		el.style.left = '-9999px';
+		document.body.appendChild(el);
+		el.select();
+		document.execCommand('copy');
+		document.body.removeChild(el);
 	});
 });

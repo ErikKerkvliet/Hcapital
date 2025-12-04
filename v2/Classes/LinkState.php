@@ -68,14 +68,15 @@
 		{
 			$admin = AdminCheck::checkForAdmin();
 
-			$this->ifs = [
-				'online'   => $admin && ! AdminCheck::checkForLocal(),
-				'local'    => $admin && AdminCheck::checkForLocal(),
-			];
-			
 			if ($this->to) {
 				$this->getLinkData();
 			}
+
+			$this->ifs = [
+				'online'   => $admin && ! AdminCheck::checkForLocal(),
+				'local'    => $admin && AdminCheck::checkForLocal(),
+				'hasEntryIds' => $this->linkString != '',
+			];
 
 			$this->placeHolders = [
 				'linkString' => $this->linkString,

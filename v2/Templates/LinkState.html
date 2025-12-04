@@ -29,7 +29,10 @@
         <b style="color: red;">Only on hcapital.tk (For latest links)</b>
         <br>
         {/if}
-        <span>{{linkString}}</span>
+        {if hasEntryIds}
+            <input type="hidden" id="link-string-value" value="{{linkString}}">{{linkString}}</input>
+            <div class="admin-button" id="copy-link-string">Copy</div>
+        {/if}
     </div>
     <table id="downloads-table" cellspacing="0" cellpadding="0" class="{{tableClass}}">
         <tr id="downloads-header">

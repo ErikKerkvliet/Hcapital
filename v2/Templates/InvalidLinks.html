@@ -1,4 +1,13 @@
 <div id="invalid-links-page">
+    <div id="host-filter-container">
+        <label style="margin-right: 15px;"><input type="checkbox" class="host-checkbox" value="rapidgator">
+            Rapidgator</label>
+        <label style="margin-right: 15px;"><input type="checkbox" class="host-checkbox" value="mexashare">
+            Mexashare</label>
+        <label style="margin-right: 15px;"><input type="checkbox" class="host-checkbox" value="katfile"> Katfile</label>
+        <br>
+        <div class="admin-button" id="filter-btn">Filter</div>
+    </div>
     <table id="invalid-links-table" cellspacing="0" cellpadding="0">
         <tr id="downloads-header">
             <th class="downloads-header">Entry</th>
@@ -7,5 +16,5 @@
         </tr>
         {{table_rows}}
     </table>
-    <div id="ip-model" style="display: none; position: absolute; z-index: 1000;"></div>
+    <div id="ip-model" style="display: none;"></div>
 </div>
